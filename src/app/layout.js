@@ -52,7 +52,6 @@ export default function RootLayout({ children }) {
           backgroundSize: 'auto',
           backgroundPosition: 'center',
           backgroundRepeat: 'repeat',
-          backgroundAttachment: 'fixed',
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column'
