@@ -38,7 +38,7 @@ export default function About() {
               </p>
               
               <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
-                Their guiding philosophy, "Art as Therapy; Culture ignites the brain. Let's use it to heal the world," speaks to the profound potential of creativity as a healing force.
+                Their guiding philosophy, &ldquo;Art as Therapy; Culture ignites the brain. Let&apos;s use it to heal the world,&rdquo; speaks to the profound potential of creativity as a healing force.
               </p>
               
               <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
