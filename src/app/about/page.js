@@ -34,7 +34,7 @@ export default function About() {
               </h2>
               
               <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
-                ARTWINGS embodies a strong social mission and is proudly supported by YUVEDO, a foundation dedicated to assisting individuals affected by neurodegenerative diseases. YUVEDO's multifaceted initiative harnesses the power of art and culture to promote brain health, empower patients to actively improve their care, and encourage participation in medical research by contributing personal data and experiences to advance the search for better treatments.
+                ARTWINGS embodies a strong social mission and is proudly supported by YUVEDO, a foundation dedicated to assisting individuals affected by neurodegenerative diseases. YUVEDO&apos;s multifaceted initiative harnesses the power of art and culture to promote brain health, empower patients to actively improve their care, and encourage participation in medical research by contributing personal data and experiences to advance the search for better treatments.
               </p>
               
               <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
