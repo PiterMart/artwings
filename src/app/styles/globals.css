@@ -5,6 +5,7 @@
   --font-geist-mono: var(--font-geist-mono);
   --font-minecraft-regular: var(--font-minecraft-regular);
   --font-minecraft-italic: var(--font-minecraft-italic);
+  --font-lovelt: var(--font-lovelt);
 }
 
 html,
@@ -16,7 +17,7 @@ body {
 
 body {
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-lovelt), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -25,7 +26,7 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: var(--font-minecraft-italic), 'Montserrat', sans-serif;
+  font-family: var(--font-lovelt), 'Montserrat', sans-serif;
   font-display: swap;
 }
 section { 

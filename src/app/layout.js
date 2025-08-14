@@ -32,6 +32,11 @@ const minecraftItalic = localFont({
   variable: "--font-minecraft-italic",
 });
 
+const lovelt = localFont({
+  src: "../../public/fonts/Lovelt__.ttf",
+  variable: "--font-lovelt",
+});
+
 export const metadata = {
   title: "Artwings",
   description: " Committed to advancing the appreciation of contemporary art through a dynamic and historically rooted aesthetic. ",
@@ -41,7 +46,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body 
-        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${inter.className}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${inter.className}`}
         style={{
           backgroundImage: 'url(/backgroundtexture.jpg)',
           backgroundSize: 'auto',
