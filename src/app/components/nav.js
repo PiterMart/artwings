@@ -12,13 +12,14 @@ export default function Nav() {
     const currentPath = usePathname();
 
     const pages = [
-        { name: 'artists', path: '/artists', delay: '0s' },
-        { name: 'exhibitions', path: '/exhibitions', delay: '0.1s' },
-        { name: 'headquarters', path: '/headquarters', delay: '0.2s' },
-        { name: 'fairs', path: '/fairs', delay: '0.3s' },
-        // { name: 'RESIDENCIES', path: '/tra', delay: '0.4s' },
-        { name: 'about', path: '/about', delay: '0.4s' },
-        { name: 'contact', path: '/contact', delay: '0.5s' },
+        { name: 'Artists', path: '/artists' },
+        { name: 'Exhibitions', path: '/exhibitions' },
+        { name: 'News', path: '/news' },
+        // { name: 'Headquarters', path: '/headquarters' },
+        // { name: 'Fairs', path: '/fairs' },
+        // { name: 'RESIDENCIES', path: '/tra' },
+        { name: 'About', path: '/about' },
+        { name: 'Contact', path: '/contact' },
     ];
 
     const toggleMenu = () => {
@@ -29,38 +30,19 @@ export default function Nav() {
         return currentPath === path;
     };
 
-    // const controlNavbar = () => {
-    //     if (typeof window !== 'undefined') {
-    //         if (window.scrollY > lastScrollY) {
-    //             // scrolling down
-    //             setIsVisible(false);
-    //         } else {
-    //             // scrolling up
-    //             setIsVisible(true);
-    //         }
-    //         setLastScrollY(window.scrollY);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     if (typeof window !== 'undefined') {
-    //         window.addEventListener('scroll', controlNavbar);
-    //         return () => {
-    //             window.removeEventListener('scroll', controlNavbar);
-    //         };
-    //     }
-    // }, [lastScrollY]);
 
     return (
         <div className={`${styles.nav} ${isVisible ? styles.nav_visible : styles.nav_hidden}`}>
             <Link href="/">
                 <Image
-                    src="/TomasRedradoLogo.svg"
-                    alt="TomasRedrado"
-                    width={0}
-                    height={0}
+                    src="/artwingslogo.png"
+                    alt="Artwings"
+                    width={120}
+                    height={48}
                     className={styles.nav_logo}
-                    priority = {true}
+                    priority={true}
+                    quality={100}
+                    unoptimized={true}
                 />
             </Link>
             <button className={`${styles.navButton} ${isMenuOpen ? styles.open : ''}`} onClick={toggleMenu}>
@@ -71,7 +53,7 @@ export default function Nav() {
             <div className={`${styles.nav_list} ${isMenuOpen ? styles.active : ''}`} id="navMenu">
                 <ul>
                     {pages.map((page, index) => (
-                        <li key={index} style={{ '--delay': page.delay }}>
+                        <li key={index}>
                             <Link
                                 href={page.path}
                                 className={isCurrent(page.path) ? styles.page_current : ''}

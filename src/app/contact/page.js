@@ -1,72 +1,27 @@
 "use client";
 import styles from "../styles/page.module.css";
-import { firestore } from "../firebase/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
 
 export default function Contact() {
-  const [headquarters, setHeadquarters] = useState([]); // State to store all headquarters
-  const [loading, setLoading] = useState(true);
-
-  const excludedId = "m6NojPmUP9L1m1YT5IXt"; // Replace with the actual ID you want to exclude
-
-  // Fetch all headquarters
-  const fetchHeadquarters = async () => {
-    try {
-      const headquartersSnapshot = await getDocs(collection(firestore, "headquarters"));
-      const headquartersData = headquartersSnapshot.docs.map((doc) => ({
-        id: doc.id, // Firestore document ID
-        ...doc.data(),
-      }));
-      setHeadquarters(headquartersData);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching headquarters:", error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchHeadquarters();
-  }, []);
-
-  if (loading) return <p>Loading headquarters...</p>;
-  if (!headquarters.length) return <p>No headquarters found.</p>;
-
-    // Filter out the excluded headquarter
-    const filteredHeadquarters = headquarters.filter((hq) => hq.id !== excludedId);
-
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <div style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto" }}>
-          <p>Director</p>
-          <p className={styles.title} style={{marginTop: '1rem'}}>Tomas Redrado</p>
-          <p style={{marginTop: '1rem'}}>
-            <a href="mailto:tr@tomasredrado.com">tr@tomasredrado.com</a>
-          </p>
+          
           <div className={styles.page_container} style={{ marginTop: "7rem", margin: 'auto' }}>
-          {/* <p className={styles.title}>HEADQUARTERS</p> */}
-          <div>
-            {filteredHeadquarters.map((hq) => (
-              <div key={hq.id} className={styles.sedes} style={{justifyContent: 'center', gap: '1.5rem'}}>
-                <Link href={`/headquarters/${hq.slug}`}>
-                  <div className={styles.sedeCard}>
-                    <div className={styles.sedeCardText} style={{ height: "auto", width: "auto"}}>
-                      <p style={{fontSize: '3rem', fontWeight: '300', lineHeight: '4rem'}}>{hq.name}</p>
-                      <div style={{display: 'flex', flexDirection: 'column', fontSize: '1rem'}}>
-                        <p>{hq.location}</p>
-                        <p>{hq.schedule}</p>
-                        <p>{hq.phone}</p>
-                      </div>
-                    </div>
+            <div className={styles.sedes} style={{justifyContent: 'center', gap: '1.5rem'}}>
+              <div className={styles.sedeCard}>
+              <p><a href="mailto:info@artwings.art">info@artwings.art</a></p>
+                    <p><a href="tel:+491721736434">+49 172 1736434</a></p>
+                    <p><a href="https://www.instagram.com/artwings111/" target="_blank" rel="noopener noreferrer">@artwings111</a></p>
+                <div className={styles.sedeCardText} style={{ height: "auto", width: "auto"}}>
+                  <p style={{fontSize: '3rem', fontWeight: '300', lineHeight: '4rem'}}>Direktorenhaus</p>
+                  <div style={{display: 'flex', flexDirection: 'column', fontSize: '1rem'}}>
+                    <p>Am Krögel 2, 10179 Berlin</p>
                   </div>
-                </Link>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
         </div>
       </main>
       <footer className={styles.footer}></footer>

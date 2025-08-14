@@ -41,8 +41,6 @@ export default function ArtistUploader() {
   });
 
   const [newExtra, setNewExtra] = useState("");
-  const [newManifestoParagraph, setNewManifestoParagraph] = useState("");
-  const [newBioParagraph, setNewBioParagraph] = useState("");
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState(null);
   const [cvFile, setCvFile] = useState(null);
@@ -356,7 +354,7 @@ export default function ArtistUploader() {
   };
 
   const handleBirthDateChange = (e) => {
-    setBirthDate(e.target.value);
+    setFormData({ ...formData, birthDate: new Date(e.target.value) });
   };
 
   const handleProfilePictureChange = (e) => {
@@ -413,33 +411,9 @@ export default function ArtistUploader() {
     });
   };
 
-  const handleBioParagraphChange = (e) => {
-    setNewBioParagraph(e.target.value);
-  };
 
-  const addBioParagraph = () => {
-    if (newBioParagraph.trim()) {
-      setFormData((prevData) => ({
-        ...prevData,
-        bio: [...prevData.bio, newBioParagraph.trim()],
-      }));
-      setNewBioParagraph("");
-    }
-  };
 
-  const handleManifestoParagraphChange = (e) => {
-    setNewManifestoParagraph(e.target.value);
-  };
 
-  const addManifestoParagraph = () => {
-    if (newManifestoParagraph.trim()) {
-      setFormData((prevData) => ({
-        ...prevData,
-        manifesto: [...prevData.manifesto, newManifestoParagraph.trim()],
-      }));
-      setNewManifestoParagraph("");
-    }
-  };
 
   const handleCvChange = (e) => {
     const file = e.target.files[0];
@@ -509,63 +483,36 @@ export default function ArtistUploader() {
         value={formData.origin}
         onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
       />
-      <p className={styles.subtitle}>BIRTH DATEE</p>
+      <p className={styles.subtitle}>BIRTH DATE</p>
 
       {/* Birth Date Input */}
       <input
         type="date"
         name="birthDate"
         value={formData.birthDate ? formData.birthDate.toISOString().split('T')[0] : ''}
-        onChange={(e) => setFormData({ ...formData, birthDate: new Date(e.target.value) })}
+        onChange={handleBirthDateChange}
       />
 
       {/* Bio Paragraphs Input */}
       <div>
         <p className={styles.subtitle}>BIO</p>
         <textarea
-          placeholder="Add Bio Text"
-          value={newBioParagraph}  // Changed from newBio to newBioParagraph
-          onChange={handleBioParagraphChange}
+          placeholder="Add Bio Text (one paragraph per line)"
+          value={formData.bio.join('\n')}
+          onChange={(e) => setFormData({ ...formData, bio: e.target.value.split('\n').filter(p => p.trim()) })}
         />
-        <button type="button" onClick={addBioParagraph}>Add Bio Paragraph</button>
-      </div>
-      <div>
-        {formData.bio.map((paragraph, index) => (
-          <div key={index} className={styles.paragraphContainer}>
-            <textarea
-              value={paragraph}
-              onChange={(e) => {
-                const updatedBio = [...formData.bio];
-                updatedBio[index] = e.target.value;
-                setFormData({ ...formData, bio: updatedBio });
-              }}
-            />
-            <button
-              onClick={() => {
-                const updatedBio = formData.bio.filter((_, i) => i !== index);
-                setFormData({ ...formData, bio: updatedBio });
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+        <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
       </div>
 
       {/* Manifesto Paragraphs Input */}
       <div>
         <p className={styles.subtitle}>MANIFESTO</p>
         <textarea
-          placeholder="Add a paragraph to your manifesto"
-          value={newManifestoParagraph}
-          onChange={handleManifestoParagraphChange}
+          placeholder="Add Manifesto Text (one paragraph per line)"
+          value={formData.manifesto.join('\n')}
+          onChange={(e) => setFormData({ ...formData, manifesto: e.target.value.split('\n').filter(p => p.trim()) })}
         />
-        <button type="button" onClick={addManifestoParagraph}>Add Manifesto Paragraph</button>
-      </div>
-      <div>
-        {formData.manifesto.map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
+        <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
       </div>
 
       {/* Website Input */}

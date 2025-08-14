@@ -1,5 +1,6 @@
 "use client";
 import styles from "../../styles/artwork.module.css";
+// import pageStyles from "../../styles/page.module.css";
 import "../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig";
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
@@ -7,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import Image from "next/image";
 
 export default function Artwork({ params }) {
   const [artwork, setArtwork] = useState(undefined); // Undefined for initial loading state

@@ -1,35 +1,7 @@
 "use client";
-import { useState } from "react"; // NEW: Import useState
 import styles from "../styles/page.module.css";
 
-// NEW: Object to hold the hardcoded bilingual content.
-// Each language has an array of strings, where each string is a paragraph.
-const content = {
-  en: [
-    "TOMAS REDRADO ART (TRA)",
-    "is committed to promoting the appreciation and recognition of contemporary art through a dynamic and historically grounded aesthetic. Since its founding in 2022, the gallery has worked to build a vibrant artistic community, representing emerging and mid-career artists from Latin America whose works explore the boundaries of form, texture, and materiality. Through sustained and dedicated engagement with contemporary practices, TRA aims to position its artists' productions within the international art circuit.",
-    "TRA challenges conventional perspectives and encourages the exploration of innovative artistic forms, prioritizing the creative autonomy of artists and fostering an environment where breaking boundaries and engaging closely with the public are central.",
-    "With headquarters in Miami and José Ignacio, a temporary programming in Buenos Aires, and a forthcoming new location in the same city, TRA seeks to foster dialogue between local and international art scenes. Its mission is to create meaningful exchanges that reaffirm its commitment to connecting the region’s cultural richness with the global stage, generating an impact that transcends borders through a program that is rooted yet constantly moving and evolving in dialogue.",
-    "In 2025, TRA consolidates this vision by participating in three key international art fairs — arteBA, ArtBo, and NADA Miami — expanding visibility and collecting opportunities for its artists and strengthening its presence in the global contemporary art scene.",
-  ],
-  es: [
-    "TOMAS REDRADO ART (TRA)" ,
-    "está comprometido a promover la valoración y el reconocimiento del arte contemporáneo a través de una estética dinámica e históricamente arraigada. Desde su fundación en 2022, la galería ha trabajado en construir una comunidad artística pujante, representando a artistas emergentes y de mediana carrera de América Latina, con obras que exploran los límites de la forma, la textura y la materialidad. A través de un trabajo sostenido y dedicado con lo contemporáneo, TRA se propone el establecimiento de sus producciones artísticas en el circuito internacional.",
-    "TRA desafía las perspectivas convencionales y fomenta la exploración de formas de arte innovadoras, priorizando la autonomía creativa del artista y promoviendo un entorno donde romper las normas e interactuar de forma cercana con el público.",
-    "Con sede en Miami y Arenas José Ignacio, programación temporal en Buenos Aires y una futura nueva sucursal en dicha ciudad, TRA busca dialogar entre las escenas artísticas locales e internacionales a través de un intercambio significativo que reafirma su compromiso de conectar la riqueza cultural de la región con el escenario global, generando un impacto que trascienda fronteras, a partir de un programa situado pero en movimiento y en diálogo constante.",
-    "En 2025, TRA consolida esta visión participando en tres ferias internacionales claves — arteBA, ArtBo y NADA Miami—, ampliando así las oportunidades de visibilidad y coleccionismo para sus artistas, y fortaleciendo su presencia dentro del circuito contemporáneo global.",
-  ],
-};
-
 export default function About() {
-  // NEW: State to manage the current language ('en' or 'es')
-  const [lang, setLang] = useState('en');
-
-  // NEW: Function to toggle the language
-  const toggleLanguage = () => {
-    setLang(prevLang => (prevLang === 'en' ? 'es' : 'en'));
-  };
-
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -37,36 +9,67 @@ export default function About() {
           <div className={styles.artists_page}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%'}}>
               
-              {/* NEW: Language toggle button */}
-              <div style={{marginBottom: '1rem'}}>
-                <button onClick={toggleLanguage} className={styles.language_button}>
-                  {lang === 'en' ? 'Ver en Español' : 'View in English'}
-                </button>
-              </div>
-
-              {/* UPDATED: Dynamically render content based on language state */}
-              {content[lang].map((paragraph, index) => {
-                // Apply the 'title' style to the first paragraph
-                const isTitle = index === 0;
-                return (
-                  <p 
-                    key={index} 
-                    className={isTitle ? styles.title : ''}
-                    style={{
-                      marginBottom: isTitle ? '1rem' : '0',
-                      lineHeight: isTitle ? '3rem' : '1.5rem', // Adjust line height for readability
-                      textAlign: 'left',
-                      textAlign: 'justify'
-                    }}
-                  >
-                    {paragraph}
-                  </p>
-                );
-              })}
+              <p className={styles.title} style={{marginBottom: '1rem', lineHeight: '3rem'}}>
+                ARTWINGS
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                ARTWINGS is a Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                We regard artists as transcendent vessels, in tune with their Higher Selves and their ability to translate that connection into tangible forms through the medium of art. Voices that pulse from the depths of memory, identity, loss, mythology, grief and fantasy. Their work becomes visceral imagery, immersive environments, symbolic rituals, and sonic atmospheres.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                ARTWINGS is more than a gallery; it is a living space where bold ideas, creative freedom, and new visions take shape. A shared field of transformation, healing, and radical presence. A place where art and social change grow through connection, shared voices, and meaningful exchange.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                Our mission is to provide a platform that bridges artistry with meaningful opportunities and authentic connections. By aligning artistic practice with the core values of ARTWINGS, we strive to foster growth, depth, and resonance. We aim to curate immersive, collective experiences in which art is encountered in its full emotional and conceptual richness, leaving a lasting, transformative imprint on both artists and audiences.
+              </p>
+              
+              <h2 style={{marginTop: '2rem', marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 'bold'}}>
+                Purpose
+              </h2>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                ARTWINGS embodies a strong social mission and is proudly supported by YUVEDO, a foundation dedicated to assisting individuals affected by neurodegenerative diseases. YUVEDO's multifaceted initiative harnesses the power of art and culture to promote brain health, empower patients to actively improve their care, and encourage participation in medical research by contributing personal data and experiences to advance the search for better treatments.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                Their guiding philosophy, "Art as Therapy; Culture ignites the brain. Let's use it to heal the world," speaks to the profound potential of creativity as a healing force.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                Rooted in this vision, ARTWINGS was conceived as a platform for the creation and sharing of purposeful art, where artistic expression becomes a catalyst for social impact and collective healing.
+              </p>
+              
+              <h2 style={{marginTop: '2rem', marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 'bold'}}>
+                Creative Vision
+              </h2>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                We envision a space where the boundaries of artistic expression dissolve into a living archive of resistance, remembrance, and reimagination. A dynamic movement where artistic innovation and social impact converge.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                This creative ecosystem is rooted in vulnerability and boldness, a refusal to conform and a commitment to reclaiming the emotional, the strange, the ancestral, and the mystical. Whether through analog media, digital soundscapes, dreamlike painting, or ritual-based practices, participating artists turn introspection into shared experience and isolation into new forms of connection.
+              </p>
+              
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+                We aim to foster meaningful dialogue among participating artists, researchers, and broader communities, bridging creative practice with science, care, and cultural agency. To join ARTWINGS is to become part of a larger social initiative, contributing to an inspiring, ever-evolving space for artistic innovation and collective transformation.
+              </p>
             </div>
-            <video autoPlay loop muted className={styles.video}>
-              <source src="/TomasRedradoExhibition.mp4" />
-            </video>
+            <div style={{marginTop: '4rem', maxWidth: '800px', margin: 'auto'}}>
+              <h2 style={{fontSize: '2rem', fontWeight: '400', marginBottom: '2rem'}}>The Venue - Direktorenhaus</h2>
+              <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify'}}>
+                The physical space was selected to reflect the essence of ARTWINGS. Direktorenhaus Berlin is both a gallery and cultural center located in the Mitte district. Founded in 2010 by Pascal Johanssen and Katja Kleiss, the venue is situated within the historic complex of the Alte Münze, the former state mint of Berlin.
+              </p>
+              <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify', marginTop: '1.5rem'}}>
+                With two floors, high ceilings, and multiple exhibition rooms, Direktorenhaus provides the architectural and energetic frame for our project. We will host meetings on-site for participating artists to explore the space, meet each other, and engage in the logistics and vision of the exhibition. Our goal is to transform it into a cohesive, inclusive artistic environment aligned with the mission of ARTWINGS.
+              </p>
+            </div>
           </div>
         </div>
       </main>

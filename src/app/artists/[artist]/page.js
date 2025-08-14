@@ -96,49 +96,48 @@ export default function Artist({ params }) {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+      <div className={styles.leftMargin2}>
+        <Image
+          src="/maiden 2.PNG"
+          alt="Left margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage2}
+        />
+      </div>
         <div className={styles.page_container}>
           <div>
-            <div className={styles.artist_page_NameCard}>
-              <h1 className={styles.title} style={{ paddingTop: "5rem" }}>
-                {artist.name}
-              </h1>
-              <div>
-                <h1 className={styles.subtitle}>{artist.origin},</h1>
-                <h1 className={styles.subtitle}>{artist.birthDate}.</h1>
-              </div>
-              <div className={styles.artist_page_nav}>
-                {artist.profilePicture && (
+            <div className={styles.artist_header}>
+            {artist.profilePicture && (
+                <div className={styles.profile_container}>
                   <img
                     src={artist.profilePicture}
                     alt={`${artist.name}'s profile`}
-                    style={{
-                      width: "200px",
-                      height: "auto",
-                      overflow: "hidden",
-                      filter: "grayscale(1)",
-                    }}
+                    className={styles.profile_image}
                   />
-                )}
+                  <Image
+                    src="/webframeartwings_1.png"
+                    alt="Profile frame"
+                    width={200}
+                    height={200}
+                    className={styles.profile_frame}
+                  />
+                </div>
+              )}
+              <div className={styles.artist_info}>
+                <h1 className={styles.title} style={{ paddingTop: "5rem" }}>
+                  {artist.name}
+                </h1>
+                <div>
+                  <h1 className={styles.subtitle}>{artist.origin},</h1>
+                  <h1 className={styles.subtitle}>{artist.birthDate}.</h1>
+                </div>
               </div>
             </div>
             <div className={styles.artist_page}>
               <div className={styles.artist_page_contents}>
                 <div>
                   <p style={{ fontSize: '1.5rem', lineHeight: "1.75rem", textAlign: 'left'}}>{artist.bio[0]}</p>
-                  <Link href="#bio">
-                    <button
-                      style={{
-                        padding: "0px",
-                        marginTop: "1.5rem",
-                        marginRight: "0px",
-                        width: "100%",
-                        textAlign: "right",
-                        color: "gray",
-                      }}
-                    >
-                      Read More
-                    </button>
-                  </Link>
                 </div>
                 <div
                   className={styles.artist_page_contents_obras}
