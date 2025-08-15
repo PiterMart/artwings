@@ -39,7 +39,7 @@ const lovelt = localFont({
 
 export const metadata = {
   title: "Artwings",
-  description: " Committed to advancing the appreciation of contemporary art through a dynamic and historically rooted aesthetic. ",
+  description: " Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market. ",
 };
 
 export default function RootLayout({ children }) {
