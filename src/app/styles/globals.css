@@ -38,13 +38,13 @@ p{
   line-height: 1.5rem;
 }
 
-a:hover{
+
+/* a:hover{
   animation-duration: 5ms;
   transition: color .3s ease-in-out;
-  box-shadow: black;
-  color: black;
+  color: rgb(255, 255, 255);
   text-underline-offset: 8px;
-}
+} */
 
 button{
   background-color: #faf9f600;

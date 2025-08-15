@@ -1,5 +1,6 @@
 "use client";
 import styles from "../styles/page.module.css";
+import Image from "next/image";
 
 export default function About() {
   return (
@@ -8,12 +9,17 @@ export default function About() {
         <div className={styles.page_container}>
           <div className={styles.artists_page}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%'}}>
-              
-              <p className={styles.title} style={{marginBottom: '1rem', lineHeight: '3rem'}}>
-                ARTWINGS
-              </p>
-              
-              <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
+            
+            <Image
+              src="/artwingslogo.png"
+              alt="ARTWINGS Logo"
+              width={400}
+              height={200}
+              className={styles.logo}
+              style={{position: 'absolute', top: '0', left: '0', marginBottom: '5rem'}}
+              priority
+            />
+              <p style={{lineHeight: '1.5rem', textAlign: 'justify', marginTop: '5rem'}}>
                 ARTWINGS is a Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.
               </p>
               

@@ -49,9 +49,32 @@ export default function Home() {
         />
         <div className={styles.tagline}>
           <p className={styles.taglineText}>Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.</p>
-          <p className={styles.taglineSubtext}>through a dynamic and historically rooted aesthetic</p>
+          <p className={styles.taglineSubtext}>Resistance, remembrance, and reimagination. </p>
         </div>
       </div>
+      {/* Exhibition Flyer Section */}
+      <div className={styles.exhibitionSection}>
+      <h2 className={styles.address}>Exhibition</h2>
+      <h2 className={styles.exhibitionTitle}>METAXY</h2>
+        <div className={styles.flyerContainer}>
+          <Image
+            src="/flyer placeholder.jpg"
+            alt="Exhibition Flyer"
+            width={600}
+            height={800}
+            className={styles.flyerImage}
+            priority
+          />
+        </div>
+        <div className={styles.exhibitionInfo}>
+          <p className={styles.exhibitionDate}>04/09/25</p>
+          <div className={styles.addressInfo}>
+            <p className={styles.address}>Direktorenhaus</p>
+            <p className={styles.address}>Am Krögel 2, 10179 Berlin</p>
+          </div>
+        </div>
+      </div>
+
       
       {/* Parallax Image Gallery */}
       <div className={styles.parallaxGallery}>

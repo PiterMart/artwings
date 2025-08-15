@@ -36,19 +36,22 @@
 }
 
 .footerLinks a {
-  color: #333;
-  text-decoration: none;
-  font-size: 1.1rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #333;
-  transition: all 0.3s ease;
+  text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+  text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+    /* Time and easing for the animation */
+    transition: transform 1.25s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .footerLinks a:hover {
-  background-color: #707984;
-  color: white;
-  transform: translateY(-2px);
+  transition: color 0.3s ease-in-out;
+  /* Lifts the text up by 5 pixels */
+  transform: translateY(-5px);
+
+  /* Adds a blurred shadow below the text */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
+  color: rgb(255, 255, 255);
 }
+
 
 /* Responsive styles */
 @media (max-width: 1300px) {

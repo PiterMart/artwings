@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { app, firestore } from "../firebase/firebaseConfig";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { motion } from "framer-motion";
 
 export default function ArtistsPage() {
   const [artists, setArtists] = useState([]);
@@ -61,52 +60,42 @@ export default function ArtistsPage() {
     return currentPath === path;
   };
 
-  const listVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        staggerChildren: 0.5, // Adjust time between each child's animation
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeInOut", // Smooth start and stop
-      },
-    },
-  };
-
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className={styles.page_container}>
+        <div className={styles.page_container} style={{marginBottom: "10rem"}}>
+        {/* Left margin image */}
+        <div className={styles.leftMargin} style={{height: "100vh"}}>
+        <Image
+          src="/maiden 11.png"
+          alt="Left margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage}
+        />
+      </div>
+      
+      {/* Right margin image */}
+      <div className={styles.rightMargin} style={{height: "100vh"}}>
+        <Image
+          src="/maiden 11.png"
+          alt="Right margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage}
+        />
+      </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <motion.ul
-                initial="hidden"
-                animate="visible"
-                variants={listVariants}
-                className={styles.name_list}
-              >
+              <ul className={styles.name_list}>
                 {artists.map((artist) => (
-                  <motion.li key={artist.id} variants={itemVariants}>
+                  <li key={artist.id}>
                     <Link href={`/artists/${artist.slug}`}>{artist.name}</Link>
-                  </motion.li>
+                  </li>
                 ))}
-              </motion.ul>
+              </ul>
             </div>
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={itemVariants}
+            <div
               className={styles.artists_image}
               style={{
                 background: "transparent",
@@ -116,7 +105,7 @@ export default function ArtistsPage() {
                 alignContent: "center",
               }}
             >
-              {randomArtwork ? (
+              {/* {randomArtwork ? (
                 <Link href={`/artworks/${randomArtwork.slug}`}>
                   <img
                     src={randomArtwork.url}
@@ -135,8 +124,8 @@ export default function ArtistsPage() {
                 </Link>
               ) : (
                 <p></p>
-              )}
-            </motion.div>
+              )} */}
+            </div>
           </div>
         </div>
       </main>
