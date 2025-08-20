@@ -12,9 +12,9 @@ export default function Nav() {
     const currentPath = usePathname();
 
     const pages = [
-        { name: 'Artists', path: '/artists' },
-        { name: 'Exhibitions', path: '/exhibitions' },
-        { name: 'News', path: '/news' },
+        // { name: 'Artists', path: '/artists' },
+        // { name: 'Exhibitions', path: '/exhibitions' },
+        // { name: 'News', path: '/news' },
         // { name: 'Headquarters', path: '/headquarters' },
         // { name: 'Fairs', path: '/fairs' },
         // { name: 'RESIDENCIES', path: '/tra' },

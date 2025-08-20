@@ -190,7 +190,7 @@
   align-items: center;
   text-align: center;
   gap: 0.5rem;
-  margin-top: 58vh;
+  margin-top: 27vh;
   max-width: 800px;
 }
 
@@ -247,7 +247,7 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
   margin-top: 10vh;
@@ -478,7 +478,7 @@
 .sedes{
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   margin: auto;
   height: auto;
@@ -500,9 +500,11 @@
   background: lightgray; */
   position: relative;
   display: inline-block;
-  font-size: 2rem; 
-  line-height: 1rem;
+  font-size: 1rem; 
+  width: 800px;
+  max-width: 100%;    
 }
+
 .sedeCard img{
   display: block;
   max-width: 100%;
@@ -698,7 +700,6 @@
     align-items: center;
     text-align: center;
     gap: 0.5rem;
-    margin-top: 50vh;
     max-width: 800px;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -762,7 +763,6 @@
 
 @media (max-width: 800px) {
   .tagline{
-    margin-top: 55vh;
   }
 
   .artist_header {
@@ -944,7 +944,7 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: -0rem;
+  margin-top: 6rem;
 }
 
 .flyerContainer {
@@ -1017,7 +1017,6 @@
   }
   .exhibitionSection {
     gap: 0rem;
-    margin-top: -5rem;
   }
   
   .flyerImage {
@@ -1040,7 +1039,6 @@
 }
 @media (max-width: 500px) {
   .exhibitionSection {
-    margin-top: -10rem;
   }
 
 }
