@@ -37,6 +37,32 @@ const lovelt = localFont({
   variable: "--font-lovelt",
 });
 
+// Helvetica fonts
+const helveticaRegular = localFont({
+  src: "../../public/fonts/helvetica/Helvetica.ttf",
+  variable: "--font-helvetica-regular",
+});
+
+const helveticaBold = localFont({
+  src: "../../public/fonts/helvetica/Helvetica-Bold.ttf",
+  variable: "--font-helvetica-bold",
+});
+
+const helveticaCondensed = localFont({
+  src: "../../public/fonts/helvetica/helvetica_condensed.ttf",
+  variable: "--font-helvetica-condensed",
+});
+
+const helveticaLight = localFont({
+  src: "../../public/fonts/helvetica/helvetica-light.ttf",
+  variable: "--font-helvetica-light",
+});
+
+const helveticaBlack = localFont({
+  src: "../../public/fonts/helvetica/helvetica black.otf",
+  variable: "--font-helvetica-black",
+});
+
 export const metadata = {
   title: "Artwings",
   description: " Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market. ",
@@ -46,7 +72,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body 
-        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${inter.className}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${helveticaRegular.variable} ${helveticaBold.variable} ${helveticaCondensed.variable} ${helveticaLight.variable} ${helveticaBlack.variable} ${inter.className}`}
         style={{
           backgroundImage: 'url(/backgroundtexture.jpg)',
           backgroundSize: 'auto',

@@ -7,18 +7,19 @@ export default function About() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.page_container}>
-          <div className={styles.artists_page}>
-            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%'}}>
-            
+        <div className={styles.logoContainer}>
             <Image
               src="/artwingslogo.png"
               alt="ARTWINGS Logo"
               width={400}
               height={200}
               className={styles.logo}
-              style={{position: 'absolute', top: '0', left: '0', marginBottom: '5rem'}}
               priority
             />
+          </div>
+          <div className={styles.artists_page}>
+            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', margin: "auto", maxWidth: '800px', marginTop: '5rem'}}>
+            
               <p style={{lineHeight: '1.5rem', textAlign: 'justify', marginTop: '5rem'}}>
                 ARTWINGS is a Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.
               </p>
@@ -66,8 +67,8 @@ export default function About() {
               <p style={{lineHeight: '1.5rem', textAlign: 'justify'}}>
                 We aim to foster meaningful dialogue among participating artists, researchers, and broader communities, bridging creative practice with science, care, and cultural agency. To join ARTWINGS is to become part of a larger social initiative, contributing to an inspiring, ever-evolving space for artistic innovation and collective transformation.
               </p>
-            </div>
-            <div style={{marginTop: '4rem', maxWidth: '800px', margin: 'auto'}}>
+
+              <div style={{marginTop: '4rem', maxWidth: '800px', margin: 'auto'}}>
               <h2 style={{fontSize: '2rem', fontWeight: '400', marginBottom: '2rem'}}>The Venue - Direktorenhaus</h2>
               <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify'}}>
                 The physical space was selected to reflect the essence of ARTWINGS. Direktorenhaus Berlin is both a gallery and cultural center located in the Mitte district. Founded in 2010 by Pascal Johanssen and Katja Kleiss, the venue is situated within the historic complex of the Alte Münze, the former state mint of Berlin.
@@ -75,6 +76,7 @@ export default function About() {
               <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify', marginTop: '1.5rem'}}>
                 With two floors, high ceilings, and multiple exhibition rooms, Direktorenhaus provides the architectural and energetic frame for our project. We will host meetings on-site for participating artists to explore the space, meet each other, and engage in the logistics and vision of the exhibition. Our goal is to transform it into a cohesive, inclusive artistic environment aligned with the mission of ARTWINGS.
               </p>
+            </div>
             </div>
           </div>
         </div>

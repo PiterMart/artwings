@@ -6,6 +6,11 @@
   --font-minecraft-regular: var(--font-minecraft-regular);
   --font-minecraft-italic: var(--font-minecraft-italic);
   --font-lovelt: var(--font-lovelt);
+  --font-helvetica-regular: var(--font-helvetica-regular);
+  --font-helvetica-bold: var(--font-helvetica-bold);
+  --font-helvetica-condensed: var(--font-helvetica-condensed);
+  --font-helvetica-light: var(--font-helvetica-light);
+  --font-helvetica-black: var(--font-helvetica-black);
 }
 
 html,
@@ -27,8 +32,8 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: var(--font-lovelt), 'Montserrat', sans-serif;
   font-display: swap;
+
 }
 section { 
   display: flex;

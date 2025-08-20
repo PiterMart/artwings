@@ -13,7 +13,6 @@
   padding: 4vw;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  font-family: var(--font-minecraft-regular);
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -51,7 +50,6 @@
 .nav_list li {
   font-size: 1.5rem;
   transition: color 0.3s ease;
-  font-family: var(--font-minecraft-regular) !important;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.274);
 }
 
@@ -163,7 +161,6 @@
   .nav_list li {
     margin: 0;
     font-size: 3rem;
-    font-family: var(--font-minecraft-regular);
     color: #707984;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     text-align: center;
