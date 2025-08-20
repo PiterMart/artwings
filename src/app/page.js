@@ -6,12 +6,40 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function Home() {
   const { scrollY } = useScroll();
+  const [lightboxImage, setLightboxImage] = useState(null);
   
   // Create parallax transforms for each image
   const y1 = useTransform(scrollY, [0, 1500], [0, -300]);
   const y2 = useTransform(scrollY, [0, 1500], [0, 400]);
   const y3 = useTransform(scrollY, [0, 1500], [0, -250]);
   const y4 = useTransform(scrollY, [0, 1500], [0, 350]);
+
+  const openLightbox = (imageSrc, imageAlt) => {
+    setLightboxImage({ src: imageSrc, alt: imageAlt });
+  };
+
+  const closeLightbox = () => {
+    setLightboxImage(null);
+  };
+
+  // Close lightbox on escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    };
+
+    if (lightboxImage) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [lightboxImage]);
 
   return (
     <div className={styles.page}>
@@ -149,6 +177,7 @@ export default function Home() {
         <motion.div 
           className={styles.parallaxImage}
           style={{ y: y1 }}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (28).jpg", "Artwings photo by Rubi Azul")}
         >
           <Image
             src="/pictures/@Artwings111 photo by @Rubi__Azul (28).jpg"
@@ -162,6 +191,7 @@ export default function Home() {
         <motion.div 
           className={styles.parallaxImage}
           style={{ y: y2 }}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg", "Artwings photo by Rubi Azul")}
         >
           <Image
             src="/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg"
@@ -175,6 +205,7 @@ export default function Home() {
         <motion.div 
           className={styles.parallaxImage}
           style={{ y: y3 }}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (9).jpg", "Artwings photo by Xowkyu")}
         >
           <Image
             src="/pictures/@Artwings111 photo by @Rubi__Azul (9).jpg"
@@ -188,6 +219,7 @@ export default function Home() {
         <motion.div 
           className={styles.parallaxImage}
           style={{ y: y4 }}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (57)_1.jpg", "Artwings photo by Xowkyu")}
         >
           <Image
             src="/pictures/@Artwings111 photo by @Rubi__Azul (57)_1.jpg"
@@ -202,7 +234,7 @@ export default function Home() {
       {/* Spacer for parallax effect */}
       <div className={styles.parallaxSpacer}></div>
 
-      <div style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%" }}>
+      <div style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%", width: "100%", maxWidth: "800px" }}>
           
           <div className={styles.page_container} style={{ marginTop: "7rem", margin: 'auto' }}>
             <div className={styles.sedes} style={{ gap: '0rem'}}>
@@ -224,6 +256,25 @@ export default function Home() {
       
       <main className={styles.main}>
       </main>
+
+      {/* Lightbox Overlay */}
+      {lightboxImage && (
+        <div className={styles.lightbox} onClick={closeLightbox}>
+          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.lightboxClose} onClick={closeLightbox}>
+              ×
+            </button>
+            <Image
+              src={lightboxImage.src}
+              alt={lightboxImage.alt}
+              width={800}
+              height={1200}
+              className={styles.lightboxImage}
+              priority
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

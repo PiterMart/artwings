@@ -84,6 +84,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .parallaxImage:nth-child(1) {
@@ -110,6 +111,73 @@
   z-index: 4;
 }
 
+/* Ensure proper stacking context */
+.parallaxImage {
+  will-change: z-index;
+}
+
+/* Lightbox Styles */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  cursor: pointer;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.lightboxContent {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  cursor: default;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.lightboxClose:hover {
+  color: #ccc;
+}
+
+.lightboxImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .galleryImage {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
@@ -121,6 +189,26 @@
   transform: scale(1.05);
   filter: brightness(1) contrast(1.2);
   z-index: 100000;
+}
+
+.parallaxImage:hover {
+  z-index: 9999;
+}
+
+.parallaxImage:hover .galleryImage {
+  transform: scale(1.1);
+  filter: brightness(1.1) contrast(1.3);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Add clickable cursor and subtle hover effect */
+.parallaxImage {
+  cursor: pointer;
+}
+
+.parallaxImage:hover {
+  z-index: 9999;
 }
 
 /* Logo Container */
@@ -677,6 +765,54 @@
 }
 
 @media (max-width: 1300px) {
+  /* Adjust parallax positioning for smaller screens */
+  .parallaxImage:nth-child(1) {
+    left: 2%;
+  }
+  
+  .parallaxImage:nth-child(2) {
+    right: 5%;
+  }
+  
+  .parallaxImage:nth-child(3) {
+    left: 10%;
+  }
+  
+  .parallaxImage:nth-child(4) {
+    right: 15%;
+  }
+  
+  .galleryImage {
+    width: 350px;
+    height: 525px;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Keep parallax but adjust positioning for medium screens */
+  .parallaxImage:nth-child(1) {
+    left: 3%;
+  }
+  
+  .parallaxImage:nth-child(2) {
+    right: 6%;
+  }
+  
+  .parallaxImage:nth-child(3) {
+    left: 12%;
+  }
+  
+  .parallaxImage:nth-child(4) {
+    right: 18%;
+  }
+  
+  .galleryImage {
+    width: 320px;
+    height: 480px;
+  }
+}
+
+@media (max-width: 1000px) {
   .leftMargin {
     margin-top: 1rem;
   }
@@ -761,7 +897,73 @@
   }
 }
 
+@media (max-width: 700px) {
+  /* Parallax Gallery Mobile - 700px breakpoint */
+  .parallaxGallery {
+    height: auto;
+    min-height: 80vh;
+    margin-top: 60vh;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 0 1rem;
+    align-items: center;
+    justify-items: center;
+  }
+  
+  .parallaxSpacer {
+    height: 8vh;
+  }
+  
+  .parallaxImage {
+    position: relative;
+    margin: 0;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+  }
+  
+  /* Offset the second image to the center */
+  .parallaxImage:nth-child(2) {
+    transform: translateX(20px);
+  }
+  
+  /* Offset the third image to the center */
+  .parallaxImage:nth-child(3) {
+    transform: translateX(-20px);
+  }
+  
+  .galleryImage {
+    width: 200px !important;
+    height: 300px !important;
+  }
+}
+
 @media (max-width: 800px) {
+  /* Keep parallax but adjust positioning for smaller screens */
+  .parallaxImage:nth-child(1) {
+    left: 2%;
+  }
+  
+  .parallaxImage:nth-child(2) {
+    right: 4%;
+  }
+  
+  .parallaxImage:nth-child(3) {
+    left: 8%;
+  }
+  
+  .parallaxImage:nth-child(4) {
+    right: 12%;
+  }
+  
+  .galleryImage {
+    width: 280px;
+    height: 420px;
+  }
+  
   .tagline{
   }
 
@@ -817,38 +1019,6 @@
     margin-left: 0;
     height: auto;
     width: 100%;
-  }
-  
-  /* Parallax Gallery Mobile */
-  .parallaxGallery {
-    height: 80vh;
-    margin-top: 120vh;
-  }
-  
-  .parallaxSpacer {
-    height: 30vh;
-  }
-  
-  .parallaxImage {
-    position: relative;
-    margin: 2rem 0;
-  }
-  
-  .parallaxImage:nth-child(1),
-  .parallaxImage:nth-child(2),
-  .parallaxImage:nth-child(3),
-  .parallaxImage:nth-child(4) {
-    position: relative;
-    left: auto;
-    right: auto;
-    top: auto;
-    bottom: auto;
-    margin: 2rem auto;
-  }
-  
-  .galleryImage {
-    width: 250px !important;
-    height: 375px !important;
   }
 }
 
@@ -1037,7 +1207,75 @@
     padding: 0.75rem;
   }
 }
+@media (max-width: 600px) {
+  /* Parallax Gallery Mobile - 600px breakpoint */
+  .parallaxGallery {
+    height: auto;
+    min-height: 70vh;
+    margin-top: 50vh;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 0 0.8rem;
+    align-items: center;
+    justify-items: center;
+  }
+  
+  .parallaxSpacer {
+    height: 6vh;
+  }
+  
+  /* Offset the second image to the center */
+  .parallaxImage:nth-child(2) {
+    transform: translateX(15px);
+  }
+  
+  /* Offset the third image to the center */
+  .parallaxImage:nth-child(3) {
+    transform: translateX(-15px);
+  }
+  
+  .galleryImage {
+    width: 170px !important;
+    height: 255px !important;
+  }
+}
+
 @media (max-width: 500px) {
+  /* Parallax Gallery Mobile - 500px breakpoint */
+  .parallaxGallery {
+    height: auto;
+    min-height: 60vh;
+    margin-top: 40vh;
+    overflow: visible;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    padding: 0 0.6rem;
+    align-items: center;
+    justify-items: center;
+  }
+  
+  .parallaxSpacer {
+    height: 5vh;
+  }
+  
+  /* Offset the second image to the center */
+  .parallaxImage:nth-child(2) {
+    transform: translateX(10px);
+  }
+  
+  /* Offset the third image to the center */
+  .parallaxImage:nth-child(3) {
+    transform: translateX(-10px);
+  }
+  
+  .galleryImage {
+    width: 140px !important;
+    height: 210px !important;
+  }
+  
   .exhibitionSection {
   }
 
