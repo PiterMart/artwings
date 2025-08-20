@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { firestore, storage } from "./firebaseConfig";
-import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc } from "firebase/firestore";
+import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import styles from "../styles/page.module.css";
 import imageCompression from 'browser-image-compression';
@@ -63,6 +63,7 @@ export default function ArtistUploader() {
 
   const handleArtistSelection = async (artistId) => {
     setSelectedArtist(artistId);
+    setDeletedArtworks([]); // Clear deleted artworks when selecting artist
     if (!artistId) {
       resetForm();
       return;
@@ -98,7 +99,8 @@ export default function ArtistUploader() {
                 measurements: artworkData.measurements,
                 description: artworkData.description,
                 url: artworkData.url,  // Ensure this matches Firestore field name
-                detailImages: artworkData.detailImages || []  // Ensure this matches Firestore field name
+                images: artworkData.images || artworkData.detailImages || [],  // Handle both field names
+                extras: artworkData.extras || []
               };
             })
           );
@@ -208,6 +210,42 @@ export default function ArtistUploader() {
   
       // Process artworks
       const artworkIds = [];
+      
+      // Delete artworks that were removed from the collection
+      for (const deletedArtwork of deletedArtworks) {
+        if (deletedArtwork.id) {
+          try {
+            // Delete from artworks collection
+            await deleteDoc(doc(firestore, "artworks", deletedArtwork.id));
+            
+            // Delete images from storage if they exist
+            if (deletedArtwork.url) {
+              try {
+                const mainImageRef = ref(storage, deletedArtwork.url);
+                await deleteObject(mainImageRef);
+              } catch (storageError) {
+                console.warn("Could not delete main image from storage:", storageError);
+              }
+            }
+            
+            // Delete detail images from storage
+            if (deletedArtwork.images && deletedArtwork.images.length > 0) {
+              for (const detailUrl of deletedArtwork.images) {
+                try {
+                  const detailImageRef = ref(storage, detailUrl);
+                  await deleteObject(detailImageRef);
+                } catch (storageError) {
+                  console.warn("Could not delete detail image from storage:", storageError);
+                }
+              }
+            }
+          } catch (deleteError) {
+            console.error("Error deleting artwork:", deleteError);
+            // Continue with other operations even if deletion fails
+          }
+        }
+      }
+      
       // Process existing artworks
       for (const artwork of existingArtworks) {
         if (!artwork.id) { // New artwork added in form
@@ -223,7 +261,7 @@ export default function ArtistUploader() {
             medium: artwork.medium,
             measurements: artwork.measurements,
             description: artwork.description,
-            extras: artwork.extras,
+            extras: artwork.extras || [],
             url: mainUrl,
             images: detailUrls,
             exhibitions: [],
@@ -234,7 +272,24 @@ export default function ArtistUploader() {
           const docRef = await addDoc(collection(firestore, "artworks"), artworkDoc);
           artworkIds.push(docRef.id); // Make sure this executes
         } else {
-          artworkIds.push(artwork.id); // Push existing ID
+          // Update existing artwork if data has changed
+          try {
+            const artworkUpdateData = {
+              title: artwork.title,
+              date: artwork.date,
+              medium: artwork.medium,
+              measurements: artwork.measurements,
+              description: artwork.description,
+              extras: artwork.extras || []
+            };
+            
+            await updateDoc(doc(firestore, "artworks", artwork.id), artworkUpdateData);
+            artworkIds.push(artwork.id);
+          } catch (updateError) {
+            console.error("Error updating artwork:", updateError);
+            // Still include the artwork ID even if update fails
+            artworkIds.push(artwork.id);
+          }
         }
       }
   
@@ -262,6 +317,8 @@ export default function ArtistUploader() {
         setSuccess("Artist created successfully!");
       }
   
+      // Clear deleted artworks after successful submission
+      setDeletedArtworks([]);
       resetForm();
     } catch (error) {
       console.error("Submission error:", error);
@@ -306,6 +363,7 @@ export default function ArtistUploader() {
       extras: [],
     });
     setExistingArtworks([]);
+    setDeletedArtworks([]);
     setProfilePictureFile(null);
     setProfilePicturePreview(null);
     setCvFile(null);
@@ -340,6 +398,17 @@ export default function ArtistUploader() {
       updated[index] = {
         ...updated[index],
         [field]: value
+      };
+      return updated;
+    });
+  };
+
+  const handleExistingArtworkExtrasChange = (index, extras) => {
+    setExistingArtworks(prev => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        extras: extras
       };
       return updated;
     });
@@ -425,6 +494,25 @@ export default function ArtistUploader() {
       handleExtraChange(index, newExtra.trim());
       setNewExtra("");
     }
+  };
+
+  const handleExtraChange = (index, value) => {
+    setExistingArtworks(prev => {
+      const updated = [...prev];
+      if (!updated[index].extras) {
+        updated[index].extras = [];
+      }
+      updated[index].extras.push(value);
+      return updated;
+    });
+  };
+
+  const removeExtra = (artworkIndex, extraIndex) => {
+    setExistingArtworks(prev => {
+      const updated = [...prev];
+      updated[artworkIndex].extras.splice(extraIndex, 1);
+      return updated;
+    });
   };
 
   const uploadCv = async (artistSlug) => {
@@ -571,6 +659,50 @@ export default function ArtistUploader() {
             onChange={(e) => handleNewArtworkChange('description', e.target.value)}
             required
           />
+          
+          {/* Extras Input */}
+          <div className={styles.extrasInput}>
+            <input
+              type="text"
+              placeholder="Add extra information"
+              value={newExtra}
+              onChange={(e) => setNewExtra(e.target.value)}
+            />
+            <button 
+              type="button" 
+              onClick={() => {
+                if (newExtra.trim()) {
+                  setNewArtwork(prev => ({
+                    ...prev,
+                    extras: [...(prev.extras || []), newExtra.trim()]
+                  }));
+                  setNewExtra("");
+                }
+              }}
+            >
+              Add Extra
+            </button>
+          </div>
+          
+          {/* Display Extras */}
+          {newArtwork.extras && newArtwork.extras.length > 0 && (
+            <div className={styles.extrasList}>
+              {newArtwork.extras.map((extra, index) => (
+                <span key={index} className={styles.extraTag}>
+                  {extra}
+                  <button 
+                    type="button" 
+                    onClick={() => setNewArtwork(prev => ({
+                      ...prev,
+                      extras: prev.extras.filter((_, i) => i !== index)
+                    }))}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Image Upload Sections */}
@@ -687,6 +819,39 @@ export default function ArtistUploader() {
             value={artwork.description}
             onChange={(e) => handleExistingArtworkChange(index, 'description', e.target.value)}
           />
+
+          {/* Extras for Existing Artworks */}
+          <div className={styles.extrasInput}>
+            <input
+              type="text"
+              placeholder="Add extra information"
+              value={newExtra}
+              onChange={(e) => setNewExtra(e.target.value)}
+            />
+            <button 
+              type="button" 
+              onClick={() => addExtra(index)}
+            >
+              Add Extra
+            </button>
+          </div>
+          
+          {/* Display Extras for Existing Artworks */}
+          {artwork.extras && artwork.extras.length > 0 && (
+            <div className={styles.extrasList}>
+              {artwork.extras.map((extra, extraIndex) => (
+                <span key={extraIndex} className={styles.extraTag}>
+                  {extra}
+                  <button 
+                    type="button" 
+                    onClick={() => removeExtra(index, extraIndex)}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
 
           <button type="button" onClick={() => deleteArtwork(index)}>
             Delete

@@ -72,9 +72,9 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main} style={{ maxWidth: "1500px", paddingTop: "10rem" }}>
         {/* Logout Button */}
-        <button onClick={handleLogout} style={{ position: "absolute", top: 20, right: 20 }}>
+        {/* <button onClick={handleLogout} style={{ position: "absolute", top: 20, right: 20 }}>
           Logout
-        </button>
+        </button> */}
 
         {/* Navigation Buttons */}
         <button onClick={handleLogout} className={styles.logoutButton}>
@@ -86,8 +86,8 @@ export default function Home() {
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2rem" }}>
           <button onClick={() => setActiveSection("artist")} className={styles.subtitle}>Artists</button>
           <button onClick={() => setActiveSection("exhibition")} className={styles.subtitle}>Exhibitions</button>
-          <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
-          <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button>
+          {/* <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
+          <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button> */}
         </div>
 
         {/* Artist Section */}

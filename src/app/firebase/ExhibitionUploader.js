@@ -17,8 +17,6 @@ export default function ExhibitionUploader() {
   const [artworks, setArtworks] = useState({});
   const [selectedArtists, setSelectedArtists] = useState([]);
   const [selectedArtworks, setSelectedArtworks] = useState({});
-  const [headquarters, setHeadquarters] = useState([]);
-  const [selectedHeadquarters, setSelectedHeadquarters] = useState("");
   const [exhibitions, setExhibitions] = useState([]);
   const [selectedExhibition, setSelectedExhibition] = useState(null);
   const [formData, setFormData] = useState({
@@ -30,6 +28,7 @@ export default function ExhibitionUploader() {
     closingDate: null,
     receptionDate: null,
     receptionTime: "",
+    address: "",
     slug: "",
   });
   const [newCuratorialText, setNewCuratorialText] = useState("");
@@ -40,6 +39,8 @@ export default function ExhibitionUploader() {
   const [deletedExistingImages, setDeletedExistingImages] = useState([]);
   const [bannerImage, setBannerImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
+  const [flyerImage, setFlyerImage] = useState(null);
+  const [flyerPreview, setFlyerPreview] = useState(null);
   const fileInputRef = useRef(null);
 
   // Compression options reference
@@ -85,15 +86,6 @@ export default function ExhibitionUploader() {
       }
     };
 
-    const fetchHeadquarters = async () => {
-      try {
-        const headquartersSnapshot = await getDocs(collection(firestore, "headquarters"));
-        setHeadquarters(headquartersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-      } catch (error) {
-        console.error("Error fetching headquarters data:", error);
-      }
-    };
-
     const fetchExhibitions = async () => {
       try {
         const exhibitionsSnapshot = await getDocs(collection(firestore, "exhibitions"));
@@ -105,7 +97,6 @@ export default function ExhibitionUploader() {
     };
 
     fetchArtistData();
-    fetchHeadquarters();
     fetchExhibitions();
   }, []);
   
@@ -146,11 +137,11 @@ export default function ExhibitionUploader() {
             (data.receptionDate.toDate ? data.receptionDate.toDate() : new Date(data.receptionDate)) : 
             null,
           receptionTime: data.receptionTime || "",
+          address: data.address || "",
           slug: data.slug || generateSlug(data.name),
         });
   
         // Keep the rest of the state updates
-        setSelectedHeadquarters(data.headquartersId || "");
         setSelectedArtists(data.artists?.map(a => a.artistSlug) || []);
         
         const artworksSelection = {};
@@ -164,6 +155,7 @@ export default function ExhibitionUploader() {
         setImagePreviews(existingGalleryData.map(img => img.url));
         setImageDescriptions(existingGalleryData.map(img => img.description || ''));
         setBannerPreview(data.banner || null);
+        setFlyerPreview(data.flyer || null);
       }
     } catch (error) {
       console.error("Error loading exhibition data:", error);
@@ -178,7 +170,7 @@ export default function ExhibitionUploader() {
 
     try {
       const { name, openingDate, closingDate } = formData;
-      if (!name || !openingDate || !closingDate || !selectedHeadquarters) {
+      if (!name || !openingDate || !closingDate) {
         throw new Error("Please complete all required fields.");
       }
 
@@ -194,6 +186,13 @@ export default function ExhibitionUploader() {
         bannerUrl = await uploadBannerImage(slug);
       } catch (error) {
         throw new Error("Banner image processing failed: " + error.message);
+      }
+
+      let flyerUrl;
+      try {
+        flyerUrl = await uploadFlyerImage(slug);
+      } catch (error) {
+        throw new Error("Flyer image processing failed: " + error.message);
       }
   
       let galleryData = [];
@@ -211,11 +210,11 @@ export default function ExhibitionUploader() {
         ...formData,
         slug,
         banner: bannerUrl,
+        flyer: flyerUrl,
         gallery: galleryData,
         openingDate: Timestamp.fromDate(new Date(openingDate)),
         closingDate: Timestamp.fromDate(new Date(closingDate)),
         receptionDate: formData.receptionDate ? Timestamp.fromDate(formData.receptionDate) : null,
-        headquartersId: selectedHeadquarters,
         artists: selectedArtists.map(artistSlug => ({
           artistSlug,
           selectedArtworks: selectedArtworks[artistSlug] || [],
@@ -236,8 +235,6 @@ export default function ExhibitionUploader() {
         setSuccess("Exhibition updated successfully!");
       } else {
         const exhibitionRef = await addDoc(collection(firestore, "exhibitions"), exhibitionData);
-        const headquartersRef = doc(firestore, "headquarters", selectedHeadquarters);
-        await updateDoc(headquartersRef, { exhibitions: arrayUnion(exhibitionRef.id) });
 
         for (const artistSlug of selectedArtists) {
           const artist = artists.find(a => a.slug === artistSlug);
@@ -343,11 +340,16 @@ export default function ExhibitionUploader() {
     }
   };
 
-
   const handleBannerChange = (e) => {
     const file = e.target.files[0];
     setBannerImage(file);
     setBannerPreview(file ? URL.createObjectURL(file) : null);
+  };
+
+  const handleFlyerChange = (e) => {
+    const file = e.target.files[0];
+    setFlyerImage(file);
+    setFlyerPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const uploadBannerImage = async (slug) => {
@@ -366,6 +368,37 @@ export default function ExhibitionUploader() {
     } catch (error) {
       console.error("Error compressing banner image:", error);
       throw new Error("Banner image upload failed");
+    }
+  };
+
+  const uploadFlyerImage = async (slug) => {
+    if (!flyerImage) return flyerPreview;
+  
+    try {
+      // Check if it's a video file
+      const isVideo = flyerImage.type.startsWith('video/');
+      const fileExtension = isVideo ? flyerImage.name.split('.').pop() : 'webp';
+      
+      if (isVideo) {
+        // For videos, upload without compression
+        const flyerRef = ref(storage, `exhibitions/${slug}/flyer/${slug}_flyer.${fileExtension}`);
+        await uploadBytes(flyerRef, flyerImage);
+        return await getDownloadURL(flyerRef);
+      } else {
+        // For images, compress
+        const compressedFile = await imageCompression(flyerImage, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1500,
+          useWebWorker: true,
+        });
+  
+        const flyerRef = ref(storage, `exhibitions/${slug}/flyer/${slug}_flyer`);
+        await uploadBytes(flyerRef, compressedFile);
+        return await getDownloadURL(flyerRef);
+      }
+    } catch (error) {
+      console.error("Error uploading flyer:", error);
+      throw new Error("Flyer upload failed");
     }
   };
 
@@ -398,7 +431,6 @@ export default function ExhibitionUploader() {
     updatedDescriptions[index] = value;
     setImageDescriptions(updatedDescriptions);
   };
-
 
 // Modified uploadImages with compression
 const uploadImages = async (slug) => {
@@ -455,18 +487,19 @@ const uploadImages = async (slug) => {
       closingDate: null,
       receptionDate: null,
       receptionTime: "",
+      address: "",
       slug: "",
     });
     setSelectedArtists([]);
     setSelectedArtworks({});
-    setImages([]);
     setImageDescriptions([]);
     setImagePreviews([]);
     setNewCuratorialText("");
-    setSelectedHeadquarters("");
     setSelectedExhibition(null);
     setBannerImage(null);
     setBannerPreview(null);
+    setFlyerImage(null);
+    setFlyerPreview(null);
     setExistingGallery([]);
     setNewImages([]);
     if (fileInputRef.current) {
@@ -483,7 +516,7 @@ const uploadImages = async (slug) => {
       const { name, openingDate, closingDate, receptionTime } = formData;
   
 
-      if (!name || !openingDate || !closingDate || !selectedHeadquarters) {
+      if (!name || !openingDate || !closingDate) {
         throw new Error("Please complete all required fields.");
       }
   
@@ -494,6 +527,7 @@ const uploadImages = async (slug) => {
       if (!galleryData) throw new Error("Image upload failed.");
 
       const bannerUrl = await uploadBannerImage(slug);
+      const flyerUrl = await uploadFlyerImage(slug);
   
 
       const openingDateTimestamp = Timestamp.fromDate(new Date(openingDate));
@@ -505,10 +539,10 @@ const uploadImages = async (slug) => {
         slug,
         gallery: galleryData,
         banner: bannerUrl,
+        flyer: flyerUrl,
         openingDate: openingDateTimestamp,
         closingDate: closingDateTimestamp,
         receptionTime: formData.receptionTime || "",
-        headquartersId: selectedHeadquarters,
         artists: selectedArtists.map((artistSlug) => ({
           artistSlug,
           selectedArtworks: selectedArtworks[artistSlug] || [], 
@@ -522,12 +556,6 @@ const uploadImages = async (slug) => {
   
 
       const exhibitionRef = await addDoc(collection(firestore, "exhibitions"), newExhibitionData);
-  
-
-      const headquartersRef = doc(firestore, "headquarters", selectedHeadquarters);
-      await updateDoc(headquartersRef, {
-        exhibitions: arrayUnion(exhibitionRef.id),
-      });
   
 
       for (const artistSlug of selectedArtists) {
@@ -595,6 +623,12 @@ const uploadImages = async (slug) => {
         value={formData.curator}
         onChange={(e) => setFormData({ ...formData, curator: e.target.value })}
       />
+      <input
+        name="address"
+        placeholder="Exhibition Address"
+        value={formData.address}
+        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+      />
       <div>
         <textarea
           placeholder="Add Curatorial Text"
@@ -604,7 +638,24 @@ const uploadImages = async (slug) => {
         <button onClick={addCuratorialText}>Add Curatorial Text</button>
         <ul>
           {formData.curatorialTexts?.map((text, index) => (
-            <li key={`${text}-${index}`}>{text}</li>  
+            <li key={`${text}-${index}`}>
+              <textarea
+                value={text}
+                onChange={(e) => {
+                  const updatedTexts = [...formData.curatorialTexts];
+                  updatedTexts[index] = e.target.value;
+                  setFormData((prev) => ({ ...prev, curatorialTexts: updatedTexts }));
+                }}
+              />
+              <button
+                onClick={() => {
+                  const updatedTexts = formData.curatorialTexts.filter((_, i) => i !== index);
+                  setFormData((prev) => ({ ...prev, curatorialTexts: updatedTexts }));
+                }}
+              >
+                Remove
+              </button>
+            </li>
           ))}
         </ul>
       </div>
@@ -630,20 +681,6 @@ const uploadImages = async (slug) => {
         value={formData.receptionTime || ""}
         onChange={handleInputChange}
       />
-      <div>
-        <label>Headquarters</label>
-        <select
-          value={selectedHeadquarters}
-          onChange={(e) => setSelectedHeadquarters(e.target.value)}
-        >
-          <option value="">Select Headquarters</option>
-          {headquarters.map((hq) => (
-            <option key={hq.id} value={hq.id}>
-              {hq.name}
-            </option>
-          ))}
-        </select>
-      </div>
 
       <div>
 
@@ -712,6 +749,25 @@ const uploadImages = async (slug) => {
             alt="Banner Preview"
             className={styles.artworkPreviewImage}
           />
+        )}
+      </div>
+      <div>
+        <p>Flyer Image/Video</p>
+        <input type="file" accept="image/*,video/*" onChange={handleFlyerChange} />
+        {flyerPreview && (
+          flyerImage?.type?.startsWith('video/') ? (
+            <video
+              src={flyerPreview}
+              controls
+              style={{ maxWidth: '300px', height: 'auto' }}
+            />
+          ) : (
+            <img
+              src={flyerPreview}
+              alt="Flyer Preview"
+              className={styles.artworkPreviewImage}
+            />
+          )
         )}
       </div>
       <div style={{ margin: 'auto'}}>
