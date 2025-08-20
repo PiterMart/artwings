@@ -1123,7 +1123,6 @@
   align-items: center;
   overflow: hidden;
   width: 100%;
-  max-height: 700px;
 }
 
 .flyerImage {
@@ -1131,9 +1130,9 @@
   transition: transform 0.3s ease;
 }
 
-.flyerContainer:hover .flyerImage {
+/* .flyerContainer:hover .flyerImage {
   transform: scale(1.02);
-}
+} */
 
 .exhibitionInfo {
   text-align: center;
@@ -1272,8 +1271,8 @@
   }
   
   .galleryImage {
-    width: 140px !important;
-    height: 210px !important;
+    width: 205px !important;
+    height: auto !important;
   }
   
   .exhibitionSection {
