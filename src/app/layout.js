@@ -74,10 +74,12 @@ export default function RootLayout({ children }) {
       <body 
         className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${helveticaRegular.variable} ${helveticaBold.variable} ${helveticaCondensed.variable} ${helveticaLight.variable} ${helveticaBlack.variable} ${inter.className}`}
         style={{
-          backgroundImage: 'url(/backgroundtexture.jpg)',
+          backgroundImage: 'url(/metaltextureverticaledited2.jpg)',
           backgroundSize: 'auto',
           backgroundPosition: 'center',
           backgroundRepeat: 'repeat',
+          
+
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column'

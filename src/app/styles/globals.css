@@ -1,6 +1,7 @@
 :root {
   --background: #f3f3f3;
-  --foreground: #707984;
+  /* --foreground: #707984; */
+  --foreground: #000000;  
   --font-geist-sans: var(--font-geist-sans);
   --font-geist-mono: var(--font-geist-mono);
   --font-minecraft-regular: var(--font-minecraft-regular);
@@ -26,6 +27,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: url('/artwingscursor2.cur') 16 16, auto;
+
+  
 }
 
 * {

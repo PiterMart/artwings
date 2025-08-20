@@ -40,7 +40,7 @@ export default function Home() {
       {/* Centered Logo */}
       <div className={styles.logoContainer}>
         <Image
-          src="/artwingslogo.png"
+          src="/new_1logo_transparent.png"
           alt="ARTWINGS Logo"
           width={400}
           height={200}
@@ -66,13 +66,13 @@ export default function Home() {
             priority
           />
         </div>
-        <div className={styles.exhibitionInfo}>
+        {/* <div className={styles.exhibitionInfo}>
           <p className={styles.exhibitionDate}>04/09/25</p>
           <div className={styles.addressInfo}>
             <p className={styles.address}>Direktorenhaus</p>
             <p className={styles.address}>Am Krögel 2, 10179 Berlin</p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       
