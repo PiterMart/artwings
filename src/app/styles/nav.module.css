@@ -48,6 +48,8 @@
 }
 
 .nav_list li {
+  font-family: 'Inter', sans-serif;
+  color: black;
   font-size: 1.5rem;
   transition: color 0.3s ease;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.274);
@@ -72,7 +74,6 @@
 .page_current {
   color: #ffffff !important;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5) !important;
-  font-weight: bold;
 }
 
 .nav_logo {
@@ -133,7 +134,7 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background-image: url('/backgroundtexture.jpg');
+    background-image: url('/metaltextureverticaledited2.jpg');
     background-size: auto;
     background-position: center;
     background-repeat: repeat;
@@ -161,8 +162,6 @@
   .nav_list li {
     margin: 0;
     font-size: 3rem;
-    color: #707984;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     text-align: center;
   }
 
