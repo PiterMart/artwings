@@ -1,18 +1,13 @@
 "use client"
 import Image from "next/image";
 import styles from "./styles/page.module.css";
-import React, { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function Home() {
-  const { scrollY } = useScroll();
   const [lightboxImage, setLightboxImage] = useState(null);
-  
-  // Create parallax transforms for each image
-  const y1 = useTransform(scrollY, [0, 1500], [0, -300]);
-  const y2 = useTransform(scrollY, [0, 1500], [0, 400]);
-  const y3 = useTransform(scrollY, [0, 1500], [0, -250]);
-  const y4 = useTransform(scrollY, [0, 1500], [0, 350]);
+  const [draggedImage, setDraggedImage] = useState(null);
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
+  const [imagePositions, setImagePositions] = useState({});
 
   const openLightbox = (imageSrc, imageAlt) => {
     setLightboxImage({ src: imageSrc, alt: imageAlt });
@@ -20,6 +15,46 @@ export default function Home() {
 
   const closeLightbox = () => {
     setLightboxImage(null);
+  };
+
+  // Handle mouse/touch down events
+  const handleDragStart = (e, imageId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+    
+    setDragStartPos({ x: clientX, y: clientY });
+    setDraggedImage(imageId);
+  };
+
+  // Handle mouse/touch move events
+  const handleDragMove = (e) => {
+    if (!draggedImage) return;
+    
+    e.preventDefault();
+    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+    
+    const deltaX = clientX - dragStartPos.x;
+    const deltaY = clientY - dragStartPos.y;
+    
+    setImagePositions(prev => ({
+      ...prev,
+      [draggedImage]: {
+        x: (prev[draggedImage]?.x || 0) + deltaX,
+        y: (prev[draggedImage]?.y || 0) + deltaY
+      }
+    }));
+    
+    // Update start position for next frame
+    setDragStartPos({ x: clientX, y: clientY });
+  };
+
+  // Handle mouse/touch up events
+  const handleDragEnd = () => {
+    setDraggedImage(null);
   };
 
   // Close lightbox on escape key
@@ -40,6 +75,26 @@ export default function Home() {
       document.body.style.overflow = 'unset';
     };
   }, [lightboxImage]);
+
+  // Add global event listeners for drag
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => handleDragMove(e);
+    const handleGlobalTouchMove = (e) => handleDragMove(e);
+    const handleGlobalMouseUp = () => handleDragEnd();
+    const handleGlobalTouchEnd = () => handleDragEnd();
+
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('touchend', handleGlobalTouchEnd);
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('touchmove', handleGlobalTouchMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('touchend', handleGlobalTouchEnd);
+    };
+  }, [draggedImage, dragStartPos]);
 
   return (
     <div className={styles.page}>
@@ -68,7 +123,7 @@ export default function Home() {
       {/* Centered Logo */}
       <div className={styles.logoContainer}>
         <Image
-          src="/new_1logo_transparent.png"
+          src="/artwingslogo2.png"
           alt="ARTWINGS Logo"
           width={400}
           height={200}
@@ -132,13 +187,12 @@ export default function Home() {
               {/* Photo after About Us section */}
               <div style={{marginTop: '2rem', marginBottom: '2rem', textAlign: 'center'}}>
                 <Image
-                  src="/pictures/@Artwings111 photo by @Rubi__Azul (51)_1.jpg"
+                  src="/pictures/@Artwings111 photo by @Rubi__Azul (1)_1.jpg"
                   alt="Artwings photo by Rubi Azul"
                   width={600}
                   height={400}
                   style={{maxWidth: '100%', height: 'auto'}}
                 />
-              </div>
               
               <p className={styles.exhibitionTitle} style={{fontSize: '2rem', marginTop: '2rem', marginBottom: '1rem', }}>
                 Purpose
@@ -186,23 +240,31 @@ export default function Home() {
               {/* Photo after Creative Vision section */}
               <div style={{marginTop: '2rem', marginBottom: '2rem', textAlign: 'center'}}>
                 <Image
-                  src="/pictures/@Artwings111 photo by @Rubi__Azul (1)_1.jpg"
+                  src="/pictures/@Artwings111 photo by @Rubi__Azul (51)_1.jpg"
                   alt="Artwings photo by Rubi Azul"
                   width={600}
                   height={400}
                   style={{maxWidth: '100%', height: 'auto'}}
                 />
               </div>
+              </div>
             </div>
           </div>
         </div>
 
       
-      {/* Parallax Image Gallery */}
+      {/* Image Gallery */}
       <div className={styles.parallaxGallery}>
-        <motion.div 
+        <div 
           className={styles.parallaxImage}
-          style={{ y: y1 }}
+          style={{
+            transform: imagePositions['image1'] 
+              ? `translate(${imagePositions['image1'].x}px, ${imagePositions['image1'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image1' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image1')}
+          onTouchStart={(e) => handleDragStart(e, 'image1')}
           onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (28).jpg", "Artwings photo by Rubi Azul")}
         >
           <Image
@@ -211,12 +273,20 @@ export default function Home() {
             width={400}
             height={600}
             className={styles.galleryImage}
+            draggable={false}
           />
-        </motion.div>
+        </div>
         
-        <motion.div 
+        <div 
           className={styles.parallaxImage}
-          style={{ y: y2 }}
+          style={{
+            transform: imagePositions['image2'] 
+              ? `translate(${imagePositions['image2'].x}px, ${imagePositions['image2'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image2' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image2')}
+          onTouchStart={(e) => handleDragStart(e, 'image2')}
           onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg", "Artwings photo by Rubi Azul")}
         >
           <Image
@@ -225,12 +295,20 @@ export default function Home() {
             width={400}
             height={600}
             className={styles.galleryImage}
+            draggable={false}
           />
-        </motion.div>
+        </div>
         
-        <motion.div 
+        <div 
           className={styles.parallaxImage}
-          style={{ y: y3 }}
+          style={{
+            transform: imagePositions['image3'] 
+              ? `translate(${imagePositions['image3'].x}px, ${imagePositions['image3'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image3' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image3')}
+          onTouchStart={(e) => handleDragStart(e, 'image3')}
           onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (9).jpg", "Artwings photo by Xowkyu")}
         >
           <Image
@@ -239,12 +317,20 @@ export default function Home() {
             width={400}
             height={600}
             className={styles.galleryImage}
+            draggable={false}
           />
-        </motion.div>
+        </div>
         
-        <motion.div 
+        <div 
           className={styles.parallaxImage}
-          style={{ y: y4 }}
+          style={{
+            transform: imagePositions['image4'] 
+              ? `translate(${imagePositions['image4'].x}px, ${imagePositions['image4'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image4' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image4')}
+          onTouchStart={(e) => handleDragStart(e, 'image4')}
           onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (57)_1.jpg", "Artwings photo by Xowkyu")}
         >
           <Image
@@ -253,11 +339,56 @@ export default function Home() {
             width={400}
             height={600}
             className={styles.galleryImage}
+            draggable={false}
           />
-        </motion.div>
+        </div>
+        
+        <div 
+          className={styles.parallaxImage}
+          style={{
+            transform: imagePositions['image5'] 
+              ? `translate(${imagePositions['image5'].x}px, ${imagePositions['image5'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image5' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image5')}
+          onTouchStart={(e) => handleDragStart(e, 'image5')}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (13).jpg", "Artwings photo by Rubi Azul")}
+        >
+          <Image
+            src="/pictures/@Artwings111 photo by @Rubi__Azul (13).jpg"
+            alt="Artwings photo by Rubi Azul"
+            width={400}
+            height={600}
+            className={styles.galleryImage}
+            draggable={false}
+          />
+        </div>
+        
+        <div 
+          className={styles.parallaxImage}
+          style={{
+            transform: imagePositions['image6'] 
+              ? `translate(${imagePositions['image6'].x}px, ${imagePositions['image6'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image6' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image6')}
+          onTouchStart={(e) => handleDragStart(e, 'image6')}
+          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg", "Artwings photo by Rubi Azul")}
+        >
+          <Image
+            src="/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg"
+            alt="Artwings photo by Rubi Azul"
+            width={400}
+            height={600}
+            className={styles.galleryImage}
+            draggable={false}
+          />
+        </div>
       </div>
       
-      {/* Spacer for parallax effect */}
+      {/* Spacer for layout */}
       <div className={styles.parallaxSpacer}></div>
 
       <div style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%", width: "100%", maxWidth: "800px" }}>
@@ -296,16 +427,19 @@ export default function Home() {
       {lightboxImage && (
         <div className={styles.lightbox} onClick={closeLightbox}>
           <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.lightboxClose} onClick={closeLightbox}>
-              ×
-            </button>
             <Image
               src={lightboxImage.src}
               alt={lightboxImage.alt}
-              width={800}
-              height={1200}
+              width={1200}
+              height={800}
               className={styles.lightboxImage}
               priority
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '90vh',
+                width: 'auto',
+                height: 'auto'
+              }}
             />
           </div>
         </div>

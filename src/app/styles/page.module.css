@@ -15,6 +15,7 @@
   align-items: center;
   opacity: 0.35;
 }
+
 .leftMargin2 {
   position: absolute;
   margin-top: 0;
@@ -58,6 +59,7 @@
   object-fit: cover;
   height: 100%;
   width: 100%;
+  max-width: 100%;
 }
 .marginImage2 {
   margin-top: 40vh;
@@ -66,7 +68,7 @@
   width: 150%;
 }
 
-/* Parallax Image Gallery */
+/* Image Gallery */
 .parallaxGallery {
   position: relative;
   width: 100%;
@@ -84,7 +86,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: none;
+}
+
+.parallaxImage:active {
+  cursor: grabbing;
+  transition: none;
 }
 
 .parallaxImage:nth-child(1) {
@@ -111,9 +121,21 @@
   z-index: 4;
 }
 
+.parallaxImage:nth-child(5) {
+  left: 25%;
+  top: 40%;
+  z-index: 5;
+}
+
+.parallaxImage:nth-child(6) {
+  right: 30%;
+  top: 60%;
+  z-index: 6;
+}
+
 /* Ensure proper stacking context */
 .parallaxImage {
-  will-change: z-index;
+  will-change: transform;
 }
 
 /* Lightbox Styles */
@@ -130,6 +152,8 @@
   z-index: 10000;
   cursor: pointer;
   animation: fadeIn 0.3s ease-out;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .lightboxContent {
@@ -137,36 +161,19 @@
   max-width: 90vw;
   max-height: 90vh;
   cursor: default;
-}
-
-.lightboxClose {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 0;
-  width: 40px;
-  height: 40px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  transition: color 0.2s ease;
-}
-
-.lightboxClose:hover {
-  color: #ccc;
+  align-items: center;
 }
 
 .lightboxImage {
   max-width: 100%;
   max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
-  border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: block;
 }
 
 @keyframes fadeIn {
@@ -180,35 +187,32 @@
 
 .galleryImage {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
   z-index: 1;
   filter: brightness(0.9) contrast(1.1);
-}
-
-.galleryImage:hover {
-  transform: scale(1.05);
-  filter: brightness(1) contrast(1.2);
-  z-index: 100000;
-}
-
-.parallaxImage:hover {
-  z-index: 9999;
+  max-width: 100%;
+  height: auto;
+  pointer-events: none;
 }
 
 .parallaxImage:hover .galleryImage {
-  transform: scale(1.1);
-  filter: brightness(1.1) contrast(1.3);
+  transform: scale(1.05);
+  filter: brightness(1) contrast(1.2);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Add clickable cursor and subtle hover effect */
-.parallaxImage {
-  cursor: pointer;
-}
-
 .parallaxImage:hover {
   z-index: 9999;
+}
+
+/* Prevent text selection during drag */
+.parallaxImage * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Logo Container */
@@ -224,8 +228,11 @@
   justify-content: center;
   align-items: center;
   gap: 2rem;
-  width: 99vw;
+  width: 100%;
+  max-width: 100vw;
   margin-bottom: -20vh;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 @keyframes float {
@@ -241,7 +248,7 @@
   position: fixed;
   width: 800px;
   height: auto;
-  max-width: 100vw;
+  max-width: 90vw;
   cursor: pointer;
   z-index: 1000;
   filter: drop-shadow(0 38px 1px rgba(0, 0, 0, 0.164));
@@ -280,6 +287,9 @@
   gap: 0.5rem;
   margin-top: 27vh;
   max-width: 800px;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .taglineText {
@@ -324,7 +334,8 @@
   mask-size: 0% 0%;
   mask-repeat: no-repeat;
   animation: radial-reveal 5s ease-out 2s forwards;
-  width: 80%;
+  width: 100%;
+  max-width: 800px;
 }
 
 .page {
@@ -344,13 +355,17 @@
   min-height: 100svh;
   gap: 64px;
   position: relative;
+  width: 100%;
+  overflow-x: hidden;
 }
 .page_container{
   width: 95%;
+  max-width: 100%;
   margin: auto;
   display: flex;
   flex-direction: column;
   gap:3rem;
+  box-sizing: border-box;
 }
 
 .main {
@@ -765,7 +780,7 @@
 }
 
 @media (max-width: 1300px) {
-  /* Adjust parallax positioning for smaller screens */
+  /* Adjust image positioning for smaller screens */
   .parallaxImage:nth-child(1) {
     left: 2%;
   }
@@ -784,12 +799,13 @@
   
   .galleryImage {
     width: 350px;
-    height: 525px;
+    height: auto;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 900px) {
-  /* Keep parallax but adjust positioning for medium screens */
+  /* Keep images but adjust positioning for medium screens */
   .parallaxImage:nth-child(1) {
     left: 3%;
   }
@@ -808,17 +824,12 @@
   
   .galleryImage {
     width: 320px;
-    height: 480px;
+    height: auto;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 1000px) {
-  .leftMargin {
-    margin-top: 1rem;
-  }
-  .rightMargin{
-    margin-top: 1rem;
-  }
 
 
   .artist_page{
@@ -861,7 +872,7 @@
   }
 
   
-  /* Parallax Gallery Responsive */
+  /* Image Gallery Responsive */
   .parallaxGallery {
     height: 100vh;
     margin-top: 80vh;
@@ -893,12 +904,13 @@
   
   .galleryImage {
     width: 300px !important;
-    height: 450px !important;
+    height: auto !important;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 700px) {
-  /* Parallax Gallery Mobile - 700px breakpoint */
+  /* Image Gallery Mobile - 700px breakpoint */
   .parallaxGallery {
     height: auto;
     min-height: 80vh;
@@ -937,12 +949,13 @@
   
   .galleryImage {
     width: 200px !important;
-    height: 300px !important;
+    height: auto !important;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 800px) {
-  /* Keep parallax but adjust positioning for smaller screens */
+  /* Keep images but adjust positioning for smaller screens */
   .parallaxImage:nth-child(1) {
     left: 2%;
   }
@@ -961,7 +974,8 @@
   
   .galleryImage {
     width: 280px;
-    height: 420px;
+    height: auto;
+    max-width: 100%;
   }
   
   .tagline{
@@ -1115,6 +1129,8 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 6rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .flyerContainer {
@@ -1128,6 +1144,8 @@
 .flyerImage {
   object-fit: cover;
   transition: transform 0.3s ease;
+  max-width: 100%;
+  height: auto;
 }
 
 /* .flyerContainer:hover .flyerImage {
@@ -1186,6 +1204,7 @@
   }
   .exhibitionSection {
     gap: 0rem;
+    padding: 0 1rem;
   }
   
   .flyerImage {
@@ -1207,7 +1226,7 @@
   }
 }
 @media (max-width: 600px) {
-  /* Parallax Gallery Mobile - 600px breakpoint */
+  /* Image Gallery Mobile - 600px breakpoint */
   .parallaxGallery {
     height: auto;
     min-height: 70vh;
@@ -1237,12 +1256,13 @@
   
   .galleryImage {
     width: 170px !important;
-    height: 255px !important;
+    height: auto !important;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 500px) {
-  /* Parallax Gallery Mobile - 500px breakpoint */
+  /* Image Gallery Mobile - 500px breakpoint */
   .parallaxGallery {
     height: auto;
     min-height: 60vh;
@@ -1273,9 +1293,19 @@
   .galleryImage {
     width: 205px !important;
     height: auto !important;
+    max-width: 100%;
   }
   
   .exhibitionSection {
+    padding: 0 1rem;
   }
-
+  
+  
+  .logoContainer {
+    padding: 0 0.5rem;
+  }
+  
+  .tagline {
+    padding: 0 0.5rem;
+  }
 }
