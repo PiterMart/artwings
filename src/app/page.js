@@ -147,7 +147,7 @@ export default function Home() {
             muted
             loop
             playsInline
-            style={{ width: '600px', height: '800px', objectFit: 'cover' }}
+            style={{ width: '600px', height: 'auto', objectFit: 'contain' }}
           >
             Your browser does not support the video tag.
           </video>
