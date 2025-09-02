@@ -10,6 +10,7 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 export default function ArtistsPage() {
   const [artists, setArtists] = useState([]);
   const [randomArtwork, setRandomArtwork] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchArtistsAndArtworks() {
@@ -44,8 +45,12 @@ export default function ArtistsPage() {
           const randomArt = artworksData[Math.floor(Math.random() * artworksData.length)];
           setRandomArtwork(randomArt);
         }
+        
+        // Set loading to false after data is loaded
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching artists or artworks:", error);
+        setIsLoading(false);
       }
     }
   
@@ -87,7 +92,8 @@ export default function ArtistsPage() {
       </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <ul className={styles.name_list}>
+              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem'}}>Artists</p>
+                             <ul className={`${styles.name_list} ${!isLoading ? styles.name_list_loaded : ''}`}>
                 {artists.map((artist) => (
                   <li key={artist.id}>
                     <Link href={`/artists/${artist.slug}`}>{artist.name}</Link>
@@ -95,7 +101,7 @@ export default function ArtistsPage() {
                 ))}
               </ul>
             </div>
-            <div
+            {/* <div
               className={styles.artists_image}
               style={{
                 background: "transparent",
@@ -105,7 +111,7 @@ export default function ArtistsPage() {
                 alignContent: "center",
               }}
             >
-              {/* {randomArtwork ? (
+              {randomArtwork ? (
                 <Link href={`/artworks/${randomArtwork.slug}`}>
                   <img
                     src={randomArtwork.url}
@@ -124,8 +130,8 @@ export default function ArtistsPage() {
                 </Link>
               ) : (
                 <p></p>
-              )} */}
-            </div>
+              )}
+            </div> */}
           </div>
         </div>
       </main>

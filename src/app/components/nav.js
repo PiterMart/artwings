@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from '../styles/nav.module.css';
 
 export default function Nav() {
@@ -10,26 +10,70 @@ export default function Nav() {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const currentPath = usePathname();
+    const router = useRouter();
 
     const pages = [
-        // { name: 'Artists', path: '/artists' },
-        // { name: 'Exhibitions', path: '/exhibitions' },
-        // { name: 'News', path: '/news' },
-        // { name: 'Headquarters', path: '/headquarters' },
-        // { name: 'Fairs', path: '/fairs' },
-        // { name: 'RESIDENCIES', path: '/tra' },
-        { name: 'About', path: '/about' },
-        { name: 'Contact', path: '/contact' },
+        { name: 'Artists', path: '/artists' },
+        { name: 'Exhibitions', path: '/', section: 'exhibitions' },
+        { name: 'About', path: '/', section: 'about' },
+        { name: 'Contact', path: '/', section: 'contact' },
     ];
+
+    const scrollToSection = (sectionId) => {
+        // If we're not on the homepage, navigate there first
+        if (currentPath !== '/') {
+            router.push('/');
+            // Wait for navigation to complete before scrolling
+            setTimeout(() => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    const offset = 100; // Offset in pixels from the top
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        } else {
+            // If we're already on the homepage, just scroll
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const offset = 100; // Offset in pixels from the top
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        setIsMenuOpen(false);
+    };
+
+    const handleNavigation = (page, e) => {
+        if (page.section) {
+            // This is a homepage section, prevent default link behavior and use smooth scroll
+            e.preventDefault();
+            scrollToSection(page.section);
+        } else {
+            // This is a regular page navigation, let the Link handle it
+            setIsMenuOpen(false);
+        }
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
     };
 
     const isCurrent = (path) => {
-        return currentPath === path;
+        // Only apply current styling to the Artists button when on the artists page
+        // Don't apply it to homepage section buttons (Exhibitions, About, Contact)
+        return currentPath === path && path !== '/';
     };
-
 
     return (
         <div className={`${styles.nav} ${isVisible ? styles.nav_visible : styles.nav_hidden}`}>
@@ -57,7 +101,7 @@ export default function Nav() {
                             <Link
                                 href={page.path}
                                 className={isCurrent(page.path) ? styles.page_current : ''}
-                                onClick={() => setIsMenuOpen(false)} // Close menu on click
+                                onClick={(e) => handleNavigation(page, e)}
                             >
                                 {page.name}
                             </Link>

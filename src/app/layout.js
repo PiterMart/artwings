@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
         }}
       >
         <LoadingProvider>
-          {/* <Nav/> */}
+          <Nav/>
           <main style={{ flex: 1 }}>
             {children}
           </main>

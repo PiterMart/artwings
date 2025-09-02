@@ -19,9 +19,14 @@ function convertTimestampToYear(timestamp) {
 export default function Artist({ params }) {
   const [artist, setArtist] = useState(null);
   const [artworks, setArtworks] = useState([]); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const artistSlug = params.artist;
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     const fetchArtistData = async () => {
       console.log("Fetching artist with slug:", artistSlug);
       try {
@@ -49,13 +54,16 @@ export default function Artist({ params }) {
             const artworkDetails = await fetchArtworksByIds(artistData.artworks);
             setArtworks(artworkDetails);
           }
+          
+          // Set loading to false after all data is loaded
+          setIsLoading(false);
         } else {
           console.error("No artist found with this slug.");
-          setArtist(null);
+          // Keep loading state active instead of showing error
         }
       } catch (error) {
         console.error("Error fetching artist:", error);
-        setArtist(null);
+        // Keep loading state active instead of showing error
       }
     };
 
@@ -77,8 +85,56 @@ export default function Artist({ params }) {
     }
   };
 
-  if (artist === null) return <p>Error fetching artist. Please try again.</p>;
-  if (!artist) return <p>Loading...</p>;
+
+  
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <div className={styles.leftMargin2}>
+            <Image
+              src="/maiden 2.PNG"
+              alt="Left margin decoration"
+              width={200}
+              height={800}
+              className={styles.marginImage2}
+            />
+          </div>
+          <div className={styles.page_container}>
+            <div className={styles.artist_skeleton}>
+              <div className={styles.artist_header}>
+                                 <div className={styles.profile_container}>
+                   <div className={styles.profile_image_skeleton}></div>
+                 </div>
+                <div className={styles.artist_info}>
+                  <div className={styles.title_skeleton}></div>
+                  <div>
+                    <div className={styles.subtitle_skeleton}></div>
+                    <div className={styles.subtitle_skeleton}></div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.artist_page}>
+                <div className={styles.artist_page_contents}>
+                  <div className={styles.bio_skeleton}></div>
+                  <div className={styles.artworks_skeleton}>
+                    <div className={styles.title_skeleton}></div>
+                    <div className={styles.carousel_skeleton}></div>
+                  </div>
+                  <div className={styles.bio_skeleton}>
+                    <div className={styles.title_skeleton}></div>
+                    <div className={styles.paragraph_skeleton}></div>
+                    <div className={styles.paragraph_skeleton}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer className={styles.footer}></footer>
+      </div>
+    );
+  }
 
   const artworkSlides = artworks.map((artwork) => ({
     title: artwork.title,
@@ -106,15 +162,19 @@ export default function Artist({ params }) {
         />
       </div>
         <div className={styles.page_container}>
-          <div>
+          <div className={styles.artist_content_loaded}>
             <div className={styles.artist_header}>
             {artist.profilePicture && (
-                <div className={styles.profile_container}>
-                  <img
-                    src={artist.profilePicture}
-                    alt={`${artist.name}'s profile`}
-                    className={styles.profile_image}
-                  />
+                                 <div className={styles.profile_container}>
+                   <img
+                     src={artist.profilePicture}
+                     alt={`${artist.name}'s profile`}
+                     className={`${styles.profile_image} ${imageLoaded ? styles.profile_image_loaded : ''}`}
+                     width={200}
+                     height={200}
+                     style={{ objectFit: 'cover' }}
+                     onLoad={() => setImageLoaded(true)}
+                   />
                   <Image
                     src="/webframeartwings_1.png"
                     alt="Profile frame"
@@ -139,14 +199,14 @@ export default function Artist({ params }) {
                 <div>
                   <p style={{ fontSize: '1.5rem', lineHeight: "1.75rem", textAlign: 'left'}}>{artist.bio[0]}</p>
                 </div>
-                <div
+                {/* <div
                   className={styles.artist_page_contents_obras}
                   id="obras"
                   style={{ scrollMargin: "10rem" }}
                 >
                   <p className={styles.title}>ARTWORKS</p>
                   <EmblaCarousel slides={artworkSlides} type="artwork" />
-                </div>
+                </div> */}
                 <div
                   className={styles.artist_page_contents_bio}
                   id="bio"

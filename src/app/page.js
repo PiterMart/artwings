@@ -136,7 +136,7 @@ export default function Home() {
         </div>
       </div>
       {/* Exhibition Flyer Section */}
-      <div className={styles.exhibitionSection}>
+      <div id="exhibitions" className={styles.exhibitionSection}>
       <h2 className={styles.address}>Exhibition</h2>
       <h2 className={styles.exhibitionTitle}>METAXY</h2>
         <div className={styles.flyerContainer}>
@@ -164,7 +164,8 @@ export default function Home() {
           <div className={styles.artists_page} style={{paddingTop: '0rem'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', margin: "auto", maxWidth: '800px', marginTop: '5rem'}}>
 
-            <p className={styles.exhibitionTitle} style={{fontSize: '2rem', marginTop: '2rem', marginBottom: '1rem',}}>
+            <div id="about">
+              <p className={styles.exhibitionTitle} style={{fontSize: '2rem', marginTop: '2rem', marginBottom: '1rem',}}>
                 About Us
               </p>
             
@@ -247,6 +248,7 @@ export default function Home() {
                   style={{maxWidth: '100%', height: 'auto'}}
                 />
               </div>
+            </div>
               </div>
             </div>
           </div>
@@ -364,34 +366,13 @@ export default function Home() {
             draggable={false}
           />
         </div>
-        
-        <div 
-          className={styles.parallaxImage}
-          style={{
-            transform: imagePositions['image6'] 
-              ? `translate(${imagePositions['image6'].x}px, ${imagePositions['image6'].y}px)` 
-              : 'none',
-            cursor: draggedImage === 'image6' ? 'grabbing' : 'grab'
-          }}
-          onMouseDown={(e) => handleDragStart(e, 'image6')}
-          onTouchStart={(e) => handleDragStart(e, 'image6')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg", "Artwings photo by Rubi Azul")}
-        >
-          <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg"
-            alt="Artwings photo by Rubi Azul"
-            width={400}
-            height={600}
-            className={styles.galleryImage}
-            draggable={false}
-          />
-        </div>
+    
       </div>
       
       {/* Spacer for layout */}
       <div className={styles.parallaxSpacer}></div>
 
-      <div style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%", width: "100%", maxWidth: "800px" }}>
+      <div id="contact" style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%", width: "100%", maxWidth: "800px" }}>
           
           <div className={styles.page_container} style={{ marginTop: "7rem", margin: 'auto' }}>
             <div className={styles.sedes} style={{ gap: '0rem'}}>
