@@ -3,10 +3,10 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import ExhibitionLayout from "./layouts/ExhibitionLayout";
 import ArtworkLayout from "./layouts/ArtworkLayout";
-import exhibitionSimple from "./layouts/ExhibitionLayoutSimplified"
+import exhibitionSimple from "./layouts/ExhibitionLayoutSimplified";
 import FairLayout from "./layouts/FairLayoutSimplified";
 import styles from "../../styles/embla.module.css";
-import PictureLayout from "./layouts/PictureLayout"
+import PictureLayout from "./layouts/PictureLayout";
 
 
 const layouts = {
