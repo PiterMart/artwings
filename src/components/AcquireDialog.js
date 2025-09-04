@@ -79,7 +79,7 @@ const AcquireDialog = ({ isOpen, onClose, artwork, artist }) => {
         </button>
 
         <h2 className={styles.title}>
-          Acquire "{artwork?.title}"
+          Acquire &ldquo;{artwork?.title}&rdquo;
         </h2>
 
         {artist && (
@@ -90,7 +90,7 @@ const AcquireDialog = ({ isOpen, onClose, artwork, artist }) => {
 
         {submitStatus === 'success' && (
           <div className={`${styles.alert} ${styles.alertSuccess}`}>
-            Thank you for your interest! We'll contact you soon.
+            Thank you for your interest! We&apos;ll contact you soon.
           </div>
         )}
 
