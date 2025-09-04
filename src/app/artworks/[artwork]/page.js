@@ -84,7 +84,7 @@ export default function Artwork({ params }) {
       <main className={styles.main}>
         <div className={styles.artwork_page}>
           <div className={styles.artwork_details}>
-            <h1 className={styles.title} style={{ fontWeight: "400" }}>{title}</h1>
+            <h1 className={styles.title} style={{ fontWeight: "400", fontFamily: 'var(--font-lovelt)', fontSize: '3rem' }}>{title}</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {artist ? (
                 <Link href={`/artists/${artist.slug}`}>
