@@ -7,6 +7,7 @@ import ArtistUploader from "../firebase/ArtistUploader";
 import ExhibitionUploader from "../firebase/ExhibitionUploader";
 import FairUploader from "../firebase/FairUpdater";
 import HeadquarterEditor from "../firebase/HeadquarterEditor";
+import ArtistsList from "../firebase/ArtistsList";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("artist");
@@ -85,6 +86,7 @@ export default function Home() {
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2rem" }}>
           <button onClick={() => setActiveSection("artist")} className={styles.subtitle}>Artists</button>
+          <button onClick={() => setActiveSection("artistsList")} className={styles.subtitle}>View All Artists</button>
           <button onClick={() => setActiveSection("exhibition")} className={styles.subtitle}>Exhibitions</button>
           {/* <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
           <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button> */}
@@ -95,6 +97,14 @@ export default function Home() {
           <div id="artist" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
             <p className={styles.title}>ARTIST UPLOADER</p>
             <ArtistUploader />
+          </div>
+        )}
+
+        {/* Artists List Section */}
+        {activeSection === "artistsList" && (
+          <div id="artistsList" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
+            <p className={styles.title}>ALL ARTISTS</p>
+            <ArtistsList />
           </div>
         )}
 

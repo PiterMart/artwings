@@ -140,51 +140,6 @@
 }
 
 /* Lightbox Styles */
-.lightbox {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  cursor: pointer;
-  animation: fadeIn 0.3s ease-out;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.lightboxContent {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  cursor: default;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.lightboxImage {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  display: block;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
 .galleryImage {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -541,16 +496,21 @@
 }
 
 .name_list ul{
+  padding-top: 1rem;
   list-style: none;
   display: flex;
+  display: flex;
   flex-direction: column;
-  gap: 2rem;
-  font-size: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 1rem;
+  font-size: 1.5rem;
   /* Start with the mask at 0 size (invisible) */
   mask-image: radial-gradient(circle, white 0%, white 30%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.7) 65%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0.1) 95%, transparent 100%);
   mask-position: center;
   mask-size: 0% 0%;
   mask-repeat: no-repeat;
+  max-width: 1000px;
 }
 
 .name_list_loaded {
@@ -558,7 +518,7 @@
   animation: radial-reveal 5s ease-out 0.5s forwards;
 }
 .name_list li{
-  padding-bottom: 2rem;
+  padding-bottom: 0.5rem;
   position: relative;
   text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
   text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
@@ -581,16 +541,19 @@
     rgba(0, 0, 0, 0.3) 85%,
     transparent 100%
   );
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.name_list li:hover::after {
+  opacity: 1;
 }
 
 .name_list li:hover{
-  transition: color 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
   /* Lifts the text up by 5 pixels */
-  transform: translateY(-5px);
+  transform: translateY(-2px);
 
-  /* Adds a blurred shadow below the text */
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
-  color: rgb(255, 255, 255);
 
 }
 
@@ -701,17 +664,17 @@
   display: flex;
   justify-content: center; 
   align-items: center; 
-  width: auto;
+  width: 30vw;
   height: 30vw; 
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
   overflow: hidden; 
   margin: auto;
 }
 
 .artist_page_image_container img {
   height: 100%; 
-  width: auto; 
-  object-fit: cover; 
+  width: 100%; 
+  object-fit: contain; 
   padding: 1rem;
   margin: auto;
 }
@@ -820,6 +783,7 @@
 }
 
 .artwork_details{
+  text-align: center;
   padding-left: 0;
 }
 /* FORM */
@@ -960,6 +924,10 @@
 }
 
 @media (max-width: 900px) {
+  .title{
+    font-size: 3rem;
+    text-align: center;
+  }
   /* Keep images but adjust positioning for medium screens */
   .parallaxImage:nth-child(1) {
     left: 3%;
@@ -1013,6 +981,7 @@
     font-size: 1rem;
   }
   .artist_page_image_container{
+    width: 55vw;
     height: 55vw;
   }
   .artist_page{
@@ -1151,16 +1120,19 @@
   }
   
   .profile_image {
-    margin-top: 60px;
-    margin-left: 60px;
+    margin-top: 65px;
+    margin-left: 65px;
     width: 150px;
+    height: 150px;
   }
   
   .profile_frame {
     width: 280px;
+    height: 280px;
   }
   
   .artist_page_image_container{
+    width: 100%;
     height: 105vw;
   }
   .artists_page{
@@ -1365,26 +1337,18 @@
   }
   
   .name_list ul {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 3.25rem;
     position: relative;
-  }
-  
-  .name_list li:nth-child(odd) {
-    grid-column: 1;
-  }
-  
-  .name_list li:nth-child(even) {
-    grid-column: 2;
   }
 }
 
 /* Responsive Design for Exhibition Section */
 @media (max-width: 768px) {
-  .name_list{
-    margin-top: 5rem;
-  }
+
   .exhibitionSection {
     gap: 0rem;
     padding: 0 1rem;
@@ -1398,6 +1362,7 @@
   
   .exhibitionTitle {
     font-size: 2.75rem;
+    text-align: center;
   }
   
   .exhibitionDate {
@@ -1490,5 +1455,300 @@
   
   .tagline {
     padding: 0 0.5rem;
+  }
+}
+
+/* Artists List Styles */
+.artistsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 100%;
+}
+
+.artistCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.artistHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.artistInfo {
+  flex: 1;
+}
+
+.artistName {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.artistOrigin {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 0.25rem 0;
+}
+
+.artistBirthDate {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0;
+}
+
+.artistProfilePicture {
+  flex-shrink: 0;
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.artistDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+
+.artistBio,
+.artistManifesto,
+.artistWeb,
+.artistCv,
+.artistArtworks {
+  background: white;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.artistBio h4,
+.artistManifesto h4,
+.artistWeb h4,
+.artistCv h4,
+.artistArtworks h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.artistBio p,
+.artistManifesto p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+  color: #555;
+}
+
+.artistBio p:last-child,
+.artistManifesto p:last-child {
+  margin-bottom: 0;
+}
+
+.artistWeb a,
+.artistCv a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.artistWeb a:hover,
+.artistCv a:hover {
+  text-decoration: underline;
+}
+
+.artworksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.artworkCard {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background: white;
+}
+
+.artworkThumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.artworkInfo {
+  padding: 0.75rem;
+}
+
+.artworkInfo h5 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.artworkInfo p {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.artworkInfo p:last-child {
+  margin-bottom: 0;
+}
+
+/* Contact Section Styles */
+.contactSection {
+  padding: 10rem 1rem 5rem 1rem;
+  margin: auto;
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  justify-content: center;
+}
+
+.contactContainer {
+  width: 100%;
+  max-width: 1500px;
+  margin: auto;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.contactColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.venueColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Contact section titles use exhibitionTitle class */
+
+.contactInfo {
+  font-family: var(--font-helvetica-light);
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.contactInfo p {
+  margin: 0;
+}
+
+.contactInfo a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contactInfo a:hover {
+  color: #666;
+  text-decoration: underline;
+}
+
+.venueContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.venueDescription {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  text-align: justify;
+  margin: 0;
+}
+
+.venueAddress {
+  font-family: var(--font-helvetica-light);
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.mapContainer {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.map {
+  width: 100%;
+  height: 250px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Responsive Design for Contact Section */
+@media (max-width: 1024px) {
+  .contactGrid {
+    gap: 3rem;
+  }
+  
+  .venueDescription {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .contactSection {
+    padding: 8rem 1rem 3rem 1rem;
+  }
+  
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .contactInfo {
+    text-align: center;
+  }
+  
+  .venueDescription {
+    font-size: 2rem;
+    text-align: justify;
+  }
+  
+  .venueAddress {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .contactSection {
+    padding: 6rem 0.5rem 2rem 0.5rem;
+  }
+  
+  .contactGrid {
+    gap: 2rem;
+  }
+  
+  
+  .venueDescription {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .map {
+    height: 200px;
   }
 }

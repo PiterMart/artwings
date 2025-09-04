@@ -36,8 +36,7 @@ export default function ArtistsPage() {
           artworks: artworksData.filter((artwork) => artist.artworks?.includes(artwork.id)),
         }));
   
-        // Sort artists alphabetically by name
-        artistsWithArtworks.sort((a, b) => a.name.localeCompare(b.name));
+        // Set artists in their original order first
         setArtists(artistsWithArtworks);
   
         // Select a random artwork
@@ -56,6 +55,14 @@ export default function ArtistsPage() {
   
     fetchArtistsAndArtworks();
   }, []);
+
+  // Randomize artists order after data is loaded (client-side randomization after hydration)
+  useEffect(() => {
+    if (artists.length > 0) {
+      const shuffledArtists = [...artists].sort(() => Math.random() - 0.5);
+      setArtists(shuffledArtists);
+    }
+  }, [artists.length]); // Only run when artists array length changes (after initial load)
   
   
 
@@ -92,7 +99,7 @@ export default function ArtistsPage() {
       </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem'}}>Artists</p>
+              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artists</p>
                              <ul className={`${styles.name_list} ${!isLoading ? styles.name_list_loaded : ''}`}>
                 {artists.map((artist) => (
                   <li key={artist.id}>

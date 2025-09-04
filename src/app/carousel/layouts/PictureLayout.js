@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Lightbox from "react-image-lightbox"; 
-import "react-image-lightbox/style.css"; 
 import styles from "../../styles/page.module.css";
 import Image from "next/image";
 
@@ -10,7 +8,6 @@ const PictureLayout = ({ slide }) => {
 
   const handleImageClick = () => {
     setPhotoIndex(0);
-    setIsLightboxOpen(true);
   };
 
   return (
@@ -28,14 +25,6 @@ const PictureLayout = ({ slide }) => {
           loading="lazy"
         />
       </div>
-
-      {/* Lightbox */}
-      {isLightboxOpen && (
-        <Lightbox
-          mainSrc={slide.image} 
-          onCloseRequest={() => setIsLightboxOpen(false)}
-        />
-      )}
     </div>
   );
 };

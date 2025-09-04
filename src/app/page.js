@@ -2,19 +2,22 @@
 import Image from "next/image";
 import styles from "./styles/page.module.css";
 import React, { useEffect, useState, useRef } from "react";
+import Lightbox from "./components/Lightbox";
 
 export default function Home() {
-  const [lightboxImage, setLightboxImage] = useState(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
   const [draggedImage, setDraggedImage] = useState(null);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const [imagePositions, setImagePositions] = useState({});
 
   const openLightbox = (imageSrc, imageAlt) => {
     setLightboxImage({ src: imageSrc, alt: imageAlt });
+    setIsLightboxOpen(true);
   };
 
   const closeLightbox = () => {
-    setLightboxImage(null);
+    setIsLightboxOpen(false);
   };
 
   // Handle mouse/touch down events
@@ -57,24 +60,6 @@ export default function Home() {
     setDraggedImage(null);
   };
 
-  // Close lightbox on escape key
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        closeLightbox();
-      }
-    };
-
-    if (lightboxImage) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [lightboxImage]);
 
   // Add global event listeners for drag
   useEffect(() => {
@@ -372,59 +357,59 @@ export default function Home() {
       {/* Spacer for layout */}
       <div className={styles.parallaxSpacer}></div>
 
-      <div id="contact" style={{ padding: "10rem 1rem 1rem 1rem", margin: "auto", height: "100%", width: "100%", maxWidth: "800px" }}>
-          
-          <div className={styles.page_container} style={{ marginTop: "7rem", margin: 'auto' }}>
-            <div className={styles.sedes} style={{ gap: '0rem'}}>
-              <p className={styles.exhibitionTitle} style={{fontSize: '2rem', marginTop: '1rem', marginBottom: '1rem',  fontWeight: 'bold'}}>
+      <div id="contact" className={styles.contactSection}>
+        <div className={styles.contactContainer}>
+          <div className={styles.contactGrid}>
+            {/* Contact Us Column */}
+            <div className={styles.contactColumn}>
+              <p className={styles.exhibitionTitle} style={{fontSize: '2rem', marginTop: '1rem', marginBottom: '1rem', fontWeight: 'bold'}}>
                 CONTACT US
               </p>
-              <div className={styles.sedeCard} >
-              <p><a href="mailto:info@artwings.art">info@artwings.art</a></p>
-                    <p><a href="tel:+491721736434">+49 172 1736434</a></p>
-                    <p><a href="https://www.instagram.com/artwings111/" target="_blank" rel="noopener noreferrer">@artwings111</a></p>
+              <div className={styles.contactInfo}>
+                <p><a href="mailto:info@artwings.art">info@artwings.art</a></p>
+                <p><a href="tel:+491721736434">+49 172 1736434</a></p>
+                <p><a href="https://www.instagram.com/artwings111/" target="_blank" rel="noopener noreferrer">@artwings111</a></p>
               </div>
-              <div  style={{display: 'flex', flexDirection: 'column', fontSize: '1rem', marginTop: '4rem'}}>
-                <div style={{marginTop: '4rem', maxWidth: '800px', margin: 'auto'}}>
-                  <p className={styles.exhibitionTitle} style={{fontSize: '2rem', fontWeight: '400', marginBottom: '2rem', marginTop: '0rem'}}>The Venue</p>
-                  <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify'}}>
-                    The physical space was selected to reflect the essence of ARTWINGS. Direktorenhaus Berlin is both a gallery and cultural center located in the Mitte district. Founded in 2010 by Pascal Johanssen and Katja Kleiss, the venue is situated within the historic complex of the Alte Münze, the former state mint of Berlin.
-                  </p>
-                  <p style={{fontSize: '1.1rem', lineHeight: '1.8', textAlign: 'justify', marginTop: '1.5rem'}}>
-                    With two floors, high ceilings, and multiple exhibition rooms, Direktorenhaus provides the architectural and energetic frame for our project. We will host meetings on-site for participating artists to explore the space, meet each other, and engage in the logistics and vision of the exhibition. Our goal is to transform it into a cohesive, inclusive artistic environment aligned with the mission of ARTWINGS.
+            </div>
+            
+            {/* Venue Column */}
+            <div className={styles.venueColumn}>
+              <p className={styles.exhibitionTitle} style={{fontSize: '2rem', fontWeight: '400', marginTop: '2rem'}}>The Venue</p>
+              <div className={styles.venueContent}>
+                <p className={styles.venueDescription}>
+                  The physical space was selected to reflect the essence of ARTWINGS. Direktorenhaus Berlin is both a gallery and cultural center located in the Mitte district. Founded in 2010 by Pascal Johanssen and Katja Kleiss, the venue is situated within the historic complex of the Alte Münze, the former state mint of Berlin.
                 </p>
+                <p className={styles.venueDescription}>
+                  With two floors, high ceilings, and multiple exhibition rooms, Direktorenhaus provides the architectural and energetic frame for our project. We will host meetings on-site for participating artists to explore the space, meet each other, and engage in the logistics and vision of the exhibition. Our goal is to transform it into a cohesive, inclusive artistic environment aligned with the mission of ARTWINGS.
+                </p>
+                <p className={styles.venueAddress}>Am Krögel 2, 10179 Berlin</p>
+                <div className={styles.mapContainer}>
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4856.025219182328!2d13.407547512739256!3d52.51511087194333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a84e26b464b7eb%3A0x23ba24dd44f369d4!2sDirektorenhaus!5e0!3m2!1ses-419!2sit!4v1755696365900!5m2!1ses-419!2sit" 
+                    width="100%" 
+                    height="250"  
+                    allowFullScreen="" 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className={styles.map}
+                  ></iframe>
                 </div>
-                    <p style={{fontFamily: 'var(--font-helvetica-light)'}}>Am Krögel 2, 10179 Berlin</p>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4856.025219182328!2d13.407547512739256!3d52.51511087194333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a84e26b464b7eb%3A0x23ba24dd44f369d4!2sDirektorenhaus!5e0!3m2!1ses-419!2sit!4v1755696365900!5m2!1ses-419!2sit" width="auto" height="250"  allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
               </div>
             </div>
           </div>
         </div>
+      </div>
       
       <main className={styles.main}>
       </main>
 
-      {/* Lightbox Overlay */}
-      {lightboxImage && (
-        <div className={styles.lightbox} onClick={closeLightbox}>
-          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={lightboxImage.src}
-              alt={lightboxImage.alt}
-              width={1200}
-              height={800}
-              className={styles.lightboxImage}
-              priority
-              style={{
-                maxWidth: '90vw',
-                maxHeight: '90vh',
-                width: 'auto',
-                height: 'auto'
-              }}
-            />
-          </div>
-        </div>
-      )}
+      {/* Lightbox Component */}
+      <Lightbox
+        isOpen={isLightboxOpen}
+        imageSrc={lightboxImage.src}
+        imageAlt={lightboxImage.alt}
+        onClose={closeLightbox}
+      />
     </div>
   );
 }
