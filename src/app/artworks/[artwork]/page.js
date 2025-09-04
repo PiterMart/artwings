@@ -6,15 +6,24 @@ import { firestore } from "../../firebase/firebaseConfig";
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css";
 import Image from "next/image";
+import Lightbox from "../../components/Lightbox";
 
 export default function Artwork({ params }) {
   const [artwork, setArtwork] = useState(undefined); // Undefined for initial loading state
   const [artist, setArtist] = useState(null); // To store artist details
-  const artworkSlug = params.artwork; // Get slug from params
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
+  const artworkSlug = params.artwork; // Get slug from params
+
+  const openLightbox = (imageSrc, imageAlt) => {
+    setLightboxImage({ src: imageSrc, alt: imageAlt });
+    setIsLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+  };
 
   useEffect(() => {
     const fetchArtworkAndArtist = async () => {
@@ -94,30 +103,32 @@ export default function Artwork({ params }) {
                 onClick={() => window.history.back()}
                 className={styles.back_link}
               >
-                <p style={{ fontSize: "1rem", fontWeight: "100", paddingBottom: "1rem" }}>
+                {/* <p style={{ fontSize: "1rem", fontWeight: "100", paddingBottom: "1rem", color: '#707984' }}>
                   {"<"} Back
-                </p>
+                </p> */}
               </button>
             </div>
           </div>
           <div className={styles.artwork_image_container}>
             <img
-              onClick={() => setIsLightboxOpen(true)}
               src={url}
               alt={title}
-              style={{ width: "100%", height: "auto" }}
+              style={{ width: "100%", height: "auto", maxHeight: "80vh", cursor: "pointer" }}
+              onClick={() => openLightbox(url, title)}
             />
           </div>
         </div>
       </main>
-      {isLightboxOpen && (
-        <Lightbox
-          mainSrc={url}
-          onCloseRequest={() => setIsLightboxOpen(false)}
-        />
-      )}
 
       <footer className={styles.footer}></footer>
+
+      {/* Lightbox Component */}
+      <Lightbox
+        isOpen={isLightboxOpen}
+        imageSrc={lightboxImage.src}
+        imageAlt={lightboxImage.alt}
+        onClose={closeLightbox}
+      />
     </div>
   );
 }

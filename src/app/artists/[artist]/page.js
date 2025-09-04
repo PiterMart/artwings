@@ -117,10 +117,12 @@ export default function Artist({ params }) {
               <div className={styles.artist_page}>
                 <div className={styles.artist_page_contents}>
                   <div className={styles.bio_skeleton}></div>
-                  <div className={styles.artworks_skeleton}>
-                    <div className={styles.title_skeleton}></div>
-                    <div className={styles.carousel_skeleton}></div>
-                  </div>
+                  {artworks && artworks.length > 0 && (
+                    <div className={styles.artworks_skeleton}>
+                      <div className={styles.title_skeleton}></div>
+                      <div className={styles.carousel_skeleton}></div>
+                    </div>
+                  )}
                   <div className={styles.bio_skeleton}>
                     <div className={styles.title_skeleton}></div>
                     <div className={styles.paragraph_skeleton}></div>
@@ -165,7 +167,7 @@ export default function Artist({ params }) {
           <div className={styles.artist_content_loaded}>
             <div className={styles.artist_header}>
             {artist.profilePicture && (
-                                 <div className={styles.profile_container}>
+                    <div className={styles.profile_container}>
                    <img
                      src={artist.profilePicture}
                      alt={`${artist.name}'s profile`}
@@ -196,16 +198,8 @@ export default function Artist({ params }) {
             </div>
             <div className={styles.artist_page}>
               <div className={styles.artist_page_contents}>
-                <div>
+                {/* <div>
                   <p style={{ fontSize: '1.5rem', lineHeight: "1.75rem", textAlign: 'left'}}>{artist.bio[0]}</p>
-                </div>
-                {/* <div
-                  className={styles.artist_page_contents_obras}
-                  id="obras"
-                  style={{ scrollMargin: "10rem" }}
-                >
-                  <p className={styles.title}>ARTWORKS</p>
-                  <EmblaCarousel slides={artworkSlides} type="artwork" />
                 </div> */}
                 <div
                   className={styles.artist_page_contents_bio}
@@ -220,6 +214,16 @@ export default function Artist({ params }) {
                 </div>
               </div>
             </div>
+            {artworks && artworks.length > 0 && (
+                  <div
+                    className={styles.artist_page_contents_obras}
+                    id="obras"
+                    style={{ scrollMargin: "10rem", marginTop: '5rem' }}
+                  >
+                    {/* <p className={styles.title}>ARTWORKS</p> */}
+                    <EmblaCarousel slides={artworkSlides} type="artwork" />
+                  </div>
+                )}
           </div>
         </div>
       </main>
