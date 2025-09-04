@@ -5,7 +5,7 @@ import ExhibitionLayout from "./layouts/ExhibitionLayout";
 import ArtworkLayout from "./layouts/ArtworkLayout";
 import exhibitionSimple from "./layouts/ExhibitionLayoutSimplified"
 import FairLayout from "./layouts/FairLayoutSimplified";
-import styles from "../styles/embla.module.css";
+import styles from "../../styles/embla.module.css";
 import PictureLayout from "./layouts/PictureLayout"
 
 

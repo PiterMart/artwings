@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { firestore } from "./firebaseConfig";
 import { getDocs, collection, doc, updateDoc, getDoc } from "firebase/firestore";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 
 // Constant for the bilingual month dropdown
 const BILINGUAL_MONTHS = [

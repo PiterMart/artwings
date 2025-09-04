@@ -1,8 +1,8 @@
 import localFont from "next/font/local";
-import "./styles/globals.css";
-import Nav from "./components/nav";
-import Footer from "./components/Footer";
-import LoadingProvider from "./components/LoadingProvider";
+import "../styles/globals.css";
+import Nav from "../components/nav";
+import Footer from "../components/Footer";
+import LoadingProvider from "../components/LoadingProvider";
 import { Inter } from 'next/font/google'
 
 const inter = Inter({
@@ -37,7 +37,9 @@ const lovelt = localFont({
   variable: "--font-lovelt",
 });
 
-// Helvetica fonts
+// Helveti
+// 
+// a fonts
 const helveticaRegular = localFont({
   src: "../../public/fonts/helvetica/Helvetica.ttf",
   variable: "--font-helvetica-regular",
@@ -66,6 +68,9 @@ const helveticaBlack = localFont({
 export const metadata = {
   title: "Artwings",
   description: " Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market. ",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {

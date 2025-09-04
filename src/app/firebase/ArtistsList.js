@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { firestore } from "./firebaseConfig";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 
 export default function ArtistsList() {
   const [artists, setArtists] = useState([]);

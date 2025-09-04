@@ -8,7 +8,7 @@
   margin-top: 2vh;
   left: 0;
   top: 0;
-  height: 125vh;
+  height: 100vh;
   z-index: -1;
   display: flex;
   justify-content: center;
@@ -34,7 +34,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    height: 125vh;  
+    height: 100vh;  
     margin-top: 2vh;
     z-index: -1;
     display: flex;
@@ -313,6 +313,7 @@
   position: relative;
   width: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 .page_container{
   width: 95%;
@@ -394,6 +395,8 @@
   gap: 2rem;
   font-family: var(--font-lovelt);
   font-size: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out 0.3s forwards;
 }
 
 .loading_spinner {
@@ -408,6 +411,11 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .artist_content_loaded {
@@ -637,6 +645,7 @@
   margin: auto;
   padding-top: 10em;
   position: relative;
+  min-height: 60vh;
 }
 .artist_page_contents{
   display: flex;
@@ -733,6 +742,7 @@
 }
 
 .sedeCard img:hover{
+  opacity: 0.9;
 }
 
 .overlayText {
@@ -1105,6 +1115,7 @@
   }
   
   .tagline{
+    margin-top: 2rem;
   }
 
   .artist_header {

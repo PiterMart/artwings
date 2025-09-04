@@ -1,5 +1,5 @@
 "use client";
-import styles from "../../styles/page.module.css";
+import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
