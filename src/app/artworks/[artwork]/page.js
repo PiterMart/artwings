@@ -8,12 +8,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Lightbox from "../../../components/Lightbox";
+import AcquireDialog from "../../../components/AcquireDialog";
 
 export default function Artwork({ params }) {
   const [artwork, setArtwork] = useState(undefined); // Undefined for initial loading state
   const [artist, setArtist] = useState(null); // To store artist details
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
+  const [isAcquireDialogOpen, setIsAcquireDialogOpen] = useState(false);
   const artworkSlug = params.artwork; // Get slug from params
 
   const openLightbox = (imageSrc, imageAlt) => {
@@ -23,6 +25,14 @@ export default function Artwork({ params }) {
 
   const closeLightbox = () => {
     setIsLightboxOpen(false);
+  };
+
+  const openAcquireDialog = () => {
+    setIsAcquireDialogOpen(true);
+  };
+
+  const closeAcquireDialog = () => {
+    setIsAcquireDialogOpen(false);
   };
 
   useEffect(() => {
@@ -97,6 +107,33 @@ export default function Artwork({ params }) {
               <p>{medium}</p>
               <p>{measurements}</p>
               <p style={{ marginTop: "2rem" }}>{description}</p>
+              <button 
+                onClick={openAcquireDialog}
+                style={{
+                  marginTop: "2rem",
+                  padding: "0.875rem 1.75rem",
+                  background: "none",
+                  color: "#707984",
+                  border: "1px solid #707984",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-lovelt)",
+                  fontWeight: "300",
+                  transition: "all 0.3s ease"
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.color = "#000";
+                  e.target.style.borderColor = "#000";
+                  e.target.style.transform = "translateY(-1px)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.color = "#707984";
+                  e.target.style.borderColor = "#707984";
+                  e.target.style.transform = "translateY(0)";
+                }}
+              >
+                Acquire
+              </button>
             </div>
             <div style={{ alignSelf: "flex-end" }}>
               <button
@@ -128,6 +165,14 @@ export default function Artwork({ params }) {
         imageSrc={lightboxImage.src}
         imageAlt={lightboxImage.alt}
         onClose={closeLightbox}
+      />
+
+      {/* Acquire Dialog Component */}
+      <AcquireDialog
+        isOpen={isAcquireDialogOpen}
+        onClose={closeAcquireDialog}
+        artwork={artwork}
+        artist={artist}
       />
     </div>
   );
