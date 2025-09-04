@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 import ArtistUploader from "../firebase/ArtistUploader";
 import ExhibitionUploader from "../firebase/ExhibitionUploader";
 import FairUploader from "../firebase/FairUpdater";

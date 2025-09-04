@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import styles from "../styles/page.module.css";
-import styles2 from "../styles/embla.module.css";
+import styles from "../../styles/page.module.css";
+import styles2 from "../../styles/embla.module.css";
 import Link from "next/link";
 import { app, firestore, storage } from "../firebase/firebaseConfig";
 import { collection, addDoc, getDocs, Timestamp, updateDoc, arrayUnion, doc } from "firebase/firestore";

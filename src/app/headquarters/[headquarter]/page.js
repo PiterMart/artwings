@@ -1,5 +1,5 @@
 "use client";
-import styles from "../../styles/page.module.css";
+import styles from "../../../styles/page.module.css";
 import Link from "next/link";
 import { firestore } from "../../firebase/firebaseConfig";
 import { query, collection, where, getDocs, documentId } from "firebase/firestore";

@@ -1,8 +1,8 @@
 "use client"
 import Image from "next/image";
-import styles from "./styles/page.module.css";
+import styles from "../styles/page.module.css";
 import React, { useEffect, useState, useRef } from "react";
-import Lightbox from "./components/Lightbox";
+import Lightbox from "../components/Lightbox";
 
 export default function Home() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);

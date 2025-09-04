@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -77,7 +77,7 @@ export default function ArtistsPage() {
       <main className={styles.main}>
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
         {/* Left margin image */}
-        <div className={styles.leftMargin} style={{height: "100vh"}}>
+        <div className={styles.leftMargin}>
         <Image
           src="/maiden 11.png"
           alt="Left margin decoration"
@@ -88,7 +88,7 @@ export default function ArtistsPage() {
       </div>
       
       {/* Right margin image */}
-      <div className={styles.rightMargin} style={{height: "100vh"}}>
+      <div className={styles.rightMargin}>
         <Image
           src="/maiden 11.png"
           alt="Right margin decoration"
@@ -100,13 +100,20 @@ export default function ArtistsPage() {
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
               <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artists</p>
-                             <ul className={`${styles.name_list} ${!isLoading ? styles.name_list_loaded : ''}`}>
-                {artists.map((artist) => (
-                  <li key={artist.id}>
-                    <Link href={`/artists/${artist.slug}`}>{artist.name}</Link>
-                  </li>
-                ))}
-              </ul>
+              {isLoading ? (
+                <div className={styles.loading_container}>
+                  <div className={styles.loading_spinner}></div>
+                  <p>Loading artists...</p>
+                </div>
+              ) : (
+                <ul className={`${styles.name_list} ${styles.name_list_loaded}`}>
+                  {artists.map((artist) => (
+                    <li key={artist.id}>
+                      <Link href={`/artists/${artist.slug}`}>{artist.name}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             {/* <div
               className={styles.artists_image}

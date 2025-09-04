@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import styles from "../../styles/page.module.css";
+import styles from "../../../styles/page.module.css";
 import Image from "next/image";
 
 const ArtworkLayout = ({ slide }) => {

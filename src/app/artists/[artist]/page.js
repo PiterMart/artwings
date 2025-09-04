@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import styles from "../../styles/page.module.css";
+import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig"; 
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore"; 
 import React, { useEffect, useState } from "react";

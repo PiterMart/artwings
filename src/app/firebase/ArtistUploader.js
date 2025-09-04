@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { firestore, storage } from "./firebaseConfig";
 import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import styles from "../styles/page.module.css";
+import styles from "../../styles/page.module.css";
 import imageCompression from 'browser-image-compression';
 
 export default function ArtistUploader() {
