@@ -51,13 +51,39 @@
   font-family: 'Inter', sans-serif;
   font-weight: 200;
   font-size: 1.5rem;
-  transition: color 0.3s ease;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.274);
+  position: relative;
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.274);
+  /* Time and easing for the animation */
+  transition: transform 1.25s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.nav_list li::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 15%,
+    rgba(0, 0, 0, 1) 50%,
+    rgba(0, 0, 0, 0.3) 85%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.nav_list li:hover::after {
+  opacity: 1;
 }
 
 .nav_list li:hover {
-  color: #707984;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
+  transition: transform 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  /* Lifts the text up by 2 pixels */
+  transform: translateY(-2px);
 }
 
 .nav_list li a {
@@ -66,14 +92,8 @@
   transition: all 0.3s ease;
 }
 
-.nav_list li a:hover {
-  color: #ffffff;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
-}
-
 .page_current {
-  color: #ffffff !important;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.5) !important;
+  color: #707984;
 }
 
 .nav_logo {
