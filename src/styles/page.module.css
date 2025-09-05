@@ -4,8 +4,8 @@
 
 /* Margin Images */
 .leftMargin {
-  position: absolute;
-  margin-top: 2vh;
+  position: fixed;
+  margin-top: 20vh;
   left: 0;
   top: 0;
   height: 100vh;
@@ -13,11 +13,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0.35;
+  opacity: 0.3;
 }
 
 .leftMargin2 {
-  position: absolute;
+  position: fixed;
   margin-top: 0;
   left: -94px;
   top: 0;
@@ -31,22 +31,21 @@
 
 
   .rightMargin {
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     height: 100vh;  
-    margin-top: 2vh;
+    margin-top: 20vh;
     z-index: -1;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.35;
+    opacity: 0.3;
     transform: scaleX(-1);
-    max-width: 200px;
     overflow: hidden;
   }
   .rightMarginBottom {
-    position: absolute;
+    position: fixed;
     right: 0;
     bottom: 0;
     height: 125vh;  
@@ -140,6 +139,9 @@
 .parallaxImage {
   will-change: transform;
 }
+.homepage_container{
+  text-align: center;
+}
 
 /* Lightbox Styles */
 
@@ -177,7 +179,7 @@
 .logoContainer {
   position: relative;
   top: 25%;
-  margin-top: 15rem;
+  margin-top: 20rem;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -318,7 +320,7 @@
   overflow-y: auto;
 }
 .page_container{
-  width: 95%;
+  width: 100%;
   max-width: 100%;
   margin: auto;
   display: flex;
@@ -344,6 +346,16 @@
   line-height: 1;
   text-align: left;
 }
+.title2{
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 3rem;
+  text-align: center;
+  margin-bottom: 36px;
+  margin: auto;
+}
+
 .subtitle{
   font-size: 1.5rem;
   font-weight: 400;
@@ -563,8 +575,6 @@
   transition: transform 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
   /* Lifts the text up by 5 pixels */
   transform: translateY(-2px);
-
-
 }
 
 .artist_header {
@@ -637,6 +647,7 @@
   margin: auto;
   padding-top: 0em;
   margin-left: 30rem;
+  text-align: center;
 }
 .artists_page{
   display: flex;
@@ -965,6 +976,11 @@
 }
 
 @media (max-width: 1000px) {
+  .title2{
+    max-width: 666px;
+    font-size: 2rem;
+    letter-spacing: 2rem;
+  }
 
 
   .artist_page{
@@ -985,6 +1001,8 @@
     max-width: 800px;
     padding-left: 1rem;
     padding-right: 1rem;
+    margin-top: 18vh;
+    max-width: 300px;
   }
   .taglineText{
     font-size: 1.25rem;
@@ -1093,6 +1111,20 @@
 }
 
 @media (max-width: 800px) {
+  .homepage_container{
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 10%,
+      rgba(255, 255, 255, 0.7) 20%,
+      rgba(255, 255, 255, 0.9) 30%,
+      rgba(255, 255, 255, 0.9) 70%,
+      rgba(255, 255, 255, 0.7) 80%,
+      rgba(255, 255, 255, 0.3) 90%,
+      transparent 100%
+    );
+    padding: 3rem 1rem;
+  }
   /* Keep images but adjust positioning for smaller screens */
   .parallaxImage:nth-child(1) {
     left: 2%;
@@ -1117,7 +1149,8 @@
   }
   
   .tagline{
-    margin-top: 2rem;
+    margin-top: 24vh;
+        max-width: 164px;
   }
 
   .artist_header {
@@ -1270,7 +1303,7 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 6rem;
+  margin-top: 23rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -1387,6 +1420,14 @@
   }
 }
 @media (max-width: 600px) {
+  .title2{
+    max-width: 666px;
+        font-size: 1rem;
+        letter-spacing: 2rem;
+        margin-bottom: 1rem;
+        margin: auto;
+        text-align: center;
+  }
   /* Image Gallery Mobile - 600px breakpoint */
   .parallaxGallery {
     height: auto;
@@ -1478,6 +1519,7 @@
   gap: 2rem;
   max-width: 100%;
 }
+
 
 .artistCard {
   border: 1px solid #ddd;
@@ -1724,7 +1766,7 @@
 
 @media (max-width: 768px) {
   .contactSection {
-    padding: 8rem 1rem 3rem 1rem;
+    padding: 0rem;
   }
   
   .contactGrid {
@@ -1748,7 +1790,7 @@
 
 @media (max-width: 480px) {
   .contactSection {
-    padding: 6rem 0.5rem 2rem 0.5rem;
+    padding: 0rem;
   }
   
   .contactGrid {
