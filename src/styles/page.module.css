@@ -17,7 +17,7 @@
 }
 
 .leftMargin2 {
-  position: fixed;
+  position: absolute;
   margin-top: 0;
   left: -94px;
   top: 0;
@@ -808,6 +808,7 @@
 .artwork_details{
   text-align: center;
   padding-left: 0;
+  max-width: 600px;
 }
 /* FORM */
 
@@ -1423,7 +1424,7 @@
   .title2{
     max-width: 666px;
         font-size: 1rem;
-        letter-spacing: 1.75rem;
+        letter-spacing: 2rem;
         margin-bottom: 1rem;
         margin: auto;
         text-align: center;
