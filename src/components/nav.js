@@ -13,6 +13,7 @@ export default function Nav() {
     const router = useRouter();
 
     const pages = [
+        { name: 'Artworks', path: '/artworks' },
         { name: 'Artists', path: '/artists' },
         { name: 'Exhibitions', path: '/', section: 'exhibitions' },
         { name: 'About', path: '/', section: 'about' },
