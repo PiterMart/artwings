@@ -37,6 +37,8 @@ export default function ArtistUploader() {
     medium: "",
     measurements: "",
     description: "",
+    price: "",
+    availability_status: "NOT_FOR_SALE",
     extras: [],
   });
 
@@ -98,6 +100,8 @@ export default function ArtistUploader() {
                 medium: artworkData.medium,
                 measurements: artworkData.measurements,
                 description: artworkData.description,
+                price: artworkData.price || null,
+                availability_status: artworkData.availability_status || "NOT_FOR_SALE",
                 url: artworkData.url,  // Ensure this matches Firestore field name
                 images: artworkData.images || artworkData.detailImages || [],  // Handle both field names
                 extras: artworkData.extras || []
@@ -261,6 +265,8 @@ export default function ArtistUploader() {
             medium: artwork.medium,
             measurements: artwork.measurements,
             description: artwork.description,
+            price: artwork.price ? parseFloat(artwork.price) : null,
+            availability_status: artwork.availability_status || "NOT_FOR_SALE",
             extras: artwork.extras || [],
             url: mainUrl,
             images: detailUrls,
@@ -280,6 +286,8 @@ export default function ArtistUploader() {
               medium: artwork.medium,
               measurements: artwork.measurements,
               description: artwork.description,
+              price: artwork.price ? parseFloat(artwork.price) : null,
+              availability_status: artwork.availability_status || "NOT_FOR_SALE",
               extras: artwork.extras || []
             };
             
@@ -360,6 +368,8 @@ export default function ArtistUploader() {
       medium: "",
       measurements: "",
       description: "",
+      price: "",
+      availability_status: "NOT_FOR_SALE",
       extras: [],
     });
     setExistingArtworks([]);
@@ -476,6 +486,8 @@ export default function ArtistUploader() {
       medium: "",
       measurements: "",
       description: "",
+      price: "",
+      availability_status: "NOT_FOR_SALE",
       extras: [],
     });
   };
@@ -659,6 +671,22 @@ export default function ArtistUploader() {
             onChange={(e) => handleNewArtworkChange('description', e.target.value)}
             required
           />
+          <input
+            type="number"
+            placeholder="Price"
+            value={newArtwork.price}
+            onChange={(e) => handleNewArtworkChange('price', e.target.value)}
+          />
+          <select
+            value={newArtwork.availability_status}
+            onChange={(e) => handleNewArtworkChange('availability_status', e.target.value)}
+          >
+            <option value="NOT_FOR_SALE">Not For Sale</option>
+            <option value="FOR_SALE">For Sale</option>
+            <option value="ON_AUCTION">On Auction</option>
+            <option value="SOLD">Sold</option>
+            <option value="ON_HOLD">On Hold</option>
+          </select>
           
           {/* Extras Input */}
           <div className={styles.extrasInput}>
@@ -819,6 +847,22 @@ export default function ArtistUploader() {
             value={artwork.description}
             onChange={(e) => handleExistingArtworkChange(index, 'description', e.target.value)}
           />
+          <input
+            type="number"
+            placeholder="Price"
+            value={artwork.price || ""}
+            onChange={(e) => handleExistingArtworkChange(index, 'price', e.target.value)}
+          />
+          <select
+            value={artwork.availability_status || "NOT_FOR_SALE"}
+            onChange={(e) => handleExistingArtworkChange(index, 'availability_status', e.target.value)}
+          >
+            <option value="NOT_FOR_SALE">Not For Sale</option>
+            <option value="FOR_SALE">For Sale</option>
+            <option value="ON_AUCTION">On Auction</option>
+            <option value="SOLD">Sold</option>
+            <option value="ON_HOLD">On Hold</option>
+          </select>
 
           {/* Extras for Existing Artworks */}
           <div className={styles.extrasInput}>

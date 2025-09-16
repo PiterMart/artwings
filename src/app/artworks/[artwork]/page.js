@@ -87,7 +87,7 @@ export default function Artwork({ params }) {
   if (artwork === undefined) return <p>Loading...</p>; // Loading state
   if (artwork === null) return <p>Error fetching artwork. Please try again.</p>;
 
-  const { title, url, date, medium, measurements, description } = artwork;
+  const { title, url, date, medium, measurements, description, price, availability_status } = artwork;
 
   return (
     <div className={styles.page}>
@@ -106,6 +106,19 @@ export default function Artwork({ params }) {
               <p>{date}</p>
               <p>{medium}</p>
               <p>{measurements}</p>
+              {price && <p style={{ fontWeight: "500", fontSize: "1.1rem" }}>${price.toLocaleString()}</p>}
+              {availability_status && (
+                <p style={{ 
+                  fontWeight: "400", 
+                  fontSize: "0.9rem", 
+                  color: availability_status === "SOLD" ? "#e74c3c" : 
+                         availability_status === "FOR_SALE" ? "#27ae60" :
+                         availability_status === "ON_AUCTION" ? "#f39c12" :
+                         availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
+                }}>
+                  {availability_status.replace(/_/g, ' ')}
+                </p>
+              )}
               <p style={{ marginTop: "2rem" }}>{description}</p>
               <button 
                 onClick={openAcquireDialog}
