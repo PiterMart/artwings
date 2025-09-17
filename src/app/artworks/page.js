@@ -76,27 +76,6 @@ export default function ArtworksPage() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
-        {/* Left margin image */}
-        <div className={styles.leftMargin}>
-        <Image
-          src="/maiden 11.png"
-          alt="Left margin decoration"
-          width={200}
-          height={800}
-          className={styles.marginImage}
-        />
-      </div>
-      
-      {/* Right margin image */}
-      <div className={styles.rightMargin}>
-        <Image
-          src="/maiden 11.png"
-          alt="Right margin decoration"
-          width={200}
-          height={800}
-          className={styles.marginImage}
-        />
-      </div>
           <div className={styles.artworks_page}>
             <div className={styles.artworks_header}>
               <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1>

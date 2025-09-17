@@ -404,6 +404,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #00000000;
   justify-content: center;
   min-height: 50vh;
   gap: 2rem;
@@ -1610,7 +1611,6 @@
 }
 
 .artwork_title {
-  font-family: var(--font-lovelt);
   font-size: 1.25rem;
   font-weight: 400;
   margin: 0;
@@ -1622,6 +1622,7 @@
   margin: 0;
   font-size: 1rem;
   color: #666;
+    font-family: var(--font-lovelt);
 }
 
 .artist_link {
@@ -1672,7 +1673,7 @@
 
 @media (max-width: 480px) {
   .artworks_grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
   

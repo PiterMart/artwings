@@ -16,6 +16,7 @@ export default function Artwork({ params }) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
   const [isAcquireDialogOpen, setIsAcquireDialogOpen] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const artworkSlug = params.artwork; // Get slug from params
 
   const openLightbox = (imageSrc, imageAlt) => {
@@ -84,7 +85,7 @@ export default function Artwork({ params }) {
     fetchArtworkAndArtist();
   }, [artworkSlug]);
 
-  if (artwork === undefined) return <p>Loading...</p>; // Loading state
+  if (artwork === undefined) return <p>Loading...</p>; // Loading state for text content
   if (artwork === null) return <p>Error fetching artwork. Please try again.</p>;
 
   const { title, url, date, medium, measurements, description, price, availability_status } = artwork;
@@ -106,7 +107,7 @@ export default function Artwork({ params }) {
               <p>{date}</p>
               <p>{medium}</p>
               <p>{measurements}</p>
-              {price && <p style={{ fontWeight: "500", fontSize: "1.1rem" }}>${price.toLocaleString()}</p>}
+              {/* {price && <p style={{ fontWeight: "500", fontSize: "1.1rem" }}>${price.toLocaleString()}</p>} */}
               {availability_status && (
                 <p style={{ 
                   fontWeight: "400", 
@@ -160,11 +161,25 @@ export default function Artwork({ params }) {
             </div>
           </div>
           <div className={styles.artwork_image_container}>
+            {isImageLoading && (
+              <div className={styles.image_loading_placeholder}>
+                <div className={styles.loading_spinner}></div>
+                <p>Loading image...</p>
+              </div>
+            )}
             <img
               src={url}
               alt={title}
-              style={{ width: "100%", height: "auto", maxHeight: "80vh", cursor: "pointer" }}
+              style={{ 
+                width: "100%", 
+                height: "auto", 
+                maxHeight: "80vh", 
+                cursor: "pointer",
+                display: isImageLoading ? "none" : "block"
+              }}
               onClick={() => openLightbox(url, title)}
+              onLoad={() => setIsImageLoading(false)}
+              onError={() => setIsImageLoading(false)}
             />
           </div>
         </div>
