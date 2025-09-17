@@ -108,6 +108,18 @@ export default function ArtworksPage() {
                               </Link>
                             </p>
                           )}
+                          {artwork.availability_status && (
+                            <p className={styles.artwork_availability} style={{ 
+                              fontWeight: "400", 
+                              fontSize: "0.9rem", 
+                              color: artwork.availability_status === "SOLD" ? "#e74c3c" : 
+                                     artwork.availability_status === "FOR_SALE" ? "#27ae60" :
+                                     artwork.availability_status === "ON_AUCTION" ? "#f39c12" :
+                                     artwork.availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
+                            }}>
+                              {artwork.availability_status.replace(/_/g, ' ')}
+                            </p>
+                          )}
                         </div>
                       </Link>
                     </div>

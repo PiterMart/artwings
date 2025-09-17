@@ -1636,6 +1636,11 @@
   text-decoration: underline;
 }
 
+.artwork_availability {
+  margin: 0;
+  font-family: var(--font-lovelt);
+}
+
 
 /* Responsive Design for Artworks Grid */
 @media (max-width: 1200px) {
