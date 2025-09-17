@@ -85,8 +85,8 @@ export default function Artwork({ params }) {
     fetchArtworkAndArtist();
   }, [artworkSlug]);
 
-  if (artwork === undefined) return <p>Loading...</p>; // Loading state for text content
-  if (artwork === null) return <p>Error fetching artwork. Please try again.</p>;
+  if (artwork === undefined) return <p style={{ fontFamily: 'Inter, sans-serif' }}>Loading...</p>; // Loading state for text content
+  if (artwork === null) return <p style={{ fontFamily: 'Inter, sans-serif' }}>Error fetching artwork. Please try again.</p>;
 
   const { title, url, date, medium, measurements, description, price, availability_status } = artwork;
 
@@ -95,23 +95,24 @@ export default function Artwork({ params }) {
       <main className={styles.main}>
         <div className={styles.artwork_page}>
           <div className={styles.artwork_details}>
-            <h1 className={styles.title} style={{ fontWeight: "400", fontFamily: 'var(--font-lovelt)', fontSize: '3rem' }}>{title}</h1>
+            <h1 className={styles.title} style={{ fontWeight: "400", fontFamily: 'Inter, sans-serif', fontSize: '3rem' }}>{title}</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {artist ? (
                 <Link href={`/artists/${artist.slug}`}>
-                  <h2 style={{ fontWeight: "300" }}>{artist.name}</h2>
+                  <h2 style={{ fontWeight: "300", fontFamily: 'var(--font-lovelt)' }}>{artist.name}</h2>
                 </Link>
               ) : (
-                <h2 style={{ fontWeight: "300" }}>Unknown Artist</h2>
+                <h2 style={{ fontWeight: "300", fontFamily: 'var(--font-lovelt)' }}>Unknown Artist</h2>
               )}
-              <p>{date}</p>
-              <p>{medium}</p>
-              <p>{measurements}</p>
+              <p style={{ fontFamily: 'Inter, sans-serif' }}>{date}</p>
+              <p style={{ fontFamily: 'Inter, sans-serif' }}>{medium}</p>
+              <p style={{ fontFamily: 'Inter, sans-serif' }}>{measurements}</p>
               {/* {price && <p style={{ fontWeight: "500", fontSize: "1.1rem" }}>${price.toLocaleString()}</p>} */}
               {availability_status && (
                 <p style={{ 
                   fontWeight: "400", 
                   fontSize: "0.9rem", 
+                  fontFamily: 'Inter, sans-serif',
                   color: availability_status === "SOLD" ? "#e74c3c" : 
                          availability_status === "FOR_SALE" ? "#27ae60" :
                          availability_status === "ON_AUCTION" ? "#f39c12" :
@@ -120,34 +121,36 @@ export default function Artwork({ params }) {
                   {availability_status.replace(/_/g, ' ')}
                 </p>
               )}
-              <p style={{ marginTop: "2rem" }}>{description}</p>
-              <button 
-                onClick={openAcquireDialog}
-                style={{
-                  marginTop: "2rem",
-                  padding: "0.875rem 1.75rem",
-                  background: "none",
-                  color: "#707984",
-                  border: "1px solid #707984",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                  fontFamily: "var(--font-lovelt)",
-                  fontWeight: "300",
-                  transition: "all 0.3s ease"
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.color = "#000";
-                  e.target.style.borderColor = "#000";
-                  e.target.style.transform = "translateY(-1px)";
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.color = "#707984";
-                  e.target.style.borderColor = "#707984";
-                  e.target.style.transform = "translateY(0)";
-                }}
-              >
-                Acquire
-              </button>
+              <p style={{ marginTop: "2rem", fontFamily: 'Inter, sans-serif' }}>{description}</p>
+              {availability_status !== "NOT_FOR_SALE" && (
+                <button 
+                  onClick={openAcquireDialog}
+                  style={{
+                    marginTop: "2rem",
+                    padding: "0.875rem 1.75rem",
+                    background: "none",
+                    color: "#707984",
+                    border: "1px solid #707984",
+                    cursor: "pointer",
+                    fontSize: "1rem",
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: "300",
+                    transition: "all 0.3s ease"
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.color = "#000";
+                    e.target.style.borderColor = "#000";
+                    e.target.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.color = "#707984";
+                    e.target.style.borderColor = "#707984";
+                    e.target.style.transform = "translateY(0)";
+                  }}
+                >
+                  Acquire
+                </button>
+              )}
             </div>
             <div style={{ alignSelf: "flex-end" }}>
               <button
@@ -164,7 +167,7 @@ export default function Artwork({ params }) {
             {isImageLoading && (
               <div className={styles.image_loading_placeholder}>
                 <div className={styles.loading_spinner}></div>
-                <p>Loading image...</p>
+                <p style={{ fontFamily: 'Inter, sans-serif' }}>Loading image...</p>
               </div>
             )}
             <img
