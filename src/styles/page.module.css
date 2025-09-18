@@ -1591,12 +1591,13 @@
 
 .artworks_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 0 1rem;
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  justify-content: center;
 }
 
 .artwork_card {
@@ -1686,8 +1687,9 @@
 /* Responsive Design for Artworks Grid */
 @media (max-width: 1200px) {
   .artworks_grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+    justify-content: center;
   }
 }
 
@@ -1698,9 +1700,10 @@
   }
   
   .artworks_grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     padding: 0;
+    justify-content: center;
   }
   
   .artwork_image_container {
@@ -1719,8 +1722,9 @@
 
 @media (max-width: 480px) {
   .artworks_grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
+    justify-content: center;
   }
   
   .artwork_image_container {
@@ -1907,22 +1911,28 @@
 }
 
 .contactGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 4rem;
-  align-items: start;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .contactColumn {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  text-align: center;
+  width: 100%;
 }
 
 .venueColumn {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  text-align: center;
+  width: 100%;
 }
 
 /* Contact section titles use exhibitionTitle class */
@@ -1951,12 +1961,13 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  text-align: center;
 }
 
 .venueDescription {
   font-size: 1.1rem;
   line-height: 1.8;
-  text-align: justify;
+  text-align: center;
   margin: 0;
 }
 
@@ -1996,21 +2007,11 @@
   }
   
   .contactGrid {
-    grid-template-columns: 1fr;
     gap: 3rem;
   }
   
-  .contactInfo {
-    text-align: center;
-  }
-  
   .venueDescription {
-    font-size: 2rem;
-    text-align: justify;
-  }
-  
-  .venueAddress {
-    text-align: center;
+    font-size: 1.1rem;
   }
 }
 
@@ -2022,7 +2023,6 @@
   .contactGrid {
     gap: 2rem;
   }
-  
   
   .venueDescription {
     font-size: 0.9rem;

@@ -50,9 +50,25 @@ export default function ArtworksPage() {
           })
         );
 
-        // Shuffle artworks for variety
-        const shuffledArtworks = artworksWithArtists.sort(() => Math.random() - 0.5);
-        setArtworks(shuffledArtworks);
+        // Group artworks by artist
+        const groupedArtworks = artworksWithArtists.reduce((groups, artwork) => {
+          const artistName = artwork.artist?.name || 'Unknown Artist';
+          if (!groups[artistName]) {
+            groups[artistName] = [];
+          }
+          groups[artistName].push(artwork);
+          return groups;
+        }, {});
+
+        // Convert grouped object to array and sort artists alphabetically
+        const sortedGroups = Object.keys(groupedArtworks)
+          .sort()
+          .map(artistName => ({
+            artistName,
+            artworks: groupedArtworks[artistName]
+          }));
+
+        setArtworks(sortedGroups);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching artworks:", error);
@@ -85,43 +101,59 @@ export default function ArtworksPage() {
                   <p>Loading artworks...</p>
                 </div>
               ) : (
-                <div className={styles.artworks_grid}>
-                  {artworks.map((artwork) => (
-                    <div key={artwork.id} className={styles.artwork_card}>
-                      <Link href={`/artworks/${artwork.slug}`} className={styles.artwork_link}>
-                        <div className={styles.artwork_image_container}>
-                          <Image
-                            src={artwork.url}
-                            alt={artwork.title}
-                            width={300}
-                            height={300}
-                            className={styles.artwork_image}
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className={styles.artwork_info}>
-                          <h3 className={styles.artwork_title}>{artwork.title}</h3>
-                          {artwork.artist && (
-                            <p className={styles.artwork_artist}>
-                              <Link href={`/artists/${artwork.artist.slug}`} className={styles.artist_link}>
-                                {artwork.artist.name}
-                              </Link>
-                            </p>
-                          )}
-                          {artwork.availability_status && (
-                            <p className={styles.artwork_availability} style={{ 
-                              fontWeight: "400", 
-                              fontSize: "0.9rem", 
-                              color: artwork.availability_status === "SOLD" ? "#e74c3c" : 
-                                     artwork.availability_status === "FOR_SALE" ? "#27ae60" :
-                                     artwork.availability_status === "ON_AUCTION" ? "#f39c12" :
-                                     artwork.availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
-                            }}>
-                              {artwork.availability_status.replace(/_/g, ' ')}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
+                <div className={styles.artworks_container}>
+                  {artworks.map((group) => (
+                    <div key={group.artistName} className={styles.artist_section}>
+                      <h2 className={styles.artist_section_title} style={{
+                        fontSize: '2rem',
+                        fontFamily: 'var(--font-lovelt)',
+                        marginBottom: '2rem',
+                        marginTop: '3rem',
+                        textAlign: 'center',
+                        color: '#333'
+                      }}>
+                        {group.artistName}
+                      </h2>
+                      <div className={styles.artworks_grid}>
+                        {group.artworks.map((artwork) => (
+                          <div key={artwork.id} className={styles.artwork_card}>
+                            <Link href={`/artworks/${artwork.slug}`} className={styles.artwork_link}>
+                              <div className={styles.artwork_image_container}>
+                                <Image
+                                  src={artwork.url}
+                                  alt={artwork.title}
+                                  width={300}
+                                  height={300}
+                                  className={styles.artwork_image}
+                                  loading="lazy"
+                                />
+                              </div>
+                              <div className={styles.artwork_info}>
+                                <h3 className={styles.artwork_title}>{artwork.title}</h3>
+                                {artwork.artist && (
+                                  <p className={styles.artwork_artist}>
+                                    <Link href={`/artists/${artwork.artist.slug}`} className={styles.artist_link}>
+                                      {artwork.artist.name}
+                                    </Link>
+                                  </p>
+                                )}
+                                {artwork.availability_status && (
+                                  <p className={styles.artwork_availability} style={{ 
+                                    fontWeight: "400", 
+                                    fontSize: "0.9rem", 
+                                    color: artwork.availability_status === "SOLD" ? "#e74c3c" : 
+                                           artwork.availability_status === "FOR_SALE" ? "#27ae60" :
+                                           artwork.availability_status === "ON_AUCTION" ? "#f39c12" :
+                                           artwork.availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
+                                  }}>
+                                    {artwork.availability_status.replace(/_/g, ' ')}
+                                  </p>
+                                )}
+                              </div>
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
