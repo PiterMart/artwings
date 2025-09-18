@@ -117,7 +117,7 @@ export default function Home() {
         />
         <div className={styles.tagline}>
           {/* <p className={styles.taglineText}>Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.</p> */}
-          <p className={styles.taglineSubtext}>Resistance, remembrance, and reimagination. </p>
+          {/* <p className={styles.taglineSubtext}>Resistance, remembrance, and reimagination. </p> */}
         </div>
       </div>
       {/* Exhibition Flyer Section */}

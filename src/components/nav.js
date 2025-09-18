@@ -80,7 +80,7 @@ export default function Nav() {
         <div className={`${styles.nav} ${isVisible ? styles.nav_visible : styles.nav_hidden}`}>
             <Link href="/">
                 <Image
-                    src="/artwingslogo.png"
+                    src="/ARTWINGS BLACK.png"
                     alt="Artwings"
                     width={120}
                     height={48}
