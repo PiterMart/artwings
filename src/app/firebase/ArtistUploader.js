@@ -46,6 +46,7 @@ export default function ArtistUploader() {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState(null);
   const [cvFile, setCvFile] = useState(null);
+  const [artworkImageUpdates, setArtworkImageUpdates] = useState({});
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -189,6 +190,80 @@ export default function ArtistUploader() {
     }
   };
 
+  const updateArtworkImages = async (artistSlug, artworkSlug, artworkId, imageUpdates, currentArtwork) => {
+    try {
+      const updateData = {};
+      
+      // Handle main image update
+      if (imageUpdates.mainImage instanceof File) {
+        // Delete old main image if it exists
+        if (currentArtwork.url) {
+          try {
+            const oldMainRef = ref(storage, currentArtwork.url);
+            await deleteObject(oldMainRef);
+          } catch (deleteError) {
+            console.warn("Could not delete old main image:", deleteError);
+          }
+        }
+        
+        const compressedMain = await imageCompression(imageUpdates.mainImage, {
+          maxSizeMB: 1.5,
+          maxWidthOrHeight: 2000,
+          useWebWorker: true
+        });
+        
+        const mainRef = ref(storage, `artists/${artistSlug}/artworks/${artworkSlug}/${artworkSlug}`);
+        await uploadBytes(mainRef, compressedMain);
+        const mainUrl = await getDownloadURL(mainRef);
+        updateData.url = mainUrl;
+      }
+      
+      // Handle detail images update
+      if (imageUpdates.detailImages && imageUpdates.detailImages.length > 0) {
+        // Delete old detail images if they exist
+        if (currentArtwork.images && currentArtwork.images.length > 0) {
+          for (const oldDetailUrl of currentArtwork.images) {
+            try {
+              const oldDetailRef = ref(storage, oldDetailUrl);
+              await deleteObject(oldDetailRef);
+            } catch (deleteError) {
+              console.warn("Could not delete old detail image:", deleteError);
+            }
+          }
+        }
+        
+        const detailUrls = [];
+        for (let imgIndex = 0; imgIndex < imageUpdates.detailImages.length; imgIndex++) {
+          const imageFile = imageUpdates.detailImages[imgIndex];
+          const compressedDetail = await imageCompression(imageFile, {
+            maxSizeMB: 1.5,
+            maxWidthOrHeight: 2000,
+            useWebWorker: true
+          });
+          
+          const detailRef = ref(
+            storage, 
+            `artists/${artistSlug}/artworks/${artworkSlug}/details/${artworkSlug}_detail_${imgIndex + 1}`
+          );
+          await uploadBytes(detailRef, compressedDetail);
+          const detailUrl = await getDownloadURL(detailRef);
+          detailUrls.push(detailUrl);
+        }
+        updateData.images = detailUrls;
+      }
+      
+      // Update the artwork document in Firestore
+      if (Object.keys(updateData).length > 0) {
+        await updateDoc(doc(firestore, "artworks", artworkId), updateData);
+      }
+      
+      return updateData;
+    } catch (error) {
+      console.error("Artwork image update failed:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
@@ -291,6 +366,14 @@ export default function ArtistUploader() {
               extras: artwork.extras || []
             };
             
+            // Check if there are image updates for this artwork
+            const imageUpdates = artworkImageUpdates[artwork.id];
+            if (imageUpdates) {
+              const artworkSlug = `${slug}_${generateSlug(artwork.title)}`;
+              const imageUpdateData = await updateArtworkImages(slug, artworkSlug, artwork.id, imageUpdates, artwork);
+              Object.assign(artworkUpdateData, imageUpdateData);
+            }
+            
             await updateDoc(doc(firestore, "artworks", artwork.id), artworkUpdateData);
             artworkIds.push(artwork.id);
           } catch (updateError) {
@@ -377,6 +460,7 @@ export default function ArtistUploader() {
     setProfilePictureFile(null);
     setProfilePicturePreview(null);
     setCvFile(null);
+    setArtworkImageUpdates({});
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   useEffect(() => {
@@ -422,6 +506,31 @@ export default function ArtistUploader() {
       };
       return updated;
     });
+  };
+
+  const handleArtworkMainImageChange = (artworkId, file) => {
+    if (file instanceof File) {
+      setArtworkImageUpdates(prev => ({
+        ...prev,
+        [artworkId]: {
+          ...prev[artworkId],
+          mainImage: file
+        }
+      }));
+    }
+  };
+
+  const handleArtworkDetailImagesChange = (artworkId, files) => {
+    const fileArray = Array.from(files).filter(file => file instanceof File);
+    if (fileArray.length > 0) {
+      setArtworkImageUpdates(prev => ({
+        ...prev,
+        [artworkId]: {
+          ...prev[artworkId],
+          detailImages: fileArray
+        }
+      }));
+    }
   };
 
   const handleChange = (e) => {
@@ -896,6 +1005,57 @@ export default function ArtistUploader() {
               ))}
             </div>
           )}
+
+          {/* Image Update Section */}
+          <div className={styles.imageUpdateSection}>
+            <h4>Update Images</h4>
+            
+            {/* Main Image Update */}
+            <div className={styles.uploadGroup}>
+              <label>Update Main Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleArtworkMainImageChange(artwork.id, e.target.files[0])}
+              />
+              {artworkImageUpdates[artwork.id]?.mainImage && (
+                <div className={styles.imagePreview}>
+                  <p>New Main Image Preview:</p>
+                  <img
+                    src={URL.createObjectURL(artworkImageUpdates[artwork.id].mainImage)}
+                    alt="New main image preview"
+                    className={styles.previewImage}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Detail Images Update */}
+            <div className={styles.uploadGroup}>
+              <label>Update Detail Images</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => handleArtworkDetailImagesChange(artwork.id, e.target.files)}
+              />
+              {artworkImageUpdates[artwork.id]?.detailImages && artworkImageUpdates[artwork.id].detailImages.length > 0 && (
+                <div className={styles.imagePreview}>
+                  <p>New Detail Images Preview:</p>
+                  <div className={styles.detailImages}>
+                    {artworkImageUpdates[artwork.id].detailImages.map((file, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={URL.createObjectURL(file)}
+                        alt={`New detail preview ${imgIndex + 1}`}
+                        className={styles.previewImage}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           <button type="button" onClick={() => deleteArtwork(index)}>
             Delete

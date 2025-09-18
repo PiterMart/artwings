@@ -1267,7 +1267,48 @@
 .mainPreview img {
   max-width: 400px;
   max-height: 400px;
-  object-fit: contain;
+}
+
+/* Image Update Section Styles */
+.imageUpdateSection {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.imageUpdateSection h4 {
+  margin: 0 0 15px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.imagePreview {
+  margin-top: 10px;
+}
+
+.imagePreview p {
+  margin: 5px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.previewImage {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin: 5px;
+  border: 1px solid #ddd;
+}
+
+.imagePreview .detailImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .detailPreviews {
