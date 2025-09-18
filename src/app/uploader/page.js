@@ -8,6 +8,7 @@ import ExhibitionUploader from "../firebase/ExhibitionUploader";
 import FairUploader from "../firebase/FairUpdater";
 import HeadquarterEditor from "../firebase/HeadquarterEditor";
 import ArtistsList from "../firebase/ArtistsList";
+import { runMigration } from "../firebase/migrateArtworks";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("artist");
@@ -88,6 +89,7 @@ export default function Home() {
           <button onClick={() => setActiveSection("artist")} className={styles.subtitle}>Artists</button>
           <button onClick={() => setActiveSection("artistsList")} className={styles.subtitle}>View All Artists</button>
           <button onClick={() => setActiveSection("exhibition")} className={styles.subtitle}>Exhibitions</button>
+          {/* <button onClick={runMigration} className={styles.subtitle} style={{ backgroundColor: "#ff6b6b", color: "white" }}>Migrate Artworks</button> */}
           {/* <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
           <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button> */}
         </div>
