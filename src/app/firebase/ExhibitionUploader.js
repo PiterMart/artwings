@@ -682,34 +682,37 @@ const uploadImages = async (slug) => {
         onChange={handleInputChange}
       />
 
-      <div>
-
-      {artists.map((artist) => (
-      <div key={artist.slug}>
-        <input
-          type="checkbox"
-          checked={selectedArtists.includes(artist.slug)}
-          onChange={() => handleArtistSelection(artist)}
-        />
-        <label>{artist.name}</label>
-        {selectedArtists.includes(artist.slug) && (
-          <div>
-            <h4>Select Artworks</h4>
-            {artist.artworks.map((artwork) => (
-            <div key={artwork.id}>
+      <div className={styles.exhibitionArtists}>
+        {artists.map((artist) => (
+          <div key={artist.slug} className={styles.artistBox}>
+            <div className={styles.artistHeaderRow}>
+              <label className={styles.itemLabel}>{artist.name}</label>
               <input
+                className={styles.itemCheckbox}
                 type="checkbox"
-                checked={selectedArtworks[artist.slug]?.includes(artwork.id) || false} // Use artwork.id
-                onChange={() => handleArtworkSelection(artist.slug, artwork.id)} // Pass artwork.id
+                checked={selectedArtists.includes(artist.slug)}
+                onChange={() => handleArtistSelection(artist)}
               />
-              <label>{artwork.title}</label> {/* Display artwork title */}
             </div>
-          ))}
+            {selectedArtists.includes(artist.slug) && (
+              <div className={styles.artworksList}>
+                <h4>Select Artworks</h4>
+                {artist.artworks.map((artwork) => (
+                  <div key={artwork.id} className={styles.artworkItem}>
+                    <label className={styles.itemLabel}>{artwork.title}</label>
+                    <input
+                      className={styles.itemCheckbox}
+                      type="checkbox"
+                      checked={selectedArtworks[artist.slug]?.includes(artwork.id) || false}
+                      onChange={() => handleArtworkSelection(artist.slug, artwork.id)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
-    ))}
-    </div>
 
       <div>
         <p>Exhibition Images</p>
