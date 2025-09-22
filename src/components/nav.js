@@ -15,7 +15,7 @@ export default function Nav() {
     const pages = [
         { name: 'Artworks', path: '/artworks' },
         { name: 'Artists', path: '/artists' },
-        { name: 'Exhibitions', path: '/', section: 'exhibitions' },
+        { name: 'Exhibitions', path: '/exhibitions' },
         { name: 'About', path: '/', section: 'about' },
         { name: 'Contact', path: '/', section: 'contact' },
     ];
