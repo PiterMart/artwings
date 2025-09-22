@@ -94,7 +94,7 @@ export default function ArtworksPage() {
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
           <div className={styles.artworks_page}>
             <div className={styles.artworks_header}>
-              <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1>
+              {/* <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1> */}
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>
@@ -103,14 +103,16 @@ export default function ArtworksPage() {
               ) : (
                 <div className={styles.artworks_container}>
                   {artworks.map((group) => (
-                    <div key={group.artistName} className={styles.artist_section}>
-                      <h2 className={styles.artist_section_title} style={{
-                        fontSize: '2rem',
-                        fontFamily: 'var(--font-lovelt)',
-                        marginBottom: '2rem',
-                        marginTop: '3rem',
+                    <div key={group.artistName} className={styles.artist_artworks}>
+                      <h2 style={{
+                        fontSize: '1rem',
+                        fontFamily: 'Inter',
+                        padding: '0.5rem',
                         textAlign: 'center',
-                        color: '#333'
+                        color: '#333',
+                        fontWeight: '500',
+                        borderBottom: '1px solid gray',
+                        borderTop: '1px solid gray',
                       }}>
                         {group.artistName}
                       </h2>
@@ -132,9 +134,9 @@ export default function ArtworksPage() {
                                 <h3 className={styles.artwork_title}>{artwork.title}</h3>
                                 {artwork.artist && (
                                   <p className={styles.artwork_artist}>
-                                    <Link href={`/artists/${artwork.artist.slug}`} className={styles.artist_link}>
+                                    {/* <Link href={`/artists/${artwork.artist.slug}`} className={styles.artist_link}>
                                       {artwork.artist.name}
-                                    </Link>
+                                    </Link> */}
                                   </p>
                                 )}
                                 {artwork.availability_status && (

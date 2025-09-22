@@ -99,7 +99,7 @@ export default function ArtistsPage() {
       </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artists</p>
+              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'Inter', marginBottom: '2rem', paddingTop: '1rem', color: 'gray'}}>ARTISTS</p>
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>
