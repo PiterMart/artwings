@@ -4,8 +4,8 @@
 
 /* Margin Images */
 .leftMargin {
-  position: fixed;
-  margin-top: 20vh;
+  position: absolute;
+  margin-top: 3vh;
   left: 0;
   top: 0;
   height: 100vh;
@@ -26,16 +26,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0.20;
+  opacity: 0.10;
 }
 
 
   .rightMargin {
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
     height: 100vh;  
-    margin-top: 20vh;
+    margin-top: 3vh;
     z-index: -1;
     display: flex;
     justify-content: center;
@@ -583,7 +583,6 @@
   flex-direction: row;
   align-items: flex-start;
   gap: 10rem;
-  margin-bottom: 3rem;
   padding-top: 2rem;
   /* Apply the same radial reveal effect with very smooth edges and longer delay */
   mask-image: radial-gradient(circle, white 0%, white 30%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.7) 65%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0.1) 95%, transparent 100%);
@@ -677,7 +676,23 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 600px;
+  height: 300px;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 24px, black calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 24px, black calc(100% - 24px), transparent);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  /* Hide scrollbar cross-browser while keeping scroll behavior */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
+/* WebKit browsers */
+.artist_page_contents_bio::-webkit-scrollbar{ display: none; }
 .artist_page_contents_obras{
   display: flex;
   flex-direction: column;
@@ -1213,6 +1228,9 @@
 }
 
 @media (max-width: 800px) {
+  .name_list{
+    padding-top: 12rem;
+  }
   .homepage_container{
     background: linear-gradient(
       to bottom,
@@ -1718,10 +1736,25 @@
   max-width: 1400px;
   margin: 0 auto;
   justify-content: center;
+  transition: all 0.4s ease;
+  overflow: hidden;
 }
-.artworks_container{
+
+.artworks_grid.collapsed {
+  max-height: 0;
+  padding: 0 1rem;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.artworks_grid.expanded {
+  max-height: 2000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+/* .artworks_container{
   border: 1px solid gray;
-}
+} */
 
 .artwork_card {
   background: transparent;
@@ -1828,6 +1861,30 @@
     gap: 1rem;
     justify-content: center;
   }
+
+  .featured_artwork_section {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .featured_artwork_image {
+    flex: none;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .featured_title {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+
+  .featured_artwork_name,
+  .featured_artist_name {
+    text-align: center;
+  }
   
   .artwork_image_container {
     height: 250px;
@@ -1860,6 +1917,43 @@
   .artworks_title {
     font-size: 2rem;
   }
+
+  .toggle_all_button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .clickable_header {
+    padding: 0.75rem 0.25rem;
+  }
+
+  .artist_name_header {
+    font-size: 0.9rem;
+  }
+
+  .featured_artwork_section {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .featured_artwork_image {
+    flex: none;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .featured_title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .featured_artwork_name,
+  .featured_artist_name {
+    text-align: center;
+  }
   
   /* Exhibition List Small Mobile Styles */
   .exhibition_list {
@@ -1887,6 +1981,175 @@
   .address_label {
     font-size: 0.85rem;
   }
+}
+
+/* Artist Name Header with Faded Underline */
+.artist_name_header {
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  padding: 0.5rem;
+  text-align: center;
+  color: #333;
+  font-weight: 400;
+  position: relative;
+  margin: 0;
+}
+
+/* Clickable Artist Header */
+.clickable_header {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  padding: 1rem 0.5rem;
+}
+
+.clickable_header:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.artist_name_text {
+  flex: 1;
+}
+
+.expand_icon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  color: #666;
+}
+
+.expand_icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.expand_icon.expanded {
+  transform: rotate(0deg);
+}
+
+/* Featured Artwork Section */
+.featured_artwork_section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  padding: 2rem;
+  /* background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); */
+  border-radius: 12px;
+  /* backdrop-filter: blur(10px); */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.featured_artwork_image {
+  flex: 0 0 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.featured_artwork_image:hover {
+  transform: scale(1.02);
+}
+
+.featured_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.featured_artwork_image:hover .featured_image {
+  transform: scale(1.05);
+}
+
+.featured_artwork_text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.featured_title {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.featured_artwork_name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+.featured_artist_name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #888;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Artworks Controls */
+.artworks_controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.toggle_all_button {
+  background: transparent;
+  border: 1px solid #333;
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.toggle_all_button:hover {
+  background-color: #333;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.artist_name_header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 15%,
+    rgba(0, 0, 0, 1) 50%,
+    rgba(0, 0, 0, 0.3) 85%,
+    transparent 100%
+  );
+  opacity: 1;
 }
 
 /* Artists List Styles */

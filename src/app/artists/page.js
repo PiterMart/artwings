@@ -77,7 +77,7 @@ export default function ArtistsPage() {
       <main className={styles.main}>
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
         {/* Left margin image */}
-        <div className={styles.leftMargin}>
+        <div className={styles.leftMargin} style={{position: 'absolute', transform: 'scaleY(-1)'}}>
         <Image
           src="/maiden 11.png"
           alt="Left margin decoration"
@@ -88,7 +88,16 @@ export default function ArtistsPage() {
       </div>
       
       {/* Right margin image */}
-      <div className={styles.rightMargin}>
+      <div className={styles.rightMargin} style={{position: 'absolute'}}>
+        <Image
+          src="/maiden 11.png"
+          alt="Right margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage}
+        />
+      </div>
+      <div className={styles.rightMargin} style={{position: 'absolute', marginTop: '62em'}}>
         <Image
           src="/maiden 11.png"
           alt="Right margin decoration"
@@ -99,7 +108,7 @@ export default function ArtistsPage() {
       </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'Inter', marginBottom: '2rem', paddingTop: '1rem', color: 'gray'}}>ARTISTS</p>
+              {/* <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'Inter', marginBottom: '2rem', paddingTop: '1rem', color: 'gray'}}>ARTISTS</p> */}
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>

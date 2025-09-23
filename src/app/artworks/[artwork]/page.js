@@ -95,7 +95,7 @@ export default function Artwork({ params }) {
       <main className={styles.main}>
         <div className={styles.artwork_page}>
           <div className={styles.artwork_details}>
-            <h1 className={styles.title} style={{ fontWeight: "400", fontFamily: 'Inter, sans-serif', fontSize: '3rem' }}>{title}</h1>
+            <p className={styles.title} style={{ fontWeight: "400", fontFamily: 'Inter, sans-serif', fontSize: '1.5rem' }}>{title}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {artist ? (
                 <Link href={`/artists/${artist.slug}`}>
@@ -111,12 +111,12 @@ export default function Artwork({ params }) {
               {availability_status && (
                 <p style={{ 
                   fontWeight: "400", 
-                  fontSize: "0.9rem", 
+                  fontSize: "0.7rem", 
                   fontFamily: 'Inter, sans-serif',
-                  color: availability_status === "SOLD" ? "#e74c3c" : 
-                         availability_status === "FOR_SALE" ? "#27ae60" :
-                         availability_status === "ON_AUCTION" ? "#f39c12" :
-                         availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
+                  color: availability_status === "SOLD" ? "#707984" : 
+                         availability_status === "FOR_SALE" ? "#707984" :
+                         availability_status === "ON_AUCTION" ? "#707984" :
+                         availability_status === "ON_HOLD" ? "#9b59b6" : "#707984"
                 }}>
                   {availability_status.replace(/_/g, ' ')}
                 </p>
@@ -130,12 +130,13 @@ export default function Artwork({ params }) {
                     padding: "0.875rem 1.75rem",
                     background: "none",
                     color: "#707984",
-                    border: "1px solid #707984",
+                    // border: "1px solid #707984",
                     cursor: "pointer",
                     fontSize: "1rem",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: "300",
-                    transition: "all 0.3s ease"
+                    transition: "all 0.3s ease",
+                    marginRight: "0",
                   }}
                   onMouseOver={(e) => {
                     e.target.style.color = "#000";
@@ -167,7 +168,7 @@ export default function Artwork({ params }) {
             {isImageLoading && (
               <div className={styles.image_loading_placeholder}>
                 <div className={styles.loading_spinner}></div>
-                <p style={{ fontFamily: 'Inter, sans-serif' }}>Loading image...</p>
+                <p style={{ fontFamily: 'var(--font-lovelt)' }}>Loading image...</p>
               </div>
             )}
             <img
@@ -176,7 +177,7 @@ export default function Artwork({ params }) {
               style={{ 
                 width: "100%", 
                 height: "auto", 
-                maxHeight: "80vh", 
+                maxWidth: "500px",
                 cursor: "pointer",
                 display: isImageLoading ? "none" : "block"
               }}

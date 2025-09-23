@@ -10,6 +10,8 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 export default function ArtworksPage() {
   const [artworks, setArtworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedArtists, setExpandedArtists] = useState(new Set());
+  const [featuredArtwork, setFeaturedArtwork] = useState(null);
 
   useEffect(() => {
     async function fetchArtworks() {
@@ -69,6 +71,14 @@ export default function ArtworksPage() {
           }));
 
         setArtworks(sortedGroups);
+        
+        // Select a random featured artwork from all artworks
+        const allArtworks = artworksWithArtists;
+        if (allArtworks.length > 0) {
+          const randomIndex = Math.floor(Math.random() * allArtworks.length);
+          setFeaturedArtwork(allArtworks[randomIndex]);
+        }
+        
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching artworks:", error);
@@ -79,8 +89,27 @@ export default function ArtworksPage() {
     fetchArtworks();
   }, []);
 
-  
-  
+  const toggleArtistExpansion = (artistName) => {
+    setExpandedArtists(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(artistName)) {
+        newSet.delete(artistName);
+      } else {
+        newSet.add(artistName);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleAllArtists = () => {
+    if (expandedArtists.size === artworks.length) {
+      // All are expanded, collapse all
+      setExpandedArtists(new Set());
+    } else {
+      // Some or none are expanded, expand all
+      setExpandedArtists(new Set(artworks.map(group => group.artistName)));
+    }
+  };
 
   const currentPath = usePathname();
 
@@ -102,21 +131,54 @@ export default function ArtworksPage() {
                 </div>
               ) : (
                 <div className={styles.artworks_container}>
+                  {/* Featured Artwork Section */}
+                  {featuredArtwork && (
+                    <div className={styles.featured_artwork_section}>
+                      <div className={styles.featured_artwork_image}>
+                        <Link href={`/artworks/${featuredArtwork.slug}`}>
+                          <Image
+                            src={featuredArtwork.url}
+                            alt={featuredArtwork.title}
+                            width={400}
+                            height={400}
+                            className={styles.featured_image}
+                            priority={true}
+                            loading="eager"
+                          />
+                        </Link>
+                      </div>
+                      <div className={styles.featured_artwork_text}>
+                        {featuredArtwork.title && (
+                          <p className={styles.featured_artwork_name}>&quot;{featuredArtwork.title}&quot;</p>
+                        )}
+                        {featuredArtwork.artist && (
+                          <p className={styles.featured_artist_name}>by {featuredArtwork.artist.name}</p>
+                        )}
+                          <h2 className={styles.featured_title} style={{fontFamily: 'var(--font-lovelt)'}}>The Complete Artwings Collection</h2>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* <div className={styles.artworks_controls}>
+                    <button 
+                      className={styles.toggle_all_button}
+                      onClick={toggleAllArtists}
+                    >
+                      {expandedArtists.size === artworks.length ? 'Hide All' : 'Show All'}
+                    </button>
+                  </div> */}
                   {artworks.map((group) => (
                     <div key={group.artistName} className={styles.artist_artworks}>
-                      <h2 style={{
-                        fontSize: '1rem',
-                        fontFamily: 'Inter',
-                        padding: '0.5rem',
-                        textAlign: 'center',
-                        color: '#333',
-                        fontWeight: '500',
-                        borderBottom: '1px solid gray',
-                        borderTop: '1px solid gray',
-                      }}>
-                        {group.artistName}
+                      <h2 
+                        className={`${styles.artist_name_header} ${styles.clickable_header}`}
+                        onClick={() => toggleArtistExpansion(group.artistName)}
+                      >
+                        <span className={styles.artist_name_text}>{group.artistName}</span>
+                        {/* <span className={`${styles.expand_icon} ${expandedArtists.has(group.artistName) ? styles.expanded : styles.collapsed}`}>
+                        𓇻
+                        </span> */}
                       </h2>
-                      <div className={styles.artworks_grid}>
+                      <div className={`${styles.artworks_grid} ${expandedArtists.has(group.artistName) ? styles.expanded : styles.collapsed}`}>
                         {group.artworks.map((artwork) => (
                           <div key={artwork.id} className={styles.artwork_card}>
                             <Link href={`/artworks/${artwork.slug}`} className={styles.artwork_link}>
@@ -144,8 +206,8 @@ export default function ArtworksPage() {
                                     fontWeight: "400", 
                                     fontSize: "0.9rem", 
                                     color: artwork.availability_status === "SOLD" ? "#e74c3c" : 
-                                           artwork.availability_status === "FOR_SALE" ? "#27ae60" :
-                                           artwork.availability_status === "ON_AUCTION" ? "#f39c12" :
+                                           artwork.availability_status === "FOR_SALE" ? "#707984" :
+                                           artwork.availability_status === "ON_AUCTION" ? "#707984" :
                                            artwork.availability_status === "ON_HOLD" ? "#9b59b6" : "#7f8c8d"
                                   }}>
                                     {artwork.availability_status.replace(/_/g, ' ')}
