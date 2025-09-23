@@ -149,7 +149,7 @@ export default function ArtworksPage() {
                       </div>
                       <div className={styles.featured_artwork_text}>
                         {featuredArtwork.title && (
-                          <p className={styles.featured_artwork_name}>"{featuredArtwork.title}"</p>
+                          <p className={styles.featured_artwork_name}>&quot;{featuredArtwork.title}&quot;</p>
                         )}
                         {featuredArtwork.artist && (
                           <p className={styles.featured_artist_name}>by {featuredArtwork.artist.name}</p>
