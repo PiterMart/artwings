@@ -121,7 +121,7 @@ export default function Home() {
         </div>
       </div>
       {/* Exhibition Flyer Section */}
-      <div id="exhibitions" className={styles.exhibitionSection}>
+      {/* <div id="exhibitions" className={styles.exhibitionSection}>
       <p className={styles.title2}>Current Exhibition</p>
       <p className={styles.exhibitionTitle}>METAXY</p>
         <div className={styles.flyerContainer}>
@@ -137,9 +137,9 @@ export default function Home() {
             Your browser does not support the video tag.
           </video>
         </div>
-      </div>
+      </div> */}
       <div className={styles.page_container}>
-          <div className={styles.homepage_container} style={{paddingTop: '26rem'}}>
+          <div className={styles.homepage_container} style={{paddingTop: '0rem'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', margin: "auto", maxWidth: '666px', marginTop: '5rem'}}>
 
             <div id="about">

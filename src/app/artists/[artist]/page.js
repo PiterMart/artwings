@@ -201,11 +201,11 @@ export default function Artist({ params }) {
                 {/* <div>
                   <p style={{ fontSize: '1.5rem', lineHeight: "1.75rem", textAlign: 'left'}}>{artist.bio[0]}</p>
                 </div> */}
+                                  <p className={styles.title} style={{marginBottom: '-1rem', marginTop: '1rem', fontSize: '2rem', textAlign: 'center'}}>BIO</p>
                 <div
                   className={styles.artist_page_contents_bio}
                   id="bio"
                 >
-                  <p className={styles.title} style={{marginBottom: '1rem', marginTop: '1rem'}}>BIO</p>
                   {artist.bio.map((paragraph, index) => (
                     <div key={index}>
                       <p>{paragraph}</p>
