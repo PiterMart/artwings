@@ -120,6 +120,26 @@ export default function ArtworksPage() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+      <div className={styles.leftMargin}>
+        <Image
+          src="/maiden 11.png"
+          alt="Left margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage}
+        />
+      </div>
+      
+      {/* Right margin image */}
+      <div className={styles.rightMargin}>
+        <Image
+          src="/maiden 11.png"
+          alt="Right margin decoration"
+          width={200}
+          height={800}
+          className={styles.marginImage}
+        />
+      </div>
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
           <div className={styles.artworks_page}>
             <div className={styles.artworks_header}>
@@ -148,12 +168,15 @@ export default function ArtworksPage() {
                         </Link>
                       </div>
                       <div className={styles.featured_artwork_text}>
+                        <div>
                         {featuredArtwork.title && (
                           <p className={styles.featured_artwork_name}>&quot;{featuredArtwork.title}&quot;</p>
                         )}
                         {featuredArtwork.artist && (
                           <p className={styles.featured_artist_name}>by {featuredArtwork.artist.name}</p>
                         )}
+
+                        </div>
                           <h2 className={styles.featured_title} style={{fontFamily: 'var(--font-lovelt)'}}>The Complete Artwings Collection</h2>
                       </div>
                     </div>
@@ -167,6 +190,7 @@ export default function ArtworksPage() {
                       {expandedArtists.size === artworks.length ? 'Hide All' : 'Show All'}
                     </button>
                   </div> */}
+
                   {artworks.map((group) => (
                     <div key={group.artistName} className={styles.artist_artworks}>
                       <h2 
@@ -174,9 +198,11 @@ export default function ArtworksPage() {
                         onClick={() => toggleArtistExpansion(group.artistName)}
                       >
                         <span className={styles.artist_name_text}>{group.artistName}</span>
+
                         {/* <span className={`${styles.expand_icon} ${expandedArtists.has(group.artistName) ? styles.expanded : styles.collapsed}`}>
                         𓇻
                         </span> */}
+                        
                       </h2>
                       <div className={`${styles.artworks_grid} ${expandedArtists.has(group.artistName) ? styles.expanded : styles.collapsed}`}>
                         {group.artworks.map((artwork) => (

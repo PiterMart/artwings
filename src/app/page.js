@@ -348,7 +348,7 @@ export default function Home() {
       </div>
       
       {/* Spacer for layout */}
-      <div className={styles.parallaxSpacer}></div>
+      {/* <div className={styles.parallaxSpacer}></div> */}
 
       <div id="contact" className={styles.contactSection}>
         <div className={styles.contactContainer}>
