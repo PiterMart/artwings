@@ -73,11 +73,11 @@ export default function ArtistsPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{marginTop: '0vh'}}>
       <main className={styles.main}>
-        <div className={styles.page_container} style={{marginBottom: "10rem"}}>
+        <div className={styles.page_container}>
         {/* Left margin image */}
-        <div className={styles.leftMargin} style={{position: 'absolute', transform: 'scaleY(-1)'}}>
+        <div className={styles.leftMargin} style={{position: 'absolute', transform: 'scaleY(-1)', position: 'fixed'}}>
         <Image
           src="/maiden 11.png"
           alt="Left margin decoration"
@@ -88,16 +88,7 @@ export default function ArtistsPage() {
       </div>
       
       {/* Right margin image */}
-      <div className={styles.rightMargin} style={{position: 'absolute'}}>
-        <Image
-          src="/maiden 11.png"
-          alt="Right margin decoration"
-          width={200}
-          height={800}
-          className={styles.marginImage}
-        />
-      </div>
-      <div className={styles.rightMargin} style={{position: 'absolute', marginTop: '62em'}}>
+      <div className={styles.rightMargin} style={{position: 'absolute', position: 'fixed'}}>
         <Image
           src="/maiden 11.png"
           alt="Right margin decoration"
