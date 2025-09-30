@@ -18,6 +18,28 @@
 .artwork_image_container{
     max-width: 90%;
 }
+
+.secondary_images_container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    max-width: 500px;
+}
+
+.secondary_image{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: 4px;
+}
+
+.secondary_image:hover{
+    transform: scale(1.05);
+    opacity: 0.9;
+}
 .back_link{
     margin-top: 5rem;
     align-self: flex-end;
@@ -59,6 +81,9 @@
         margin-bottom: 5rem;
     }
     .artwork_details{
+        max-width: 100%;
+    }
+    .secondary_images_container{
         max-width: 100%;
     }
 }

@@ -88,7 +88,11 @@ export default function Artwork({ params }) {
   if (artwork === undefined) return <p style={{ fontFamily: 'Inter, sans-serif' }}>Loading...</p>; // Loading state for text content
   if (artwork === null) return <p style={{ fontFamily: 'Inter, sans-serif' }}>Error fetching artwork. Please try again.</p>;
 
-  const { title, url, date, medium, measurements, description, price, availability_status } = artwork;
+  const { title, url, images, date, medium, measurements, description, price, availability_status } = artwork;
+  
+  // Main image is the url field, secondary images are from the images array
+  const mainImage = url;
+  const secondaryImages = images && images.length > 0 ? images : [];
 
   return (
     <div className={styles.page}>
@@ -172,7 +176,7 @@ export default function Artwork({ params }) {
               </div>
             )}
             <img
-              src={url}
+              src={mainImage}
               alt={title}
               style={{ 
                 width: "100%", 
@@ -181,10 +185,25 @@ export default function Artwork({ params }) {
                 cursor: "pointer",
                 display: isImageLoading ? "none" : "block"
               }}
-              onClick={() => openLightbox(url, title)}
+              onClick={() => openLightbox(mainImage, title)}
               onLoad={() => setIsImageLoading(false)}
               onError={() => setIsImageLoading(false)}
             />
+            
+            {/* Secondary Images */}
+            {secondaryImages.length > 0 && (
+              <div className={styles.secondary_images_container}>
+                {secondaryImages.map((imgUrl, index) => (
+                  <img
+                    key={index}
+                    src={imgUrl}
+                    alt={`${title} - View ${index + 2}`}
+                    className={styles.secondary_image}
+                    onClick={() => openLightbox(imgUrl, `${title} - View ${index + 2}`)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
