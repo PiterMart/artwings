@@ -361,6 +361,88 @@
   font-weight: 400;
   text-align: right;
 }
+
+/* Navigation Button Styles */
+.navButton {
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+  width: auto;
+}
+
+.navButton:hover {
+  background-color: #333;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Container */
+.navContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Login Button */
+.loginButton {
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.loginButton:hover {
+  background-color: #000000;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Logout Button */
+.logoutButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.5rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #ff4444;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.25);
+}
 .paragraph{
   width: 70%;
   margin: auto;
@@ -1069,6 +1151,17 @@
     font-size: 3rem;
     text-align: center;
   }
+  
+  /* Responsive Navigation Buttons */
+  .navContainer {
+    gap: 0.75rem;
+    padding: 0 1rem;
+  }
+  
+  .navButton {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
   /* Keep images but adjust positioning for medium screens */
   .parallaxImage:nth-child(1) {
     left: 3%;
@@ -1609,6 +1702,24 @@
         margin: auto;
         text-align: center;
   }
+  
+  /* Mobile Navigation Buttons */
+  .navContainer {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .navButton {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .logoutButton {
+    top: 15px;
+    right: 15px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
   /* Image Gallery Mobile - 600px breakpoint */
   .parallaxGallery {
     height: auto;
@@ -1701,7 +1812,6 @@
   margin-top: 2rem;
   gap: 3rem;
   margin: auto;
-  padding-top: 10rem;
   position: relative;
   min-height: 60vh;
   width: 100%;

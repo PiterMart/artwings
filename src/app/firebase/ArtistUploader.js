@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { firestore, storage } from "./firebaseConfig";
 import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import styles from "../../styles/page.module.css";
+import styles from "../../styles/uploader.module.css";
 import imageCompression from 'browser-image-compression';
 
 export default function ArtistUploader() {
@@ -47,6 +47,8 @@ export default function ArtistUploader() {
   const [profilePicturePreview, setProfilePicturePreview] = useState(null);
   const [cvFile, setCvFile] = useState(null);
   const [artworkImageUpdates, setArtworkImageUpdates] = useState({});
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [isCvDragOver, setIsCvDragOver] = useState(false);
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -127,7 +129,7 @@ export default function ArtistUploader() {
     }
   };
 
-  const uploadProfilePicture = async (artistSlug) => {
+  const uploadProfilePicture = async (artistId) => {
     if (!(profilePictureFile instanceof File)) {
       return formData.profilePicture; // Return existing URL if no new file
     }
@@ -138,7 +140,7 @@ export default function ArtistUploader() {
         maxWidthOrHeight: 800
       });
       
-      const profilePicRef = ref(storage, `artists/${artistSlug}/profilePicture/${artistSlug}_profilePicture`);
+      const profilePicRef = ref(storage, `artists/${artistId}/profilePicture/${generateSlug(formData.name)}_profilePicture`);
       await uploadBytes(profilePicRef, compressedFile);
       return await getDownloadURL(profilePicRef);
     } catch (error) {
@@ -147,7 +149,7 @@ export default function ArtistUploader() {
     }
   };
 
-  const uploadArtworkImages = async (artistSlug, artworkSlug, artworkData) => {
+  const uploadArtworkImages = async (artistId, artworkId, artworkData) => {
     try {
       if (!(artworkData.file instanceof File)) {
         throw new Error("Invalid main artwork file");
@@ -160,7 +162,7 @@ export default function ArtistUploader() {
         useWebWorker: true
       });
       
-      const mainRef = ref(storage, `artists/${artistSlug}/artworks/${artworkSlug}/${artworkSlug}`);
+      const mainRef = ref(storage, `artists/${artistId}/artworks/${artworkId}/${artworkId}`);
       await uploadBytes(mainRef, compressedMain);
       const mainUrl = await getDownloadURL(mainRef);
   
@@ -176,7 +178,7 @@ export default function ArtistUploader() {
         
         const detailRef = ref(
           storage, 
-          `artists/${artistSlug}/artworks/${artworkSlug}/details/${artworkSlug}_detail_${imgIndex + 1}`
+          `artists/${artistId}/artworks/${artworkId}/details/${artworkId}_detail_${imgIndex + 1}`
         );
         await uploadBytes(detailRef, compressedDetail);
         const detailUrl = await getDownloadURL(detailRef);
@@ -190,7 +192,7 @@ export default function ArtistUploader() {
     }
   };
 
-  const updateArtworkImages = async (artistSlug, artworkSlug, artworkId, imageUpdates, currentArtwork) => {
+  const updateArtworkImages = async (artistId, artworkId, imageUpdates, currentArtwork) => {
     try {
       const updateData = {};
       
@@ -212,7 +214,7 @@ export default function ArtistUploader() {
           useWebWorker: true
         });
         
-        const mainRef = ref(storage, `artists/${artistSlug}/artworks/${artworkSlug}/${artworkSlug}`);
+        const mainRef = ref(storage, `artists/${artistId}/artworks/${artworkId}/${artworkId}`);
         await uploadBytes(mainRef, compressedMain);
         const mainUrl = await getDownloadURL(mainRef);
         updateData.url = mainUrl;
@@ -243,7 +245,7 @@ export default function ArtistUploader() {
           
           const detailRef = ref(
             storage, 
-            `artists/${artistSlug}/artworks/${artworkSlug}/details/${artworkSlug}_detail_${imgIndex + 1}`
+            `artists/${artistId}/artworks/${artworkId}/details/${artworkId}_detail_${imgIndex + 1}`
           );
           await uploadBytes(detailRef, compressedDetail);
           const detailUrl = await getDownloadURL(detailRef);
@@ -277,12 +279,12 @@ export default function ArtistUploader() {
       const artistId = selectedArtist || doc(collection(firestore, "artists")).id;
   
       // Upload profile picture
-      const profilePicUrl = await uploadProfilePicture(slug);
+      const profilePicUrl = await uploadProfilePicture(artistId);
   
       // Upload CV
       let cvUrl = formData.cvUrl || "";
       if (cvFile instanceof File) {
-        const cvRef = ref(storage, `artists/${slug}/documents/cv`);
+        const cvRef = ref(storage, `artists/${artistId}/cv/${generateSlug(formData.name)}_cv`);
         await uploadBytes(cvRef, cvFile);
         cvUrl = await getDownloadURL(cvRef);
       }
@@ -328,13 +330,13 @@ export default function ArtistUploader() {
       // Process existing artworks
       for (const artwork of existingArtworks) {
         if (!artwork.id) { // New artwork added in form
-          const artworkSlug = `${slug}_${generateSlug(artwork.title)}`;
-          const { mainUrl, detailUrls } = await uploadArtworkImages(slug, artworkSlug, artwork);
+          const artworkId = doc(collection(firestore, "artworks")).id;
+          const { mainUrl, detailUrls } = await uploadArtworkImages(artistId, artworkId, artwork);
           
           const artworkDoc = {
             artistId,
             artistSlug: slug,
-            artworkSlug,
+            artworkSlug: artworkId, // Use artwork ID for consistency with migrated data
             title: artwork.title,
             date: artwork.date,
             medium: artwork.medium,
@@ -350,8 +352,8 @@ export default function ArtistUploader() {
             createdAt: Timestamp.now()
           };
   
-          const docRef = await addDoc(collection(firestore, "artworks"), artworkDoc);
-          artworkIds.push(docRef.id); // Make sure this executes
+          await setDoc(doc(firestore, "artworks", artworkId), artworkDoc);
+          artworkIds.push(artworkId);
         } else {
           // Update existing artwork if data has changed
           try {
@@ -369,8 +371,7 @@ export default function ArtistUploader() {
             // Check if there are image updates for this artwork
             const imageUpdates = artworkImageUpdates[artwork.id];
             if (imageUpdates) {
-              const artworkSlug = `${slug}_${generateSlug(artwork.title)}`;
-              const imageUpdateData = await updateArtworkImages(slug, artworkSlug, artwork.id, imageUpdates, artwork);
+              const imageUpdateData = await updateArtworkImages(artistId, artwork.id, imageUpdates, artwork);
               Object.assign(artworkUpdateData, imageUpdateData);
             }
             
@@ -424,6 +425,77 @@ export default function ArtistUploader() {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
+  };
+
+  // Profile Picture Drag and Drop Handlers
+  const handleProfilePictureFile = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setProfilePictureFile(file);
+      setProfilePicturePreview(URL.createObjectURL(file));
+    } else {
+      setError('Please select a valid image file.');
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleProfilePictureFile(files[0]);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleProfilePictureFile(file);
+    }
+  };
+
+  // CV Drag and Drop Handlers
+  const handleCvFile = (file) => {
+    if (file && file.type === 'application/pdf') {
+      setCvFile(file);
+    } else {
+      setError('Please select a valid PDF file.');
+    }
+  };
+
+  const handleCvDragOver = (e) => {
+    e.preventDefault();
+    setIsCvDragOver(true);
+  };
+
+  const handleCvDragLeave = (e) => {
+    e.preventDefault();
+    setIsCvDragOver(false);
+  };
+
+  const handleCvDrop = (e) => {
+    e.preventDefault();
+    setIsCvDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleCvFile(files[0]);
+    }
+  };
+
+  const handleCvFileInputChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleCvFile(file);
+    }
   };
 
 
@@ -636,9 +708,9 @@ export default function ArtistUploader() {
     });
   };
 
-  const uploadCv = async (artistSlug) => {
+  const uploadCv = async (artistId) => {
     if (!cvFile) return null;
-    const cvRef = ref(storage, `artists/${artistSlug}/cv/${artistSlug}_CV.pdf`);
+    const cvRef = ref(storage, `artists/${artistId}/cv/${generateSlug(formData.name)}_cv`);
     await uploadBytes(cvRef, cvFile);
     return await getDownloadURL(cvRef);
   };
@@ -646,7 +718,7 @@ export default function ArtistUploader() {
   return (
     <div className={styles.form}>
       <div>
-        <label>Select Artist to Edit</label>
+      <p className={styles.subtitle}>SELECT ARTIST TO EDIT</p>
         <select
           value={selectedArtist || ""}
           onChange={(e) => handleArtistSelection(e.target.value)}
@@ -659,83 +731,155 @@ export default function ArtistUploader() {
           ))}
         </select>
       </div>
-      {/* Profile Picture Upload */}
-      <div>
-        <label>Profile Picture</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            setProfilePictureFile(e.target.files[0]);
-            setProfilePicturePreview(URL.createObjectURL(e.target.files[0]));
-          }}
-        />
-        {profilePicturePreview && (
-          <img src={profilePicturePreview} alt="Profile Preview" className={styles.profilePreview} />
-        )}
+      {/* Artist ID Display */}
+      {selectedArtist && (
+        <div className={styles.artistIdDisplay}>
+          <span className={styles.artistIdLabel}>Artist ID:</span>
+          <span className={styles.artistIdValue}>{selectedArtist}</span>
+        </div>
+      )}
+
+      {/* Artist Information Container */}
+      <div className={styles.artistInfoContainer}>
+        {/* Profile Picture and Basic Info Row */}
+        <div className={styles.profileAndBasicInfoRow}>
+          {/* Profile Picture Upload */}
+          <div className={styles.profilePictureContainer}>
+            <p className={styles.subtitle}>PROFILE PICTURE</p>
+            <div
+              className={`${styles.profilePictureDropZone} ${isDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {profilePicturePreview ? (
+                <div className={styles.profilePicturePreview}>
+                  <img 
+                    src={profilePicturePreview} 
+                    alt="Profile Preview" 
+                    className={styles.profilePreviewImage}
+                  />
+                  <div className={styles.profilePictureOverlay}>
+                    <span>Click or drag to change</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.profilePicturePlaceholder}>
+                  <p>Drag & drop an image here</p>
+                  <p>or click to browse</p>
+                  <small>Max size: 500px width</small>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileInputChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+
+          {/* Basic Information Container */}
+          <div className={styles.basicInfoContainer}>
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>NAME</p>
+            <input
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>ORIGIN</p>
+            <input
+              name="origin"
+              placeholder="Origin"
+              value={formData.origin}
+              onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>BIRTH DATE</p>
+            <input
+              type="date"
+              name="birthDate"
+              value={formData.birthDate ? formData.birthDate.toISOString().split('T')[0] : ''}
+              onChange={handleBirthDateChange}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>WEBSITE</p>
+            <input
+              name="web"
+              placeholder="Website"
+              value={formData.web}
+              onChange={(e) => setFormData({ ...formData, web: e.target.value })}
+            />
+          </div>
+          </div>
+        </div>
+
+        {/* Bio Paragraphs Input */}
+        <div>
+          <p className={styles.subtitle}>BIO</p>
+          <textarea
+            placeholder="Add Bio Text (one paragraph per line)"
+            value={formData.bio.join('\n')}
+            onChange={(e) => setFormData({ ...formData, bio: e.target.value.split('\n').filter(p => p.trim()) })}
+          />
+          <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
+        </div>
+
+        {/* Manifesto Paragraphs Input */}
+        <div>
+          <p className={styles.subtitle}>MANIFESTO</p>
+          <textarea
+            placeholder="Add Manifesto Text (one paragraph per line)"
+            value={formData.manifesto.join('\n')}
+            onChange={(e) => setFormData({ ...formData, manifesto: e.target.value.split('\n').filter(p => p.trim()) })}
+          />
+          <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
+        </div>
+
+        {/* CV File Input */}
+        <div>
+          <p className={styles.subtitle}>CV (PDF)</p>
+          <div
+            className={`${styles.cvDropZone} ${isCvDragOver ? styles.dragOver : ''}`}
+            onDragOver={handleCvDragOver}
+            onDragLeave={handleCvDragLeave}
+            onDrop={handleCvDrop}
+            onClick={() => document.getElementById('cv-file-input')?.click()}
+          >
+            {cvFile ? (
+              <div className={styles.cvFileSelected}>
+                <p>{cvFile.name}</p>
+                <span>Click or drag to change</span>
+              </div>
+            ) : (
+              <div className={styles.cvFilePlaceholder}>
+                <p>Drag & drop a PDF here</p>
+                <p>or click to browse</p>
+                <small>PDF files only</small>
+              </div>
+            )}
+          </div>
+          <input
+            id="cv-file-input"
+            type="file"
+            name="cv"
+            accept=".pdf"
+            onChange={handleCvFileInputChange}
+            style={{ display: 'none' }}
+          />
+        </div>
       </div>
-
-      {/* Name Input */}
-      <p className={styles.subtitle}>NAME</p>
-      <input
-        name="name"
-        placeholder="Name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-      />
-      <p className={styles.subtitle}>ORIGIN</p>
-
-      {/* Origin Input */}
-      <input
-        name="origin"
-        placeholder="Origen"
-        value={formData.origin}
-        onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-      />
-      <p className={styles.subtitle}>BIRTH DATE</p>
-
-      {/* Birth Date Input */}
-      <input
-        type="date"
-        name="birthDate"
-        value={formData.birthDate ? formData.birthDate.toISOString().split('T')[0] : ''}
-        onChange={handleBirthDateChange}
-      />
-
-      {/* Bio Paragraphs Input */}
-      <div>
-        <p className={styles.subtitle}>BIO</p>
-        <textarea
-          placeholder="Add Bio Text (one paragraph per line)"
-          value={formData.bio.join('\n')}
-          onChange={(e) => setFormData({ ...formData, bio: e.target.value.split('\n').filter(p => p.trim()) })}
-        />
-        <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
-      </div>
-
-      {/* Manifesto Paragraphs Input */}
-      <div>
-        <p className={styles.subtitle}>MANIFESTO</p>
-        <textarea
-          placeholder="Add Manifesto Text (one paragraph per line)"
-          value={formData.manifesto.join('\n')}
-          onChange={(e) => setFormData({ ...formData, manifesto: e.target.value.split('\n').filter(p => p.trim()) })}
-        />
-        <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
-      </div>
-
-      {/* Website Input */}
-      <p className={styles.subtitle}>WEBSITE</p>
-        <input
-          name="web"
-          placeholder="Website"
-          value={formData.web}
-          onChange={(e) => setFormData({ ...formData, web: e.target.value })}
-        />
-
-      {/* CV File Input */}
-      <p className={styles.subtitle}>CV (PDF)</p>
-      <input type="file" name="cv" accept=".pdf" onChange={handleCvChange} />
 
       {/* Gallery Images Input */}
       <p className={styles.subtitle}>Artworks</p>
