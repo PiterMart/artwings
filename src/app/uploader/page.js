@@ -85,10 +85,10 @@ export default function Home() {
         <div style={{ margin: "auto" }}>
           <p className={styles.title}> What are you working on?</p>
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2rem" }}>
-          <button onClick={() => setActiveSection("artist")} className={styles.subtitle}>Artists</button>
-          <button onClick={() => setActiveSection("artistsList")} className={styles.subtitle}>View All Artists</button>
-          <button onClick={() => setActiveSection("exhibition")} className={styles.subtitle}>Exhibitions</button>
+        <div className={styles.navContainer}>
+          <button onClick={() => setActiveSection("artist")} className={styles.navButton}>Artists</button>
+          <button onClick={() => setActiveSection("artistsList")} className={styles.navButton}>Artist List</button>
+          <button onClick={() => setActiveSection("exhibition")} className={styles.navButton}>Exhibitions</button>
           {/* <button onClick={runMigration} className={styles.subtitle} style={{ backgroundColor: "#ff6b6b", color: "white" }}>Migrate Artworks</button> */}
           {/* <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
           <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button> */}
