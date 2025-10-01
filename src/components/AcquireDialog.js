@@ -131,7 +131,7 @@ const AcquireDialog = ({ isOpen, onClose, artwork, artist }) => {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>
-              Phone Number
+              Phone Number <span style={{ fontWeight: "200", color: "#707984"}} >(optional)</span>
             </label>
             <input
               type="tel"
