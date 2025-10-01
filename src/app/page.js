@@ -3,6 +3,7 @@ import Image from "next/image";
 import styles from "../styles/page.module.css";
 import React, { useEffect, useState, useRef } from "react";
 import Lightbox from "../components/Lightbox";
+import Link from "next/link";
 
 export default function Home() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -229,6 +230,38 @@ export default function Home() {
             </div>
               </div>
             </div>
+            <div>
+                <p className={styles.exhibitionTitle} style={{ marginTop: '0rem', marginBottom: '1rem', lineHeight: '2.5rem'}}>The artwings Collection</p>
+                <p style={{marginBottom: '1rem'}}>Checkout our curated selection of artworks from the diverse community of artists we champion.</p>
+                  <Link href="/artworks">
+                    <button 
+                    style={{
+                      padding: "0.875rem 1.75rem",
+                      background: "none",
+                      color: "#707984",
+                      border: "1px solid #707984",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: "300",
+                      transition: "all 0.3s ease",
+                      marginRight: "0",
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.color = "#000";
+                      e.target.style.borderColor = "#000";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.color = "#707984";
+                      e.target.style.borderColor = "#707984";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    See Now
+                  </button>
+                  </Link>
+              </div>
           </div>
         </div>
 

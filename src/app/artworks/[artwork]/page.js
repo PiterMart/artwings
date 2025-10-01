@@ -181,7 +181,8 @@ export default function Artwork({ params }) {
               style={{ 
                 width: "100%", 
                 height: "auto", 
-                maxWidth: "500px",
+                maxWidth: "800px",
+                maxHeight: "80vh",
                 cursor: "pointer",
                 display: isImageLoading ? "none" : "block"
               }}
