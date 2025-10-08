@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState, useRef } from "react";
 import { firestore, storage } from "./firebaseConfig";
-import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc } from "firebase/firestore";  
+import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc } from "firebase/firestore";  
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,7 +21,9 @@ export default function ExhibitionUploader() {
   const [selectedExhibition, setSelectedExhibition] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
+    subtitle: "",
+    description: [],
+    isFeatured: false,
     curator: "",
     curatorialTexts: [],
     openingDate: null,
@@ -29,9 +31,9 @@ export default function ExhibitionUploader() {
     receptionDate: null,
     receptionTime: "",
     address: "",
+    googleMapsLink: "",
     slug: "",
   });
-  const [newCuratorialText, setNewCuratorialText] = useState("");
   const [existingGallery, setExistingGallery] = useState([]);
   const [newImages, setNewImages] = useState([]);
   const [imageDescriptions, setImageDescriptions] = useState([]);
@@ -42,6 +44,13 @@ export default function ExhibitionUploader() {
   const [flyerImage, setFlyerImage] = useState(null);
   const [flyerPreview, setFlyerPreview] = useState(null);
   const fileInputRef = useRef(null);
+  const bannerInputRef = useRef(null);
+  const flyerInputRef = useRef(null);
+  
+  // Drag and drop states
+  const [isBannerDragOver, setIsBannerDragOver] = useState(false);
+  const [isFlyerDragOver, setIsFlyerDragOver] = useState(false);
+  const [isGalleryDragOver, setIsGalleryDragOver] = useState(false);
 
   // Compression options reference
   const compressionOptions = {
@@ -105,11 +114,25 @@ export default function ExhibitionUploader() {
 
   const deleteImageFromStorage = async (imageUrl) => {
     try {
-      const imageRef = refFromURL(storage, imageUrl);
+      // Extract the storage path from the download URL
+      // Firebase Storage URLs have the format: https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{path}?alt=media&token={token}
+      const urlObj = new URL(imageUrl);
+      const pathParts = urlObj.pathname.split('/o/');
+      
+      if (pathParts.length < 2) {
+        console.error("Invalid Firebase Storage URL format:", imageUrl);
+        return;
+      }
+      
+      const pathEncoded = pathParts[1];
+      const path = decodeURIComponent(pathEncoded);
+      
+      const imageRef = ref(storage, path);
       await deleteObject(imageRef);
+      console.log("Successfully deleted image from storage:", path);
     } catch (error) {
-      console.error("Error deleting image:", error);
-      throw error;
+      console.error("Error deleting image from storage:", imageUrl, error);
+      // Don't throw error - allow the operation to continue even if deletion fails
     }
   };
 
@@ -128,7 +151,9 @@ export default function ExhibitionUploader() {
         // Combine all form data into a single setFormData call
         setFormData({
           name: data.name,
-          description: data.description || "",
+          subtitle: data.subtitle || "",
+          description: data.description || [],
+          isFeatured: data.isFeatured || false,
           curator: data.curator || "",
           curatorialTexts: data.curatorialTexts || [],
           openingDate: data.openingDate?.toDate() || null,
@@ -138,6 +163,7 @@ export default function ExhibitionUploader() {
             null,
           receptionTime: data.receptionTime || "",
           address: data.address || "",
+          googleMapsLink: data.googleMapsLink || "",
           slug: data.slug || generateSlug(data.name),
         });
   
@@ -174,23 +200,21 @@ export default function ExhibitionUploader() {
         throw new Error("Please complete all required fields.");
       }
 
-      let slug;
-      if (selectedExhibition) {
-        slug = formData.slug;
-      } else {
-        slug = generateSlug(name);
-      }
+      const slug = generateSlug(name);
+      
+      // Generate exhibition ID - use existing ID if updating, otherwise create new one
+      const exhibitionId = selectedExhibition || doc(collection(firestore, "exhibitions")).id;
 
       let bannerUrl;
       try {
-        bannerUrl = await uploadBannerImage(slug);
+        bannerUrl = await uploadBannerImage(exhibitionId);
       } catch (error) {
         throw new Error("Banner image processing failed: " + error.message);
       }
 
       let flyerUrl;
       try {
-        flyerUrl = await uploadFlyerImage(slug);
+        flyerUrl = await uploadFlyerImage(exhibitionId);
       } catch (error) {
         throw new Error("Flyer image processing failed: " + error.message);
       }
@@ -198,7 +222,7 @@ export default function ExhibitionUploader() {
       let galleryData = [];
       try {
         if (newImages.length > 0 || deletedExistingImages.length > 0) {
-          galleryData = await uploadImages(slug);
+          galleryData = await uploadImages(exhibitionId);
         } else if (selectedExhibition) {
           galleryData = existingGallery;
         }
@@ -234,13 +258,14 @@ export default function ExhibitionUploader() {
         }
         setSuccess("Exhibition updated successfully!");
       } else {
-        const exhibitionRef = await addDoc(collection(firestore, "exhibitions"), exhibitionData);
+        // Use setDoc instead of addDoc to use the pre-generated ID
+        await setDoc(doc(firestore, "exhibitions", exhibitionId), exhibitionData);
 
         for (const artistSlug of selectedArtists) {
           const artist = artists.find(a => a.slug === artistSlug);
           if (artist?.slug) {
             const artistRef = doc(firestore, "artists", artist.slug);
-            await updateDoc(artistRef, { exhibitions: arrayUnion(exhibitionRef.id) });
+            await updateDoc(artistRef, { exhibitions: arrayUnion(exhibitionId) });
           }
         }
 
@@ -248,7 +273,7 @@ export default function ExhibitionUploader() {
           const artworks = selectedArtworks[artistSlug];
           for (const artworkId of artworks) {
             const artworkRef = doc(firestore, "artworks", artworkId);
-            await updateDoc(artworkRef, { exhibitions: arrayUnion(exhibitionRef.id) });
+            await updateDoc(artworkRef, { exhibitions: arrayUnion(exhibitionId) });
           }
         }
         setSuccess("Exhibition added successfully!");
@@ -326,33 +351,106 @@ export default function ExhibitionUploader() {
     }));
   };
 
-  const handleCuratorialTextChange = (e) => {
-    setNewCuratorialText(e.target.value);
-  };
-
-  const addCuratorialText = () => {
-    if (newCuratorialText) {
-      setFormData((prev) => ({
-        ...prev,
-        curatorialTexts: [...prev.curatorialTexts, newCuratorialText],
-      }));
-      setNewCuratorialText("");
-    }
-  };
-
   const handleBannerChange = (e) => {
     const file = e.target.files[0];
-    setBannerImage(file);
-    setBannerPreview(file ? URL.createObjectURL(file) : null);
+    if (file) {
+      handleBannerFile(file);
+    }
   };
 
   const handleFlyerChange = (e) => {
     const file = e.target.files[0];
-    setFlyerImage(file);
-    setFlyerPreview(file ? URL.createObjectURL(file) : null);
+    if (file) {
+      handleFlyerFile(file);
+    }
   };
 
-  const uploadBannerImage = async (slug) => {
+  // Banner Drag and Drop Handlers
+  const handleBannerFile = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setBannerImage(file);
+      setBannerPreview(URL.createObjectURL(file));
+    } else {
+      setError('Please select a valid image file for banner.');
+    }
+  };
+
+  const handleBannerDragOver = (e) => {
+    e.preventDefault();
+    setIsBannerDragOver(true);
+  };
+
+  const handleBannerDragLeave = (e) => {
+    e.preventDefault();
+    setIsBannerDragOver(false);
+  };
+
+  const handleBannerDrop = (e) => {
+    e.preventDefault();
+    setIsBannerDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleBannerFile(files[0]);
+    }
+  };
+
+  // Flyer Drag and Drop Handlers
+  const handleFlyerFile = (file) => {
+    if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+      setFlyerImage(file);
+      setFlyerPreview(URL.createObjectURL(file));
+    } else {
+      setError('Please select a valid image or video file for flyer.');
+    }
+  };
+
+  const handleFlyerDragOver = (e) => {
+    e.preventDefault();
+    setIsFlyerDragOver(true);
+  };
+
+  const handleFlyerDragLeave = (e) => {
+    e.preventDefault();
+    setIsFlyerDragOver(false);
+  };
+
+  const handleFlyerDrop = (e) => {
+    e.preventDefault();
+    setIsFlyerDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFlyerFile(files[0]);
+    }
+  };
+
+  // Gallery Drag and Drop Handlers
+  const handleGalleryDragOver = (e) => {
+    e.preventDefault();
+    setIsGalleryDragOver(true);
+  };
+
+  const handleGalleryDragLeave = (e) => {
+    e.preventDefault();
+    setIsGalleryDragOver(false);
+  };
+
+  const handleGalleryDrop = (e) => {
+    e.preventDefault();
+    setIsGalleryDragOver(false);
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    if (files.length > 0) {
+      setNewImages(prev => [...prev, ...files]);
+      
+      // Create previews for new images only
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+      
+      // Initialize descriptions for new images
+      setImageDescriptions(prev => [...prev, ...Array(files.length).fill('')]);
+    }
+  };
+
+  const uploadBannerImage = async (exhibitionId) => {
     if (!bannerImage) return bannerPreview;
   
     try {
@@ -362,7 +460,7 @@ export default function ExhibitionUploader() {
         useWebWorker: true,
       });
   
-      const bannerRef = ref(storage, `exhibitions/${slug}/images/${slug}_banner`);
+      const bannerRef = ref(storage, `exhibitions/${exhibitionId}/images/${exhibitionId}_banner`);
       await uploadBytes(bannerRef, compressedFile);
       return await getDownloadURL(bannerRef);
     } catch (error) {
@@ -371,7 +469,7 @@ export default function ExhibitionUploader() {
     }
   };
 
-  const uploadFlyerImage = async (slug) => {
+  const uploadFlyerImage = async (exhibitionId) => {
     if (!flyerImage) return flyerPreview;
   
     try {
@@ -381,7 +479,7 @@ export default function ExhibitionUploader() {
       
       if (isVideo) {
         // For videos, upload without compression
-        const flyerRef = ref(storage, `exhibitions/${slug}/flyer/${slug}_flyer.${fileExtension}`);
+        const flyerRef = ref(storage, `exhibitions/${exhibitionId}/flyer/${exhibitionId}_flyer.${fileExtension}`);
         await uploadBytes(flyerRef, flyerImage);
         return await getDownloadURL(flyerRef);
       } else {
@@ -392,7 +490,7 @@ export default function ExhibitionUploader() {
           useWebWorker: true,
         });
   
-        const flyerRef = ref(storage, `exhibitions/${slug}/flyer/${slug}_flyer`);
+        const flyerRef = ref(storage, `exhibitions/${exhibitionId}/flyer/${exhibitionId}_flyer`);
         await uploadBytes(flyerRef, compressedFile);
         return await getDownloadURL(flyerRef);
       }
@@ -413,8 +511,10 @@ export default function ExhibitionUploader() {
     const isExistingImage = index < existingGallery.length;
   
     if (isExistingImage) {
-      // Add to deleted images list
+      // Add to deleted images list for storage cleanup
       setDeletedExistingImages(prev => [...prev, existingGallery[index].url]);
+      // Remove from existing gallery
+      setExistingGallery(prev => prev.filter((_, i) => i !== index));
     } else {
       // Remove from new images list
       const newIndex = index - existingGallery.length;
@@ -433,7 +533,7 @@ export default function ExhibitionUploader() {
   };
 
 // Modified uploadImages with compression
-const uploadImages = async (slug) => {
+const uploadImages = async (exhibitionId) => {
   // Filter out deleted existing images
   const remainingExisting = existingGallery.filter(
     img => !deletedExistingImages.includes(img.url)
@@ -449,7 +549,7 @@ const uploadImages = async (slug) => {
           useWebWorker: true,
         });
 
-        const imageRef = ref(storage, `exhibitions/${slug}/images/${slug}_gallery_${Date.now()}_${index}`);
+        const imageRef = ref(storage, `exhibitions/${exhibitionId}/images/${exhibitionId}_gallery_${Date.now()}_${index}`);
         await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(imageRef);
         
@@ -478,9 +578,24 @@ const uploadImages = async (slug) => {
   };
 
   const resetForm = () => {
+    // Clean up object URLs to prevent memory leaks
+    if (bannerPreview && bannerImage instanceof File) {
+      URL.revokeObjectURL(bannerPreview);
+    }
+    if (flyerPreview && flyerImage instanceof File) {
+      URL.revokeObjectURL(flyerPreview);
+    }
+    imagePreviews.forEach((preview, index) => {
+      if (newImages[index] instanceof File) {
+        URL.revokeObjectURL(preview);
+      }
+    });
+
     setFormData({
       name: "",
-      description: "",
+      subtitle: "",
+      description: [],
+      isFeatured: false,
       curator: "",
       curatorialTexts: [],
       openingDate: null,
@@ -488,13 +603,13 @@ const uploadImages = async (slug) => {
       receptionDate: null,
       receptionTime: "",
       address: "",
+      googleMapsLink: "",
       slug: "",
     });
     setSelectedArtists([]);
     setSelectedArtworks({});
     setImageDescriptions([]);
     setImagePreviews([]);
-    setNewCuratorialText("");
     setSelectedExhibition(null);
     setBannerImage(null);
     setBannerPreview(null);
@@ -505,7 +620,30 @@ const uploadImages = async (slug) => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    if (bannerInputRef.current) {
+      bannerInputRef.current.value = "";
+    }
+    if (flyerInputRef.current) {
+      flyerInputRef.current.value = "";
+    }
   };
+
+  // Cleanup effect for preview URLs
+  useEffect(() => {
+    return () => {
+      if (bannerPreview && bannerImage instanceof File) {
+        URL.revokeObjectURL(bannerPreview);
+      }
+      if (flyerPreview && flyerImage instanceof File) {
+        URL.revokeObjectURL(flyerPreview);
+      }
+      imagePreviews.forEach((preview, index) => {
+        if (newImages[index] instanceof File) {
+          URL.revokeObjectURL(preview);
+        }
+      });
+    };
+  }, [bannerPreview, bannerImage, flyerPreview, flyerImage, imagePreviews, newImages]);
 
   const addNewExhibition = async () => {
     setLoading(true);
@@ -522,12 +660,15 @@ const uploadImages = async (slug) => {
   
 
       const slug = generateSlug(name);
+      
+      // Generate exhibition ID before uploading images
+      const exhibitionId = doc(collection(firestore, "exhibitions")).id;
 
-      const galleryData = await uploadImages(slug);
+      const galleryData = await uploadImages(exhibitionId);
       if (!galleryData) throw new Error("Image upload failed.");
 
-      const bannerUrl = await uploadBannerImage(slug);
-      const flyerUrl = await uploadFlyerImage(slug);
+      const bannerUrl = await uploadBannerImage(exhibitionId);
+      const flyerUrl = await uploadFlyerImage(exhibitionId);
   
 
       const openingDateTimestamp = Timestamp.fromDate(new Date(openingDate));
@@ -555,7 +696,8 @@ const uploadImages = async (slug) => {
       console.log("Exhibition Data:", newExhibitionData);
   
 
-      const exhibitionRef = await addDoc(collection(firestore, "exhibitions"), newExhibitionData);
+      // Use setDoc instead of addDoc to use the pre-generated ID
+      await setDoc(doc(firestore, "exhibitions", exhibitionId), newExhibitionData);
   
 
       for (const artistSlug of selectedArtists) {
@@ -563,7 +705,7 @@ const uploadImages = async (slug) => {
         if (artist?.slug) {  
           const artistRef = doc(firestore, "artists", artist.slug); 
           await updateDoc(artistRef, {
-            exhibitions: arrayUnion(exhibitionRef.id),
+            exhibitions: arrayUnion(exhibitionId),
           });
         }
       }
@@ -573,7 +715,7 @@ const uploadImages = async (slug) => {
         for (const artworkId of artworks) {
           const artworkRef = doc(firestore, "artworks", artworkId);
           await updateDoc(artworkRef, {
-            exhibitions: arrayUnion(exhibitionRef.id),
+            exhibitions: arrayUnion(exhibitionId),
           });
         }
       }
@@ -591,8 +733,8 @@ const uploadImages = async (slug) => {
   
   return (
     <div className={styles.form}>
-            <div>
-        <label>Select Exhibition to Edit</label>
+      <div>
+        <p className={styles.subtitle}>SELECT EXHIBITION TO EDIT</p>
         <select
           value={selectedExhibition || ""}
           onChange={(e) => handleExhibitionSelection(e.target.value)}
@@ -605,174 +747,358 @@ const uploadImages = async (slug) => {
           ))}
         </select>
       </div>
-      <input
-        name="name"
-        placeholder="Exhibition Name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-      />
-      <textarea
-        name="description"
-        placeholder="Exhibition Description"
-        value={formData.description}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-      />
-      <input
-        name="curator"
-        placeholder="Curator Name"
-        value={formData.curator}
-        onChange={(e) => setFormData({ ...formData, curator: e.target.value })}
-      />
-      <input
-        name="address"
-        placeholder="Exhibition Address"
-        value={formData.address}
-        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-      />
-      <div>
-        <textarea
-          placeholder="Add Curatorial Text"
-          value={newCuratorialText}
-          onChange={handleCuratorialTextChange}
-        />
-        <button onClick={addCuratorialText}>Add Curatorial Text</button>
-        <ul>
-          {formData.curatorialTexts?.map((text, index) => (
-            <li key={`${text}-${index}`}>
-              <textarea
-                value={text}
-                onChange={(e) => {
-                  const updatedTexts = [...formData.curatorialTexts];
-                  updatedTexts[index] = e.target.value;
-                  setFormData((prev) => ({ ...prev, curatorialTexts: updatedTexts }));
-                }}
-              />
-              <button
-                onClick={() => {
-                  const updatedTexts = formData.curatorialTexts.filter((_, i) => i !== index);
-                  setFormData((prev) => ({ ...prev, curatorialTexts: updatedTexts }));
-                }}
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <DatePicker
-        selected={formData.openingDate}
-        onChange={(date) => handleDateChange("openingDate", date)}
-        placeholderText="Opening Date"
-      />
-      <DatePicker
-        selected={formData.closingDate}
-        onChange={(date) => handleDateChange("closingDate", date)}
-        placeholderText="Closing Date"
-      />
-      <DatePicker
-        selected={formData.receptionDate}
-        onChange={(date) => handleDateChange("receptionDate", date)}
-        placeholderText="Reception Date"
-      />
-      <input
-        type="time"
-        name="receptionTime"
-        placeholder="Reception Time (e.g., 6:00 PM)"
-        value={formData.receptionTime || ""}
-        onChange={handleInputChange}
-      />
+      
+      {/* Exhibition ID Display */}
+      {selectedExhibition && (
+        <div className={styles.artistIdDisplay}>
+          <span className={styles.artistIdLabel}>Exhibition ID:</span>
+          <span className={styles.artistIdValue}>{selectedExhibition}</span>
+        </div>
+      )}
 
-      <div className={styles.exhibitionArtists}>
-        {artists.map((artist) => (
-          <div key={artist.slug} className={styles.artistBox}>
-            <div className={styles.artistHeaderRow}>
-              <label className={styles.itemLabel}>{artist.name}</label>
-              <input
-                className={styles.itemCheckbox}
-                type="checkbox"
-                checked={selectedArtists.includes(artist.slug)}
-                onChange={() => handleArtistSelection(artist)}
-              />
+      {/* Exhibition Basic Information Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Exhibition Information</h3>
+        <div className={styles.artistInfoContainer}>
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>EXHIBITION TITLE</p>
+          <input
+            name="name"
+            placeholder="Exhibition Title"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>SUBTITLE</p>
+          <input
+            name="subtitle"
+            placeholder="Exhibition Subtitle (optional)"
+            value={formData.subtitle}
+            onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>DESCRIPTION</p>
+          <textarea
+            name="description"
+            placeholder="Add Exhibition Description (one paragraph per line)"
+            value={formData.description.join('\n')}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value.split('\n').filter(p => p.trim()) })}
+          />
+          <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>FEATURED EXHIBITION</p>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={formData.isFeatured}
+              onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+              style={{ cursor: 'pointer' }}
+            />
+            <span>Highlight this exhibition on the homepage</span>
+          </label>
+        </div>
+        </div>
+      </div>
+
+      {/* Dates & Times Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Dates & Times</h3>
+        <div className={styles.artistInfoContainer}>
+        <div className={styles.profileAndBasicInfoRow}>
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>OPENING DATE</p>
+            <DatePicker
+              selected={formData.openingDate}
+              onChange={(date) => handleDateChange("openingDate", date)}
+              placeholderText="Opening Date"
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>CLOSING DATE</p>
+            <DatePicker
+              selected={formData.closingDate}
+              onChange={(date) => handleDateChange("closingDate", date)}
+              placeholderText="Closing Date"
+            />
+          </div>
+        </div>
+
+        <div className={styles.profileAndBasicInfoRow}>
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>RECEPTION DATE</p>
+            <DatePicker
+              selected={formData.receptionDate}
+              onChange={(date) => handleDateChange("receptionDate", date)}
+              placeholderText="Reception Date"
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>RECEPTION TIME</p>
+            <input
+              type="time"
+              name="receptionTime"
+              placeholder="Reception Time (e.g., 6:00 PM)"
+              value={formData.receptionTime || ""}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+        </div>
+      </div>
+
+      {/* Location Information Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Location</h3>
+        <div className={styles.artistInfoContainer}>
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>ADDRESS</p>
+          <input
+            name="address"
+            placeholder="Exhibition Address"
+            value={formData.address}
+            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>GOOGLE MAPS LINK</p>
+          <input
+            name="googleMapsLink"
+            type="url"
+            placeholder="https://maps.google.com/..."
+            value={formData.googleMapsLink}
+            onChange={(e) => setFormData({ ...formData, googleMapsLink: e.target.value })}
+          />
+          <p className={styles.helpText}>
+            Paste the Google Maps share link for easy navigation
+          </p>
+        </div>
+        </div>
+      </div>
+
+      {/* Curators & Curatorial Texts Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Curators & Curatorial Texts</h3>
+        <div className={styles.artistInfoContainer}>
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>CURATOR(S)</p>
+          <input
+            name="curator"
+            placeholder="Curator Name(s)"
+            value={formData.curator}
+            onChange={(e) => setFormData({ ...formData, curator: e.target.value })}
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>CURATORIAL TEXTS</p>
+          <textarea
+            placeholder="Add Curatorial Texts (one paragraph per line)"
+            value={formData.curatorialTexts.join('\n')}
+            onChange={(e) => setFormData({ ...formData, curatorialTexts: e.target.value.split('\n').filter(p => p.trim()) })}
+          />
+          <p className={styles.helpText}>Each line will become a separate paragraph. Press Enter to create new paragraphs.</p>
+        </div>
+        </div>
+      </div>
+
+      {/* Images Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Images</h3>
+        <div className={styles.artistInfoContainer}>
+        {/* Banner and Flyer Row */}
+        <div className={styles.profileAndBasicInfoRow}>
+          {/* Banner Image */}
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>BANNER IMAGE</p>
+            <div
+              className={`${styles.profilePictureDropZone} ${isBannerDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleBannerDragOver}
+              onDragLeave={handleBannerDragLeave}
+              onDrop={handleBannerDrop}
+              onClick={() => bannerInputRef.current?.click()}
+            >
+              {bannerPreview ? (
+                <div className={styles.profilePicturePreview}>
+                  <img 
+                    src={bannerPreview} 
+                    alt="Banner Preview" 
+                    className={styles.profilePreviewImage}
+                  />
+                  <div className={styles.profilePictureOverlay}>
+                    <span>Click or drag to change</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.profilePicturePlaceholder}>
+                  <p>Drag & drop banner image here</p>
+                  <p>or click to browse</p>
+                  <small>Max size: 2000px width</small>
+                </div>
+              )}
             </div>
-            {selectedArtists.includes(artist.slug) && (
-              <div className={styles.artworksList}>
-                <h4>Select Artworks</h4>
-                {artist.artworks.map((artwork) => (
-                  <div key={artwork.id} className={styles.artworkItem}>
-                    <label className={styles.itemLabel}>{artwork.title}</label>
-                    <input
-                      className={styles.itemCheckbox}
-                      type="checkbox"
-                      checked={selectedArtworks[artist.slug]?.includes(artwork.id) || false}
-                      onChange={() => handleArtworkSelection(artist.slug, artwork.id)}
+            <input
+              ref={bannerInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleBannerChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+
+          {/* Flyer Image/Video */}
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>FLYER IMAGE/VIDEO</p>
+            <div
+              className={`${styles.profilePictureDropZone} ${isFlyerDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleFlyerDragOver}
+              onDragLeave={handleFlyerDragLeave}
+              onDrop={handleFlyerDrop}
+              onClick={() => flyerInputRef.current?.click()}
+            >
+              {flyerPreview ? (
+                <div className={styles.profilePicturePreview}>
+                  {flyerImage?.type?.startsWith('video/') ? (
+                    <video
+                      src={flyerPreview}
+                      controls
+                      style={{ maxWidth: '100%', height: 'auto' }}
                     />
+                  ) : (
+                    <img 
+                      src={flyerPreview} 
+                      alt="Flyer Preview" 
+                      className={styles.profilePreviewImage}
+                    />
+                  )}
+                  <div className={styles.profilePictureOverlay}>
+                    <span>Click or drag to change</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.profilePicturePlaceholder}>
+                  <p>Drag & drop flyer image/video here</p>
+                  <p>or click to browse</p>
+                  <small>Images or videos accepted</small>
+                </div>
+              )}
+            </div>
+            <input
+              ref={flyerInputRef}
+              type="file"
+              accept="image/*,video/*"
+              onChange={handleFlyerChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+        </div>
+
+        {/* Exhibition Gallery Images */}
+        <div className={styles.inputGroup}>
+          <p className={styles.subtitle}>EXHIBITION GALLERY IMAGES</p>
+          <div
+            className={`${styles.cvDropZone} ${isGalleryDragOver ? styles.dragOver : ''}`}
+            onDragOver={handleGalleryDragOver}
+            onDragLeave={handleGalleryDragLeave}
+            onDrop={handleGalleryDrop}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <div className={styles.cvFilePlaceholder}>
+              <p>Drag & drop gallery images here</p>
+              <p>or click to browse</p>
+              <small>Multiple images allowed</small>
+            </div>
+          </div>
+          <input 
+            type="file" 
+            multiple 
+            accept="image/*"
+            onChange={handleFileChange} 
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+          />
+          
+          {imagePreviews.length > 0 && (
+            <div style={{ marginTop: '2rem' }}>
+              <p className={styles.subtitle}>UPLOADED IMAGES ({imagePreviews.length})</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '1rem' }}>
+                {imagePreviews.map((preview, index) => (
+                  <div key={`image-${index}`} className={styles.imageContainer} style={{ display: 'flex', flexDirection: 'column', width: '300px', border: '1px solid gray', padding: '1rem' }}>
+                    <img 
+                      src={preview} 
+                      alt={`Preview ${index}`} 
+                      className={styles.previewImage}
+                      style={{width: '100%', height: 'auto', objectFit: 'cover', maxHeight: '300px', marginBottom: 'auto'}}
+                    />
+                    <textarea
+                      value={imageDescriptions[index] || ''}
+                      onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                      className={styles.imageDescription}
+                      placeholder="Image description..."
+                      style={{ marginTop: '1rem', width: '100%', minHeight: '60px', maxHeight: '100px', resize: 'vertical' }}
+                    />
+                    <button
+                      type="button"
+                      style={{color: "red", marginTop: '0.5rem', cursor: 'pointer', padding: '0.5rem'}}
+                      onClick={() => handleDeleteImage(index)}
+                    >
+                      DELETE
+                    </button>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-        ))}
+            </div>
+          )}
+        </div>
+        </div>
       </div>
 
+      {/* Artists & Artworks Selection Container */}
       <div>
-        <p>Exhibition Images</p>
-        <input type="file" multiple onChange={handleFileChange} ref={fileInputRef} />
-        {
-          imagePreviews.map((preview, index) => (
-            <div key={`image-${index}`} className={styles.imageContainer} style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem', borderBottom: '2px solid black', maxWidth: '900px'}}>
-              <img 
-                src={preview} 
-                alt={`Preview ${index}`} 
-                className={styles.previewImage}
-                style={{width: '100%', height: "auto", margin: 'auto'}}
-              />
-              <textarea
-                value={imageDescriptions[index] || ''}
-                onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                className={styles.imageDescription}
-                placeholder="Image description..."
-              />
-                            <button
-                type="button"
-                style={{color: "red"}}
-                onClick={() => handleDeleteImage(index)}
-              >
-                DELETE
-              </button>
-            </div>
-          ))
-        }
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Artists & Artworks Selection</h3>
+        <div className={styles.artistInfoContainer}>
+          <div className={styles.exhibitionArtists}>
+            {artists.map((artist) => (
+              <div key={artist.slug} className={styles.artistBox}>
+                <div className={styles.artistHeaderRow}>
+                  <label className={styles.itemLabel}>{artist.name}</label>
+                  <input
+                    className={styles.itemCheckbox}
+                    type="checkbox"
+                    checked={selectedArtists.includes(artist.slug)}
+                    onChange={() => handleArtistSelection(artist)}
+                  />
+                </div>
+                {selectedArtists.includes(artist.slug) && (
+                  <div className={styles.artworksList}>
+                    <h4>Select Artworks</h4>
+                    {artist.artworks.map((artwork) => (
+                      <div key={artwork.id} className={styles.artworkItem}>
+                        <label className={styles.itemLabel}>{artwork.title}</label>
+                        <input
+                          className={styles.itemCheckbox}
+                          type="checkbox"
+                          checked={selectedArtworks[artist.slug]?.includes(artwork.id) || false}
+                          onChange={() => handleArtworkSelection(artist.slug, artwork.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <div>
-        <p>Banner Image</p>
-        <input type="file" onChange={handleBannerChange} />
-        {bannerPreview && (
-          <img
-            src={bannerPreview}
-            alt="Banner Preview"
-            className={styles.artworkPreviewImage}
-          />
-        )}
-      </div>
-      <div>
-        <p>Flyer Image/Video</p>
-        <input type="file" accept="image/*,video/*" onChange={handleFlyerChange} />
-        {flyerPreview && (
-          flyerImage?.type?.startsWith('video/') ? (
-            <video
-              src={flyerPreview}
-              controls
-              style={{ maxWidth: '300px', height: 'auto' }}
-            />
-          ) : (
-            <img
-              src={flyerPreview}
-              alt="Flyer Preview"
-              className={styles.artworkPreviewImage}
-            />
-          )
-        )}
-      </div>
+
       <div style={{ margin: 'auto'}}>
       <p className={styles.subtitle}> ALL READY? </p>
       <button type="button" onClick={handleSubmit} disabled={loading}>
