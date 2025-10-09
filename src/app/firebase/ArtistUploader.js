@@ -16,6 +16,8 @@ export default function ArtistUploader() {
   const [deletedArtworks, setDeletedArtworks] = useState([]);
 
   const fileInputRef = useRef(null);
+  const mainArtworkInputRef = useRef(null);
+  const detailImagesInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -49,6 +51,11 @@ export default function ArtistUploader() {
   const [artworkImageUpdates, setArtworkImageUpdates] = useState({});
   const [isDragOver, setIsDragOver] = useState(false);
   const [isCvDragOver, setIsCvDragOver] = useState(false);
+  const [isMainArtworkDragOver, setIsMainArtworkDragOver] = useState(false);
+  const [isDetailImagesDragOver, setIsDetailImagesDragOver] = useState(false);
+  const [editingArtworkIndex, setEditingArtworkIndex] = useState(null);
+  const [updateMainImageDragOver, setUpdateMainImageDragOver] = useState({});
+  const [updateDetailImagesDragOver, setUpdateDetailImagesDragOver] = useState({});
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -140,7 +147,7 @@ export default function ArtistUploader() {
         maxWidthOrHeight: 800
       });
       
-      const profilePicRef = ref(storage, `artists/${artistId}/profilePicture/${generateSlug(formData.name)}_profilePicture`);
+      const profilePicRef = ref(storage, `artists/${artistId}/profilePicture/${artistId}_profilePicture`);
       await uploadBytes(profilePicRef, compressedFile);
       return await getDownloadURL(profilePicRef);
     } catch (error) {
@@ -284,7 +291,7 @@ export default function ArtistUploader() {
       // Upload CV
       let cvUrl = formData.cvUrl || "";
       if (cvFile instanceof File) {
-        const cvRef = ref(storage, `artists/${artistId}/cv/${generateSlug(formData.name)}_cv`);
+        const cvRef = ref(storage, `artists/${artistId}/cv/${artistId}_cv`);
         await uploadBytes(cvRef, cvFile);
         cvUrl = await getDownloadURL(cvRef);
       }
@@ -605,6 +612,46 @@ export default function ArtistUploader() {
     }
   };
 
+  // Update Main Image Drag and Drop Handlers
+  const handleUpdateMainImageDragOver = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateMainImageDragOver(prev => ({ ...prev, [artworkId]: true }));
+  };
+
+  const handleUpdateMainImageDragLeave = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateMainImageDragOver(prev => ({ ...prev, [artworkId]: false }));
+  };
+
+  const handleUpdateMainImageDrop = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateMainImageDragOver(prev => ({ ...prev, [artworkId]: false }));
+    const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].type.startsWith('image/')) {
+      handleArtworkMainImageChange(artworkId, files[0]);
+    }
+  };
+
+  // Update Detail Images Drag and Drop Handlers
+  const handleUpdateDetailImagesDragOver = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateDetailImagesDragOver(prev => ({ ...prev, [artworkId]: true }));
+  };
+
+  const handleUpdateDetailImagesDragLeave = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateDetailImagesDragOver(prev => ({ ...prev, [artworkId]: false }));
+  };
+
+  const handleUpdateDetailImagesDrop = (e, artworkId) => {
+    e.preventDefault();
+    setUpdateDetailImagesDragOver(prev => ({ ...prev, [artworkId]: false }));
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    if (files.length > 0) {
+      handleArtworkDetailImagesChange(artworkId, files);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -629,16 +676,64 @@ export default function ArtistUploader() {
   
   const handleNewArtworkFileChange = (e) => {
     const file = e.target.files[0];
-    if (file instanceof File) {
-      setNewArtwork(prev => ({ ...prev, file }));
-    } else {
-      setError("Please select a valid main artwork file");
+    if (file) {
+      handleMainArtworkFile(file);
     }
   };
   
   const handleArtworkImagesChange = (e) => {
     const files = Array.from(e.target.files).filter(file => file instanceof File);
-    setNewArtwork(prev => ({ ...prev, images: files }));
+    if (files.length > 0) {
+      setNewArtwork(prev => ({ ...prev, images: files }));
+    }
+  };
+
+  // Main Artwork Drag and Drop Handlers
+  const handleMainArtworkFile = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setNewArtwork(prev => ({ ...prev, file }));
+    } else {
+      setError("Please select a valid main artwork image file");
+    }
+  };
+
+  const handleMainArtworkDragOver = (e) => {
+    e.preventDefault();
+    setIsMainArtworkDragOver(true);
+  };
+
+  const handleMainArtworkDragLeave = (e) => {
+    e.preventDefault();
+    setIsMainArtworkDragOver(false);
+  };
+
+  const handleMainArtworkDrop = (e) => {
+    e.preventDefault();
+    setIsMainArtworkDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleMainArtworkFile(files[0]);
+    }
+  };
+
+  // Detail Images Drag and Drop Handlers
+  const handleDetailImagesDragOver = (e) => {
+    e.preventDefault();
+    setIsDetailImagesDragOver(true);
+  };
+
+  const handleDetailImagesDragLeave = (e) => {
+    e.preventDefault();
+    setIsDetailImagesDragOver(false);
+  };
+
+  const handleDetailImagesDrop = (e) => {
+    e.preventDefault();
+    setIsDetailImagesDragOver(false);
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+    if (files.length > 0) {
+      setNewArtwork(prev => ({ ...prev, images: files }));
+    }
   };
 
   const handleNewArtworkChange = (field, value) => {
@@ -710,7 +805,7 @@ export default function ArtistUploader() {
 
   const uploadCv = async (artistId) => {
     if (!cvFile) return null;
-    const cvRef = ref(storage, `artists/${artistId}/cv/${generateSlug(formData.name)}_cv`);
+    const cvRef = ref(storage, `artists/${artistId}/cv/${artistId}_cv`);
     await uploadBytes(cvRef, cvFile);
     return await getDownloadURL(cvRef);
   };
@@ -881,155 +976,215 @@ export default function ArtistUploader() {
         </div>
       </div>
 
-      {/* Gallery Images Input */}
-      <p className={styles.subtitle}>Artworks</p>
-                {/* Current Artwork Preview */}
-
-      {/* Display Previews for Selected Images */}
-      <div className={styles.artworkFormSection}>
-        <h3>Add New Artwork</h3>
+      {/* Add New Artwork Container */}
+      <div>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Add New Artwork</h3>
+        <div className={styles.artistInfoContainer}>
+          <div className={styles.artworkFormSection}>
         
         {/* Artwork Metadata Inputs */}
         <div className={styles.artworkMetadata}>
-          <input
-            type="text"
-            placeholder="Title *"
-            value={newArtwork.title}
-            onChange={(e) => handleNewArtworkChange('title', e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Date *"
-            value={newArtwork.date}
-            onChange={(e) => handleNewArtworkChange('date', e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Medium *"
-            value={newArtwork.medium}
-            onChange={(e) => handleNewArtworkChange('medium', e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Measurements"
-            value={newArtwork.measurements}
-            onChange={(e) => handleNewArtworkChange('measurements', e.target.value)}
-          />
-          <textarea
-            placeholder="Description *"
-            value={newArtwork.description}
-            onChange={(e) => handleNewArtworkChange('description', e.target.value)}
-            required
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={newArtwork.price}
-            onChange={(e) => handleNewArtworkChange('price', e.target.value)}
-          />
-          <select
-            value={newArtwork.availability_status}
-            onChange={(e) => handleNewArtworkChange('availability_status', e.target.value)}
-          >
-            <option value="NOT_FOR_SALE">Not For Sale</option>
-            <option value="FOR_SALE">For Sale</option>
-            <option value="ON_AUCTION">On Auction</option>
-            <option value="SOLD">Sold</option>
-            <option value="ON_HOLD">On Hold</option>
-          </select>
-          
-          {/* Extras Input */}
-          <div className={styles.extrasInput}>
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>TITLE *</p>
             <input
               type="text"
-              placeholder="Add extra information"
-              value={newExtra}
-              onChange={(e) => setNewExtra(e.target.value)}
-            />
-            <button 
-              type="button" 
-              onClick={() => {
-                if (newExtra.trim()) {
-                  setNewArtwork(prev => ({
-                    ...prev,
-                    extras: [...(prev.extras || []), newExtra.trim()]
-                  }));
-                  setNewExtra("");
-                }
-              }}
-            >
-              Add Extra
-            </button>
-          </div>
-          
-          {/* Display Extras */}
-          {newArtwork.extras && newArtwork.extras.length > 0 && (
-            <div className={styles.extrasList}>
-              {newArtwork.extras.map((extra, index) => (
-                <span key={index} className={styles.extraTag}>
-                  {extra}
-                  <button 
-                    type="button" 
-                    onClick={() => setNewArtwork(prev => ({
-                      ...prev,
-                      extras: prev.extras.filter((_, i) => i !== index)
-                    }))}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Image Upload Sections */}
-        <div className={styles.imageUploadSection}>
-          <div className={styles.uploadGroup}>
-            <label>Main Artwork Image *</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleNewArtworkFileChange}
+              placeholder="Artwork Title"
+              value={newArtwork.title}
+              onChange={(e) => handleNewArtworkChange('title', e.target.value)}
               required
             />
           </div>
 
-          <div className={styles.uploadGroup}>
-            <label>Detail Images (Multiple allowed)</label>
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>DATE *</p>
             <input
+              type="text"
+              placeholder="Date"
+              value={newArtwork.date}
+              onChange={(e) => handleNewArtworkChange('date', e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>MEDIUM *</p>
+            <input
+              type="text"
+              placeholder="Medium"
+              value={newArtwork.medium}
+              onChange={(e) => handleNewArtworkChange('medium', e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>MEASUREMENTS</p>
+            <input
+              type="text"
+              placeholder="Measurements"
+              value={newArtwork.measurements}
+              onChange={(e) => handleNewArtworkChange('measurements', e.target.value)}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>DESCRIPTION *</p>
+            <textarea
+              placeholder="Artwork Description"
+              value={newArtwork.description}
+              onChange={(e) => handleNewArtworkChange('description', e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>PRICE</p>
+            <input
+              type="number"
+              placeholder="Price"
+              value={newArtwork.price}
+              onChange={(e) => handleNewArtworkChange('price', e.target.value)}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>AVAILABILITY STATUS</p>
+            <select
+              value={newArtwork.availability_status}
+              onChange={(e) => handleNewArtworkChange('availability_status', e.target.value)}
+            >
+              <option value="NOT_FOR_SALE">Not For Sale</option>
+              <option value="FOR_SALE">For Sale</option>
+              <option value="ON_AUCTION">On Auction</option>
+              <option value="SOLD">Sold</option>
+              <option value="ON_HOLD">On Hold</option>
+            </select>
+          </div>
+          
+          {/* Extras Input */}
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>EXTRA INFORMATION</p>
+            <div className={styles.extrasInput}>
+              <input
+                type="text"
+                placeholder="Add extra information"
+                value={newExtra}
+                onChange={(e) => setNewExtra(e.target.value)}
+              />
+              <button 
+                type="button" 
+                onClick={() => {
+                  if (newExtra.trim()) {
+                    setNewArtwork(prev => ({
+                      ...prev,
+                      extras: [...(prev.extras || []), newExtra.trim()]
+                    }));
+                    setNewExtra("");
+                  }
+                }}
+              >
+                Add Extra
+              </button>
+            </div>
+            
+            {/* Display Extras */}
+            {newArtwork.extras && newArtwork.extras.length > 0 && (
+              <div className={styles.extrasList}>
+                {newArtwork.extras.map((extra, index) => (
+                  <span key={index} className={styles.extraTag}>
+                    {extra}
+                    <button 
+                      type="button" 
+                      onClick={() => setNewArtwork(prev => ({
+                        ...prev,
+                        extras: prev.extras.filter((_, i) => i !== index)
+                      }))}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Image Upload Sections */}
+        <div className={styles.imageUploadSection}>
+          {/* Main Artwork Image */}
+          <div className={styles.uploadGroup}>
+            <p className={styles.subtitle}>MAIN ARTWORK IMAGE *</p>
+            <div
+              className={`${styles.cvDropZone} ${isMainArtworkDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleMainArtworkDragOver}
+              onDragLeave={handleMainArtworkDragLeave}
+              onDrop={handleMainArtworkDrop}
+              onClick={() => mainArtworkInputRef.current?.click()}
+            >
+              {newArtwork.file ? (
+                <div className={styles.profilePicturePreview}>
+                  <img 
+                    src={URL.createObjectURL(newArtwork.file)} 
+                    alt="Main artwork preview" 
+                    style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                  />
+                  <div className={styles.profilePictureOverlay}>
+                    <span>Click or drag to change</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.cvFilePlaceholder}>
+                  <p>Drag & drop main artwork image here</p>
+                  <p>or click to browse</p>
+                  <small>Required - Single image</small>
+                </div>
+              )}
+            </div>
+            <input
+              ref={mainArtworkInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleNewArtworkFileChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+
+          {/* Detail Images */}
+          <div className={styles.uploadGroup}>
+            <p className={styles.subtitle}>DETAIL IMAGES (OPTIONAL)</p>
+            <div
+              className={`${styles.cvDropZone} ${isDetailImagesDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleDetailImagesDragOver}
+              onDragLeave={handleDetailImagesDragLeave}
+              onDrop={handleDetailImagesDrop}
+              onClick={() => detailImagesInputRef.current?.click()}
+            >
+              <div className={styles.cvFilePlaceholder}>
+                <p>Drag & drop detail images here</p>
+                <p>or click to browse</p>
+                <small>Multiple images allowed</small>
+              </div>
+            </div>
+            <input
+              ref={detailImagesInputRef}
               type="file"
               accept="image/*"
               multiple
               onChange={handleArtworkImagesChange}
+              style={{ display: 'none' }}
             />
-          </div>
-
-          {/* Preview Section */}
-          <div className={styles.previews}>
-          {newArtwork.file && (
-            <div className={styles.mainPreview}>
-              <p>Main Image Preview:</p>
-              <img
-                src={URL.createObjectURL(newArtwork.file)}
-                alt="Main artwork preview"
-                onLoad={() => URL.revokeObjectURL(URL.createObjectURL(newArtwork.file))}
-              />
-            </div>
-          )}
             
+            {/* Detail Images Preview */}
             {newArtwork.images.length > 0 && (
-              <div className={styles.detailPreviews}>
-                <p>Detail Images Preview:</p>
+              <div style={{ marginTop: '1rem' }}>
+                <p className={styles.subtitle}>SELECTED DETAIL IMAGES ({newArtwork.images.length})</p>
                 <div className={styles.detailImages}>
                   {newArtwork.images.map((file, index) => (
                     <img
                       key={index}
                       src={URL.createObjectURL(file)}
                       alt={`Detail preview ${index + 1}`}
+                      style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover', margin: '0.5rem' }}
                     />
                   ))}
                 </div>
@@ -1045,154 +1200,73 @@ export default function ArtistUploader() {
         >
           Add Artwork to Collection
         </button>
+          </div>
+        </div>
       </div>
 
-      {existingArtworks.map((artwork, index) => (
-        <div key={index} className={styles.artwork}>
-          <p>Artwork {index + 1}</p>
-          
-          {/* Main Image Preview */}
-            <img 
-              src={artwork.url} 
-              alt="Main Artwork Preview" 
-              className={styles.artworkPreviewImage} 
-            />
-
-          {/* Detail Images Preview */}
-          <div className={styles.detailImagesContainer}>
-            {artwork.images?.map((imgUrl, imgIndex) => (
-              <img
-                key={imgIndex}
-                src={imgUrl}
-                alt={`Detail ${imgIndex + 1}`}
-                className={styles.detailPreviewImage}
-              />
-            ))}
-          </div>
-
-          {/* Editable Fields */}
-          <input
-            type="text"
-            placeholder="Title"
-            value={artwork.title}
-            onChange={(e) => handleExistingArtworkChange(index, 'title', e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Date"
-            value={artwork.date}
-            onChange={(e) => handleExistingArtworkChange(index, 'date', e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Medium"
-            value={artwork.medium}
-            onChange={(e) => handleExistingArtworkChange(index, 'medium', e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Measurements"
-            value={artwork.measurements}
-            onChange={(e) => handleExistingArtworkChange(index, 'measurements', e.target.value)}
-          />
-          <textarea
-            placeholder="Description"
-            value={artwork.description}
-            onChange={(e) => handleExistingArtworkChange(index, 'description', e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={artwork.price || ""}
-            onChange={(e) => handleExistingArtworkChange(index, 'price', e.target.value)}
-          />
-          <select
-            value={artwork.availability_status || "NOT_FOR_SALE"}
-            onChange={(e) => handleExistingArtworkChange(index, 'availability_status', e.target.value)}
-          >
-            <option value="NOT_FOR_SALE">Not For Sale</option>
-            <option value="FOR_SALE">For Sale</option>
-            <option value="ON_AUCTION">On Auction</option>
-            <option value="SOLD">Sold</option>
-            <option value="ON_HOLD">On Hold</option>
-          </select>
-
-          {/* Extras for Existing Artworks */}
-          <div className={styles.extrasInput}>
-            <input
-              type="text"
-              placeholder="Add extra information"
-              value={newExtra}
-              onChange={(e) => setNewExtra(e.target.value)}
-            />
-            <button 
-              type="button" 
-              onClick={() => addExtra(index)}
-            >
-              Add Extra
-            </button>
-          </div>
-          
-          {/* Display Extras for Existing Artworks */}
-          {artwork.extras && artwork.extras.length > 0 && (
-            <div className={styles.extrasList}>
-              {artwork.extras.map((extra, extraIndex) => (
-                <span key={extraIndex} className={styles.extraTag}>
-                  {extra}
+      {/* Existing Artworks Container */}
+      {existingArtworks.length > 0 && (
+        <div>
+          <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Existing Artworks ({existingArtworks.length})</h3>
+          <div className={styles.artistInfoContainer}>
+            {/* Artworks List */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+              {existingArtworks.map((artwork, index) => (
+                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '200px', border: '1px solid #ddd', padding: '1rem' }}>
+                  <img 
+                    src={artwork.url} 
+                    alt={artwork.title} 
+                    style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '0.5rem' }}
+                  />
+                  <p style={{ fontWeight: '600', textAlign: 'center', margin: '0.5rem 0', fontSize: '0.9rem' }}>{artwork.title}</p>
                   <button 
                     type="button" 
-                    onClick={() => removeExtra(index, extraIndex)}
+                    onClick={() => setEditingArtworkIndex(editingArtworkIndex === index ? null : index)}
+                    style={{ padding: '0.5rem 1rem', cursor: 'pointer', marginTop: '0.5rem', backgroundColor: editingArtworkIndex === index ? '#333' : '#fff', color: editingArtworkIndex === index ? '#fff' : '#000' }}
                   >
-                    ×
+                    {editingArtworkIndex === index ? 'Close Edit' : 'Edit'}
                   </button>
-                </span>
+                </div>
               ))}
             </div>
-          )}
+          </div>
+        </div>
+      )}
 
-          {/* Image Update Section */}
-          <div className={styles.imageUpdateSection}>
-            <h4>Update Images</h4>
-            
-            {/* Main Image Update */}
-            <div className={styles.uploadGroup}>
-              <label>Update Main Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleArtworkMainImageChange(artwork.id, e.target.files[0])}
-              />
-              {artworkImageUpdates[artwork.id]?.mainImage && (
-                <div className={styles.imagePreview}>
-                  <p>New Main Image Preview:</p>
-                  <img
-                    src={URL.createObjectURL(artworkImageUpdates[artwork.id].mainImage)}
-                    alt="New main image preview"
-                    className={styles.previewImage}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Detail Images Update */}
-            <div className={styles.uploadGroup}>
-              <label>Update Detail Images</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => handleArtworkDetailImagesChange(artwork.id, e.target.files)}
-              />
-              {artworkImageUpdates[artwork.id]?.detailImages && artworkImageUpdates[artwork.id].detailImages.length > 0 && (
-                <div className={styles.imagePreview}>
-                  <p>New Detail Images Preview:</p>
-                  <div className={styles.detailImages}>
-                    {artworkImageUpdates[artwork.id].detailImages.map((file, imgIndex) => (
+      {/* Edit Artwork Information Section */}
+      {editingArtworkIndex !== null && existingArtworks[editingArtworkIndex] && (
+        <div>
+          <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Edit Artwork Information</h3>
+          <div className={styles.artistInfoContainer}>
+            {(() => {
+              const artwork = existingArtworks[editingArtworkIndex];
+              const index = editingArtworkIndex;
+              return (
+        <div className={styles.artworkFormSection}>
+          <p style={{ fontWeight: '600', fontSize: '1rem', marginBottom: '1rem' }}>Editing: {artwork.title}</p>
+          
+          {/* Current Images Preview */}
+          <div style={{ marginBottom: '2rem' }}>
+            <p className={styles.subtitle}>CURRENT IMAGES</p>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', color: '#666' }}>Main Image</p>
+                <img 
+                  src={artwork.url} 
+                  alt="Main Artwork Preview" 
+                  style={{ width: '150px', height: '150px', objectFit: 'cover', border: '1px solid #ddd' }}
+                />
+              </div>
+              {artwork.images && artwork.images.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', color: '#666' }}>Detail Images ({artwork.images.length})</p>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {artwork.images.map((imgUrl, imgIndex) => (
                       <img
                         key={imgIndex}
-                        src={URL.createObjectURL(file)}
-                        alt={`New detail preview ${imgIndex + 1}`}
-                        className={styles.previewImage}
+                        src={imgUrl}
+                        alt={`Detail ${imgIndex + 1}`}
+                        style={{ width: '80px', height: '80px', objectFit: 'cover', border: '1px solid #ddd' }}
                       />
                     ))}
                   </div>
@@ -1201,11 +1275,217 @@ export default function ArtistUploader() {
             </div>
           </div>
 
-          <button type="button" onClick={() => deleteArtwork(index)}>
-            Delete
+          {/* Editable Fields */}
+          <div className={styles.artworkMetadata}>
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>TITLE</p>
+              <input
+                type="text"
+                placeholder="Artwork Title"
+                value={artwork.title}
+                onChange={(e) => handleExistingArtworkChange(index, 'title', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>DATE</p>
+              <input
+                type="text"
+                placeholder="Date"
+                value={artwork.date}
+                onChange={(e) => handleExistingArtworkChange(index, 'date', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>MEDIUM</p>
+              <input
+                type="text"
+                placeholder="Medium"
+                value={artwork.medium}
+                onChange={(e) => handleExistingArtworkChange(index, 'medium', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>MEASUREMENTS</p>
+              <input
+                type="text"
+                placeholder="Measurements"
+                value={artwork.measurements}
+                onChange={(e) => handleExistingArtworkChange(index, 'measurements', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>DESCRIPTION</p>
+              <textarea
+                placeholder="Artwork Description"
+                value={artwork.description}
+                onChange={(e) => handleExistingArtworkChange(index, 'description', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>PRICE</p>
+              <input
+                type="number"
+                placeholder="Price"
+                value={artwork.price || ""}
+                onChange={(e) => handleExistingArtworkChange(index, 'price', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>AVAILABILITY STATUS</p>
+              <select
+                value={artwork.availability_status || "NOT_FOR_SALE"}
+                onChange={(e) => handleExistingArtworkChange(index, 'availability_status', e.target.value)}
+              >
+                <option value="NOT_FOR_SALE">Not For Sale</option>
+                <option value="FOR_SALE">For Sale</option>
+                <option value="ON_AUCTION">On Auction</option>
+                <option value="SOLD">Sold</option>
+                <option value="ON_HOLD">On Hold</option>
+              </select>
+            </div>
+
+            {/* Extras for Existing Artworks */}
+            <div className={styles.inputGroup}>
+              <p className={styles.subtitle}>EXTRA INFORMATION</p>
+              <div className={styles.extrasInput}>
+                <input
+                  type="text"
+                  placeholder="Add extra information"
+                  value={newExtra}
+                  onChange={(e) => setNewExtra(e.target.value)}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => addExtra(index)}
+                >
+                  Add Extra
+                </button>
+              </div>
+              
+              {/* Display Extras for Existing Artworks */}
+              {artwork.extras && artwork.extras.length > 0 && (
+                <div className={styles.extrasList}>
+                  {artwork.extras.map((extra, extraIndex) => (
+                    <span key={extraIndex} className={styles.extraTag}>
+                      {extra}
+                      <button 
+                        type="button" 
+                        onClick={() => removeExtra(index, extraIndex)}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Image Update Section */}
+          <div className={styles.imageUpdateSection}>
+            <p className={styles.subtitle} style={{ marginBottom: '1rem' }}>UPDATE IMAGES (OPTIONAL)</p>
+            
+            {/* Main Image Update */}
+            <div className={styles.uploadGroup}>
+              <p className={styles.subtitle}>UPDATE MAIN IMAGE</p>
+              <div
+                className={`${styles.cvDropZone} ${updateMainImageDragOver[artwork.id] ? styles.dragOver : ''}`}
+                onDragOver={(e) => handleUpdateMainImageDragOver(e, artwork.id)}
+                onDragLeave={(e) => handleUpdateMainImageDragLeave(e, artwork.id)}
+                onDrop={(e) => handleUpdateMainImageDrop(e, artwork.id)}
+                onClick={() => document.getElementById(`update-main-${artwork.id}`)?.click()}
+              >
+                {artworkImageUpdates[artwork.id]?.mainImage ? (
+                  <div className={styles.profilePicturePreview}>
+                    <img
+                      src={URL.createObjectURL(artworkImageUpdates[artwork.id].mainImage)}
+                      alt="New main image preview"
+                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                    <div className={styles.profilePictureOverlay}>
+                      <span>Click or drag to change</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.cvFilePlaceholder}>
+                    <p>Drag & drop new main image here</p>
+                    <p>or click to browse</p>
+                    <small>Leave empty to keep current image</small>
+                  </div>
+                )}
+              </div>
+              <input
+                id={`update-main-${artwork.id}`}
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleArtworkMainImageChange(artwork.id, e.target.files[0])}
+                style={{ display: 'none' }}
+              />
+            </div>
+
+            {/* Detail Images Update */}
+            <div className={styles.uploadGroup}>
+              <p className={styles.subtitle}>UPDATE DETAIL IMAGES</p>
+              <div
+                className={`${styles.cvDropZone} ${updateDetailImagesDragOver[artwork.id] ? styles.dragOver : ''}`}
+                onDragOver={(e) => handleUpdateDetailImagesDragOver(e, artwork.id)}
+                onDragLeave={(e) => handleUpdateDetailImagesDragLeave(e, artwork.id)}
+                onDrop={(e) => handleUpdateDetailImagesDrop(e, artwork.id)}
+                onClick={() => document.getElementById(`update-details-${artwork.id}`)?.click()}
+              >
+                <div className={styles.cvFilePlaceholder}>
+                  <p>Drag & drop new detail images here</p>
+                  <p>or click to browse</p>
+                  <small>Multiple images - Leave empty to keep current</small>
+                </div>
+              </div>
+              <input
+                id={`update-details-${artwork.id}`}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => handleArtworkDetailImagesChange(artwork.id, e.target.files)}
+                style={{ display: 'none' }}
+              />
+              
+              {/* Preview Selected Detail Images */}
+              {artworkImageUpdates[artwork.id]?.detailImages && artworkImageUpdates[artwork.id].detailImages.length > 0 && (
+                <div style={{ marginTop: '1rem' }}>
+                  <p style={{ fontSize: '0.9rem', color: '#666' }}>New Detail Images Preview ({artworkImageUpdates[artwork.id].detailImages.length}):</p>
+                  <div className={styles.detailImages} style={{ marginTop: '0.5rem' }}>
+                    {artworkImageUpdates[artwork.id].detailImages.map((file, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={URL.createObjectURL(file)}
+                        alt={`New detail preview ${imgIndex + 1}`}
+                        style={{ width: '100px', height: '100px', objectFit: 'cover', border: '1px solid #ddd', margin: '0.25rem' }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button 
+            type="button" 
+            onClick={() => deleteArtwork(index)}
+            style={{ padding: '0.75rem 1.5rem', cursor: 'pointer', marginTop: '1.5rem', backgroundColor: '#dc3545', color: '#fff', border: 'none', fontWeight: '600' }}
+          >
+            Delete Artwork
           </button>
         </div>
-      ))}
+              );
+            })()}
+          </div>
+        </div>
+      )}
 
       {/* Error Message */}
       {error && <p className={styles.error}>{error}</p>}
