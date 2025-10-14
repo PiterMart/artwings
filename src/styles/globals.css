@@ -98,6 +98,8 @@ button{
   padding: 0.5rem;
   box-shadow: none;
   border: none;
+  border: 1px solid gray;
+  width: fit-content;
 }
 ::-webkit-file-upload-button{
   background-color: #FAF9F6;

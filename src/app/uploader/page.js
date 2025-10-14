@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
-import styles from "../../styles/page.module.css";
+import styles from "../../styles/uploader.module.css";
 import ArtistUploader from "../firebase/ArtistUploader";
 import ExhibitionUploader from "../firebase/ExhibitionUploader";
 import FairUploader from "../firebase/FairUpdater";
@@ -42,26 +42,37 @@ export default function Home() {
     await signOut(auth);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   if (!user) {
     return (
       <div className={styles.loginContainer}> {/* Add CSS Module class */}
-        <h2 className={styles.loginTitle}>Login to acces uploader</h2>
+        <h2 className={styles.loginTitle}>Hello. <br></br> Login to access the admin panel.</h2>
         {error && <p className={styles.error}>{error}</p>}
         <div className={styles.formGroup}>
+        <p className={styles.helpText}>Email</p>
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyPress}
             className={styles.input}
           />
+          <p className={styles.helpText}>Password</p>
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyPress}
             className={styles.input}
           />
+          <p className={styles.helpText}>Forgot your password? Contact the administrator.</p>
           <button onClick={handleLogin} className={styles.loginButton}>
             Login
           </button>
@@ -96,7 +107,7 @@ export default function Home() {
 
         {/* Artist Section */}
         {activeSection === "artist" && (
-          <div id="artist" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <div id="artist" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "auto" }}>
             <p className={styles.title}>ARTIST UPLOADER</p>
             <ArtistUploader />
           </div>
@@ -104,7 +115,7 @@ export default function Home() {
 
         {/* Artists List Section */}
         {activeSection === "artistsList" && (
-          <div id="artistsList" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <div id="artistsList" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "auto" }}>
             <p className={styles.title}>ALL ARTISTS</p>
             <ArtistsList />
           </div>
@@ -112,7 +123,7 @@ export default function Home() {
 
         {/* Exhibition Section */}
         {activeSection === "exhibition" && (
-          <div id="exhibition" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <div id="exhibition" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "auto" }}>
             <p className={styles.title}>EXHIBITION UPLOADER</p>
             <ExhibitionUploader />
           </div>

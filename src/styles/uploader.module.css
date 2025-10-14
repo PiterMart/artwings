@@ -1,5 +1,206 @@
 /* UPLOADER COMPONENTS STYLES */
 
+/* Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+/* Page Layout */
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10vh;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  gap: 64px;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  grid-row-start: 2;
+  width: 100%;
+}
+
+/* Title and Text Styles */
+.title {
+  font-family: var(--font-lovelt);
+  font-size: 4.5rem;
+  font-weight: 300;
+  line-height: 1;
+  text-align: left;
+}
+
+/* Navigation Styles */
+.navContainer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.navButton {
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+  width: auto;
+}
+
+.navButton:hover {
+  background-color: #333;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Login Styles */
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.loginTitle {
+  margin-bottom: 2rem;
+}
+
+.formGroup {
+  width: 100%;
+  max-width: 400px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.loginButton {
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.loginButton:hover {
+  background-color: #000000;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Logout Button */
+.logoutButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 1px solid gray;
+  color: #333;
+  padding: 0.5rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #ff4444;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.25);
+}
+
+.error {
+  color: red;
+  margin: 1rem 0;
+}
+
+.helpText {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .title {
+    font-size: 3rem;
+    text-align: center;
+  }
+  
+  .navContainer {
+    gap: 0.75rem;
+    padding: 0 1rem;
+  }
+  
+  .navButton {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navContainer {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .navButton {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .logoutButton {
+    top: 15px;
+    right: 15px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
 /* Profile Picture Container */
 .profilePictureContainer {
   display: flex;
@@ -225,6 +426,7 @@
   border: 1px solid;
   padding: 1.5rem;
   margin: auto;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Artist Information Container */
@@ -262,13 +464,19 @@
   flex: 1;
 }
 
+.title{
+  font-family: 'Inter', sans-serif;
+}
+
 .subtitle {
+  font-family: 'Inter', sans-serif;
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
 }
 
 .formGroup {
@@ -520,7 +728,6 @@
 }
 
 .exhibitionTitle {
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
   font-size: 4rem;
   font-weight: 200;
   margin: 0;
@@ -529,7 +736,6 @@
 }
 
 .exhibitionDate {
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
   font-size: 1.8rem;
   font-weight: 600;
   color: #8B7355;
@@ -546,7 +752,6 @@
 }
 
 .addressLabel {
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   color: #666;
@@ -775,6 +980,7 @@
   }
   
   .exhibitionTitle {
+    font-family: 'Inter', sans-serif;
     font-size: 2.75rem;
     text-align: center;
   }

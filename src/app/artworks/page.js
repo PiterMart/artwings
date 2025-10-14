@@ -13,6 +13,11 @@ export default function ArtworksPage() {
   const [expandedArtists, setExpandedArtists] = useState(new Set());
   const [featuredArtwork, setFeaturedArtwork] = useState(null);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     async function fetchArtworks() {
       try {
