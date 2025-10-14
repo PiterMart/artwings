@@ -408,12 +408,12 @@ export default function ArtistUploader() {
   
       if (selectedArtist) {
         await updateDoc(doc(firestore, "artists", selectedArtist), artistData);
-        setSuccess("Artist updated successfully!");
+        setSuccess("Artist updated successfully! Please refresh the page to see the updated artist.");
       } else {
         const artistRef = doc(firestore, "artists", artistId);
         await setDoc(artistRef, artistData);
         setSelectedArtist(artistId);
-        setSuccess("Artist created successfully!");
+        setSuccess("Artist created successfully! Please refresh the page to see the new artist.");
       }
   
       // Clear deleted artworks after successful submission
@@ -1176,16 +1176,28 @@ export default function ArtistUploader() {
             
             {/* Detail Images Preview */}
             {newArtwork.images.length > 0 && (
-              <div style={{ marginTop: '1rem' }}>
+              <div style={{ marginTop: '2rem' }}>
                 <p className={styles.subtitle}>SELECTED DETAIL IMAGES ({newArtwork.images.length})</p>
-                <div className={styles.detailImages}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '1rem' }}>
                   {newArtwork.images.map((file, index) => (
-                    <img
-                      key={index}
-                      src={URL.createObjectURL(file)}
-                      alt={`Detail preview ${index + 1}`}
-                      style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover', margin: '0.5rem' }}
-                    />
+                    <div key={`detail-${index}`} className={styles.imageContainer} style={{ display: 'flex', flexDirection: 'column', width: '300px', border: '1px solid gray', padding: '1rem' }}>
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Detail preview ${index + 1}`}
+                        className={styles.previewImage}
+                        style={{ width: '100%', height: 'auto', objectFit: 'cover', maxHeight: '300px', marginBottom: 'auto' }}
+                      />
+                      <button
+                        type="button"
+                        style={{ color: "red", marginTop: '0.5rem', cursor: 'pointer', padding: '0.5rem' }}
+                        onClick={() => setNewArtwork(prev => ({
+                          ...prev,
+                          images: prev.images.filter((_, i) => i !== index)
+                        }))}
+                      >
+                        DELETE
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -1211,23 +1223,34 @@ export default function ArtistUploader() {
           <div className={styles.artistInfoContainer}>
             {/* Artworks List */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
-              {existingArtworks.map((artwork, index) => (
-                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '200px', border: '1px solid #ddd', padding: '1rem' }}>
-                  <img 
-                    src={artwork.url} 
-                    alt={artwork.title} 
-                    style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '0.5rem' }}
-                  />
-                  <p style={{ fontWeight: '600', textAlign: 'center', margin: '0.5rem 0', fontSize: '0.9rem' }}>{artwork.title}</p>
-                  <button 
-                    type="button" 
-                    onClick={() => setEditingArtworkIndex(editingArtworkIndex === index ? null : index)}
-                    style={{ padding: '0.5rem 1rem', cursor: 'pointer', marginTop: '0.5rem', backgroundColor: editingArtworkIndex === index ? '#333' : '#fff', color: editingArtworkIndex === index ? '#fff' : '#000' }}
-                  >
-                    {editingArtworkIndex === index ? 'Close Edit' : 'Edit'}
-                  </button>
-                </div>
-              ))}
+              {existingArtworks.map((artwork, index) => {
+                // Determine the image source: use url for existing artworks, or create object URL for newly added ones
+                const imageSrc = artwork.url || (artwork.file instanceof File ? URL.createObjectURL(artwork.file) : null);
+                
+                return (
+                  <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '200px', border: '1px solid #ddd', padding: '1rem' }}>
+                    {imageSrc ? (
+                      <img 
+                        src={imageSrc} 
+                        alt={artwork.title} 
+                        style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '0.5rem' }}
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '150px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
+                        <span style={{ color: '#999', fontSize: '0.8rem' }}>No image</span>
+                      </div>
+                    )}
+                    <p style={{ fontWeight: '600', textAlign: 'center', margin: '0.5rem 0', fontSize: '0.9rem' }}>{artwork.title}</p>
+                    <button 
+                      type="button" 
+                      onClick={() => setEditingArtworkIndex(editingArtworkIndex === index ? null : index)}
+                      style={{ padding: '0.5rem 1rem', cursor: 'pointer', marginTop: '0.5rem', backgroundColor: editingArtworkIndex === index ? '#333' : '#fff', color: editingArtworkIndex === index ? '#fff' : '#000' }}
+                    >
+                      {editingArtworkIndex === index ? 'Close Edit' : 'Edit'}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1251,24 +1274,40 @@ export default function ArtistUploader() {
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', color: '#666' }}>Main Image</p>
-                <img 
-                  src={artwork.url} 
-                  alt="Main Artwork Preview" 
-                  style={{ width: '150px', height: '150px', objectFit: 'cover', border: '1px solid #ddd' }}
-                />
+                {artwork.url ? (
+                  <img 
+                    src={artwork.url} 
+                    alt="Main Artwork Preview" 
+                    style={{ width: '150px', height: '150px', objectFit: 'cover', border: '1px solid #ddd' }}
+                  />
+                ) : artwork.file instanceof File ? (
+                  <img 
+                    src={URL.createObjectURL(artwork.file)} 
+                    alt="Main Artwork Preview" 
+                    style={{ width: '150px', height: '150px', objectFit: 'cover', border: '1px solid #ddd' }}
+                  />
+                ) : (
+                  <div style={{ width: '150px', height: '150px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd' }}>
+                    <span style={{ color: '#999', fontSize: '0.8rem' }}>No image</span>
+                  </div>
+                )}
               </div>
               {artwork.images && artwork.images.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <p style={{ fontSize: '0.8rem', marginBottom: '0.5rem', color: '#666' }}>Detail Images ({artwork.images.length})</p>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    {artwork.images.map((imgUrl, imgIndex) => (
-                      <img
-                        key={imgIndex}
-                        src={imgUrl}
-                        alt={`Detail ${imgIndex + 1}`}
-                        style={{ width: '80px', height: '80px', objectFit: 'cover', border: '1px solid #ddd' }}
-                      />
-                    ))}
+                    {artwork.images.map((img, imgIndex) => {
+                      // Handle both URL strings and File objects
+                      const imgSrc = typeof img === 'string' ? img : (img instanceof File ? URL.createObjectURL(img) : null);
+                      return imgSrc ? (
+                        <img
+                          key={imgIndex}
+                          src={imgSrc}
+                          alt={`Detail ${imgIndex + 1}`}
+                          style={{ width: '80px', height: '80px', objectFit: 'cover', border: '1px solid #ddd' }}
+                        />
+                      ) : null;
+                    })}
                   </div>
                 </div>
               )}

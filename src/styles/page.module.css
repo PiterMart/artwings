@@ -1614,6 +1614,14 @@
   text-transform: uppercase;
 }
 
+.sectionSubtitle {
+  line-height: 1.5rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+  font-weight: 200;
+  font-size: 1.5rem;
+}
+
 .exhibitionDate {
   font-family: var(--font-lovelt), 'Inter', sans-serif;
   font-size: 1.8rem;

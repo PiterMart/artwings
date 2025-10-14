@@ -148,8 +148,12 @@ export default function Home() {
                 About Us
               </p>
             
-              <p style={{lineHeight: '1.5rem', marginTop: '1rem'}}>
-                ARTWINGS is a Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.
+              <p className={styles.sectionSubtitle} style={{marginTop: '1rem'}}>
+                &ldquo;ARTWINGS is a Berlin-based artspace redefining the boundaries of artistic expression.&rdquo;
+              </p>
+              
+              <p style={{lineHeight: '1.5rem'}}>
+                We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.
               </p>
               
               <p style={{lineHeight: '1.5rem'}}>
@@ -178,8 +182,12 @@ export default function Home() {
                 Purpose
               </p>
               
+              <p className={styles.sectionSubtitle}>
+                &ldquo;ARTWINGS embodies a strong social mission and is proudly supported by YUVEDO, a foundation dedicated to assisting individuals affected by neurodegenerative diseases.&rdquo;
+              </p>
+              
               <p style={{lineHeight: '1.5rem'}}>
-                ARTWINGS embodies a strong social mission and is proudly supported by YUVEDO, a foundation dedicated to assisting individuals affected by neurodegenerative diseases. YUVEDO&apos;s multifaceted initiative harnesses the power of art and culture to promote brain health, empower patients to actively improve their care, and encourage participation in medical research by contributing personal data and experiences to advance the search for better treatments.
+                YUVEDO&apos;s multifaceted initiative harnesses the power of art and culture to promote brain health, empower patients to actively improve their care, and encourage participation in medical research by contributing personal data and experiences to advance the search for better treatments.
               </p>
               
               <p style={{lineHeight: '1.5rem'}}>
@@ -205,8 +213,12 @@ export default function Home() {
                 Creative Vision
               </p>
               
+              <p className={styles.sectionSubtitle}>
+                &ldquo;We envision a space where the boundaries of artistic expression dissolve into a living archive of resistance, remembrance, and reimagination.&rdquo;
+              </p>
+              
               <p style={{lineHeight: '1.5rem'}}>
-                We envision a space where the boundaries of artistic expression dissolve into a living archive of resistance, remembrance, and reimagination. A dynamic movement where artistic innovation and social impact converge.
+                A dynamic movement where artistic innovation and social impact converge.
               </p>
               
               <p style={{lineHeight: '1.5rem'}}>
@@ -232,7 +244,7 @@ export default function Home() {
             </div>
             <div>
                 <p className={styles.exhibitionTitle} style={{ marginTop: '0rem', marginBottom: '1rem', lineHeight: '2.5rem'}}>The artwings Collection</p>
-                <p style={{marginBottom: '1rem'}}>Checkout our curated selection of artworks from the diverse community of artists we champion.</p>
+                <p style={{marginBottom: '1rem'}} className={styles.sectionSubtitle}>See our curated selection of artworks from the diverse community of artists we champion.</p>
                   <Link href="/artworks">
                     <button 
                     style={{
@@ -408,7 +420,7 @@ export default function Home() {
                   <p className={styles.venueDescription}>
                     With two floors, high ceilings, and multiple exhibition rooms, Direktorenhaus provides the architectural and energetic frame for our project. We will host meetings on-site for participating artists to explore the space, meet each other, and engage in the logistics and vision of the exhibition. Our goal is to transform it into a cohesive, inclusive artistic environment aligned with the mission of ARTWINGS.
                   </p>
-                  <p className={styles.venueAddress}>Am Krögel 2, 10179 Berlin</p>
+                  <p className={styles.sectionSubtitle} >Am Krögel 2, 10179 Berlin</p>
                   <div className={styles.mapContainer}>
                     <iframe 
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4856.025219182328!2d13.407547512739256!3d52.51511087194333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a84e26b464b7eb%3A0x23ba24dd44f369d4!2sDirektorenhaus!5e0!3m2!1ses-419!2sit!4v1755696365900!5m2!1ses-419!2sit" 

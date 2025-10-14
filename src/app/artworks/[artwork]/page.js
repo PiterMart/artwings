@@ -157,16 +157,16 @@ export default function Artwork({ params }) {
                 </button>
               )}
             </div>
-            <div style={{ alignSelf: "flex-end" }}>
+            {/* <div style={{ alignSelf: "flex-end" }}>
               <button
                 onClick={() => window.history.back()}
                 className={styles.back_link}
               >
-                {/* <p style={{ fontSize: "1rem", fontWeight: "100", paddingBottom: "1rem", color: '#707984' }}>
+                <p style={{ fontSize: "1rem", fontWeight: "100", color: '#707984' }}>
                   {"<"} Back
-                </p> */}
+                </p>
               </button>
-            </div>
+            </div> */}
           </div>
           <div className={styles.artwork_image_container}>
             {isImageLoading && (
