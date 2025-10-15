@@ -84,7 +84,7 @@ export default function Exhibitions() {
               <Link key={exhibition.id} href={`/exhibitions/${exhibition.slug}`} className={styles.exhibition_card}>
                 <div className={styles.exhibition_info}>
                   <h3 className={styles.exhibition_name}>{exhibition.name}</h3>
-                  <div className={styles.exhibition_details}>
+                  {/* <div className={styles.exhibition_details}>
                     <p className={styles.exhibition_date}>
                       <span className={styles.date_label}>Opening:</span> {formatDate(exhibition.openingDate)}
                     </p>
@@ -94,7 +94,7 @@ export default function Exhibitions() {
                     <p className={styles.exhibition_address}>
                       <span className={styles.address_label}>Location:</span> {getAddress(exhibition)}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </Link>
             ))}

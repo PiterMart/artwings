@@ -35,6 +35,8 @@ const minecraftItalic = localFont({
 const lovelt = localFont({
   src: "../../public/fonts/Lovelt__.ttf",
   variable: "--font-lovelt",
+  display: 'swap',
+  preload: true,
 });
 
 // Helveti

@@ -92,6 +92,11 @@
   user-select: none;
   touch-action: none;
   transition: none;
+  /* Setup for radial reveal effect - start invisible */
+  mask-image: radial-gradient(circle, white 0%, white 30%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.7) 65%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0.1) 95%, transparent 100%);
+  mask-position: center;
+  mask-size: 0% 0%;
+  mask-repeat: no-repeat;
 }
 
 .parallaxImage:active {
@@ -1620,6 +1625,35 @@
   font-style: italic;
   font-weight: 200;
   font-size: 1.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Ensure consistent font weight across different font families */
+  font-weight: 200 !important;
+  /* Setup for radial reveal effect - but don't animate yet */
+  mask-image: radial-gradient(circle, white 0%, white 30%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.7) 65%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0.1) 95%, transparent 100%);
+  mask-position: center;
+  mask-size: 0% 0%;
+  mask-repeat: no-repeat;
+}
+
+.sectionSubtitleVisible {
+  /* Apply the radial reveal animation when visible */
+  animation: radial-reveal 5s ease-out 0.3s forwards;
+}
+
+.imageContainer {
+  /* Setup for radial reveal effect - start invisible */
+  mask-image: radial-gradient(circle, white 0%, white 30%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.7) 65%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0.1) 95%, transparent 100%);
+  mask-position: center;
+  mask-size: 0% 0%;
+  mask-repeat: no-repeat;
+}
+
+.imageVisible {
+  /* Apply the radial reveal animation when visible */
+  animation: radial-reveal 5s ease-out 0.3s forwards;
 }
 
 .exhibitionDate {
@@ -1817,13 +1851,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 8rem;
+  margin-left: auto;
+  margin-right: auto;
   gap: 3rem;
-  margin: auto;
   position: relative;
   min-height: 60vh;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
 }
 
 .artworks_header {
@@ -1971,10 +2006,7 @@
 }
 
 @media (max-width: 768px) {
-  .artworks_page {
-    margin-top: 1rem;
-  }
-  
+
   .artworks_grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
