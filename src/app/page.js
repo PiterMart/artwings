@@ -340,7 +340,7 @@ export default function Home() {
                       e.target.style.transform = "translateY(0)";
                     }}
                   >
-                    See Now
+                    See Collection
                   </button>
                   </Link>
               </div>
