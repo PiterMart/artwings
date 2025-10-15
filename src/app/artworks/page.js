@@ -182,7 +182,7 @@ export default function ArtworksPage() {
                         )}
 
                         </div>
-                          <h2 className={styles.featured_title} style={{fontFamily: 'var(--font-lovelt)'}}>The Complete Artwings Collection</h2>
+                          <h2 className={styles.featured_title} style={{fontFamily: 'var(--font-lovelt)', color: "#707984"}}>The Complete Artwings Collection</h2>
                       </div>
                     </div>
                   )}
