@@ -53,6 +53,7 @@ export default function Exhibition({ params }) {
           return {
             ...artistData,
             id: artistDoc.id,
+            slug: artistDoc.id,
             selectedArtworks, // Attach fetched artworks
           };
         }
@@ -100,16 +101,47 @@ export default function Exhibition({ params }) {
     image: gallery.url,
   }));
 
+  const allArtworks = artistsData.flatMap((artist) =>
+    (artist.selectedArtworks || []).map((artwork) => ({
+      ...artwork,
+      artistName: artist.name,
+      artistSlug: artist.slug || artist.id,
+    }))
+  );
+
+  const flyerExtension = exhibition.flyer?.split("?")[0].toLowerCase();
+  const isFlyerVideo =
+    typeof flyerExtension === "string" && /\.(mp4|webm|ogg|mov)$/.test(flyerExtension);
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.page_container}>
           <div className={styles.exhibition_page}>
-            <p className={styles.title}>{exhibition.name}</p>
+            <h1 className={styles.exhibitionTitle}>{exhibition.name}</h1>
+            {exhibition.flyer && (
+              <div className={styles.flyerContainer}>
+                {isFlyerVideo ? (
+                  <video
+                    className={`${styles.flyerMedia} ${styles.flyerVideo}`}
+                    src={exhibition.flyer}
+                    controls
+                    playsInline
+                    aria-label={`${exhibition.name} flyer video`}
+                  />
+                ) : (
+                  <img
+                    className={styles.flyerImage}
+                    src={exhibition.flyer}
+                    alt={`${exhibition.name} flyer`}
+                  />
+                )}
+              </div>
+            )}
             <EmblaCarousel slides={exhibitionSlides} type="picture" />
             <p
               className={styles.paragraph}
-              style={{ fontSize: "2rem", margin: "auto", textAlign: "center", lineHeight: "2.25rem" }}
+              style={{ fontSize: "2rem", margin: "2rem auto", textAlign: "center", lineHeight: "2.25rem" }}
             >
               {exhibition.description}
             </p>
@@ -144,37 +176,44 @@ export default function Exhibition({ params }) {
                 </button>
               </div>
             )}
-            <h2 style={{ marginTop: "3rem", fontWeight: "200" }} className={styles.title}>
-              Represented Artists
-            </h2>
-            {artistsData.map((artist) => {
-              const artworkSlides = artist.selectedArtworks.map((artwork) => ({
-                title: artwork.title,
-                url: artwork.url,
-                medium: artwork.medium,
-                extra: artwork.extra,
-                slug: artwork.artworkSlug,
-                date: artwork.date,
-                measurements: artwork.measurements,
-                description: artwork.description,
-              }));
-              return (
-                <div
-                  key={artist.id}
-                  className={styles.artist}
-                  style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-                >
-                  <Link href={`/artists/${artist.slug}`}>
-                    <p style={{ fontWeight: "300", fontSize: "1.5rem" }}>{artist.name}</p>
-                  </Link>
-                  {artworkSlides.length > 0 ? (
-                    <EmblaCarousel slides={artworkSlides} type="artwork" />
-                  ) : (
-                    <p></p>
-                  )}
+            {artistsData.length > 0 && (
+              <section className={styles.artistListSection}>
+                <h2 className={styles.sectionHeading}>Represented Artists</h2>
+                <ul className={styles.artistList}>
+                  {artistsData.map((artist) => (
+                    <li key={artist.id}>
+                      <Link href={`/artists/${artist.slug || artist.id}`}>{artist.name}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {allArtworks.length > 0 && (
+              <section className={styles.artworkGridSection}>
+                <h2 className={styles.sectionHeading}>Featured Artworks</h2>
+                <div className={styles.artworkGrid}>
+                  {allArtworks.map((artwork) => {
+                    const artworkSlug = artwork.slug || artwork.artworkSlug || artwork.id;
+                    return (
+                      <Link
+                        href={artworkSlug ? `/artworks/${artworkSlug}` : "#"}
+                        key={`${artwork.id}-${artwork.title}`}
+                        className={styles.artworkCard}
+                        aria-label={`${artwork.title} by ${artwork.artistName}`}
+                      >
+                        {artwork.url && (
+                          <img
+                            src={artwork.url}
+                            alt={artwork.title || "Artwork image"}
+                            className={styles.artworkImage}
+                          />
+                        )}
+                      </Link>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </section>
+            )}
           </div>
         </div>
       </main>

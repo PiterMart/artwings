@@ -481,7 +481,6 @@ export default function Home() {
               </p>
               <div className={styles.contactInfo}>
                 <p><a href="mailto:info@artwings.art">info@artwings.art</a></p>
-                <p><a href="tel:+491721736434">+49 172 1736434</a></p>
                 <p><a href="https://www.instagram.com/artwings111/" target="_blank" rel="noopener noreferrer">@artwings111</a></p>
               </div>
             </div>
@@ -517,6 +516,15 @@ export default function Home() {
       
       <main className={styles.main}>
       </main>
+
+      <footer className={styles.footer}>
+        <p className={styles.footerText}>
+          © 2025 ARTWINGS. All rights reserved.{' '}
+          <Link href="/privacy-policy" className={styles.footerLink}>
+            Privacy Policy
+          </Link>
+        </p>
+      </footer>
 
       {/* Lightbox Component */}
       <Lightbox
