@@ -92,6 +92,79 @@
   transition: all 0.3s ease;
 }
 
+.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownToggle {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease;
+  text-shadow: inherit;
+}
+
+.dropdownToggle:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.4);
+  outline-offset: 4px;
+}
+
+.dropdownToggle_open {
+  color: #707984;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translate(-50%, 0.75rem);
+  background: transparent;
+  color: inherit;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 14rem;
+  z-index: 20;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.dropdownMenu a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.5rem;
+  font-weight: 200;
+  transition: color 0.2s ease;
+  text-shadow: inherit;
+  line-height: 1.2;
+}
+
+.dropdownMenu a:hover {
+  color: #707984;
+}
+
+.dropdownStatus {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(31, 31, 31, 0.7);
+  white-space: nowrap;
+}
+
+.dropdownMenu_open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
 .page_current {
   color: #707984;
 }
@@ -197,5 +270,43 @@
   
   .nav_visible {
     transform: translateY(0);
+  }
+
+  .dropdown {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dropdownToggle {
+    font-size: inherit;
+  }
+
+  .dropdownMenu {
+    position: static;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 1rem 0 0;
+    align-items: center;
+    min-width: unset;
+    color: inherit;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+
+  .dropdownMenu a {
+    font-size: 2rem;
+  }
+
+  .dropdownStatus {
+    font-size: 1.5rem;
+  }
+
+  .dropdownMenu_open {
+    transform: none;
   }
 }
