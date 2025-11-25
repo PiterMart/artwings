@@ -2,7 +2,7 @@
 import Image from "next/image";
 import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig"; 
-import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore"; 
+import { doc, getDoc } from "firebase/firestore"; 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
@@ -21,24 +21,20 @@ export default function Artist({ params }) {
   const [artworks, setArtworks] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const artistSlug = params.artist;
+  const artistId = params.artist;
 
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
     
     const fetchArtistData = async () => {
-      console.log("Fetching artist with slug:", artistSlug);
+      console.log("Fetching artist with id:", artistId);
       try {
 
-        const artistQuery = query(
-          collection(firestore, "artists"),
-          where("slug", "==", artistSlug)
-        );
-        const artistSnapshot = await getDocs(artistQuery);
+        const artistDocRef = doc(firestore, "artists", artistId);
+        const artistDoc = await getDoc(artistDocRef);
 
-        if (!artistSnapshot.empty) {
-          const artistDoc = artistSnapshot.docs[0];
+        if (artistDoc.exists()) {
           const artistData = artistDoc.data();
 
           const formattedArtist = {
@@ -58,7 +54,7 @@ export default function Artist({ params }) {
           // Set loading to false after all data is loaded
           setIsLoading(false);
         } else {
-          console.error("No artist found with this slug.");
+          console.error("No artist found with this id.");
           // Keep loading state active instead of showing error
         }
       } catch (error) {
@@ -68,7 +64,7 @@ export default function Artist({ params }) {
     };
 
     fetchArtistData();
-  }, [artistSlug]);
+  }, [artistId]);
 
   // Fetch artworks from the `artworks` collection by IDs
   const fetchArtworksByIds = async (artworkIds) => {

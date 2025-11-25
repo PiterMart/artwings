@@ -2,7 +2,127 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
-/* Margin Images */
+/* Hero Banner Section */
+.heroBanner {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBannerDesktop {
+  display: none;
+  object-fit: cover;
+  width: 100vw;
+  height: auto;
+  max-height: 90vh;
+}
+
+.heroBannerMobile {
+  display: block;
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+}
+
+@media (min-width: 768px) {
+  .heroBanner {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    height: 90vh;
+    max-height: 90vh;
+  }
+  
+  .heroBannerDesktop {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .heroBannerMobile {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .heroBanner {
+    margin-bottom: 2rem;
+  }
+  
+  .heroBannerMobile {
+    max-height: 85vh;
+  }
+}
+
+/* Margin Images - Aligned with subtitle */
+.leftMarginAligned {
+  position: absolute;
+  left: 0;
+  top: 10rem;
+  height: 100vh;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0.3;
+}
+
+.rightMarginAligned {
+  position: absolute;
+  right: 0;
+  top: 10rem;
+  height: 100vh;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0.3;
+  transform: scaleX(-1);
+  overflow: hidden;
+}
+
+@media (max-width: 1000px) {
+  .leftMarginAligned,
+  .rightMarginAligned {
+    top: 8rem;
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 800px) {
+  .leftMarginAligned,
+  .rightMarginAligned {
+    top: 6rem;
+    opacity: 0.2;
+  }
+  
+  .leftMarginAligned .marginImage,
+  .rightMarginAligned .marginImage {
+    width: 150px;
+    height: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .leftMarginAligned,
+  .rightMarginAligned {
+    top: 5rem;
+    opacity: 0.15;
+  }
+  
+  .leftMarginAligned .marginImage,
+  .rightMarginAligned .marginImage {
+    width: 100px;
+    height: auto;
+  }
+}
+
+/* Legacy margin images (keeping for backward compatibility if needed) */
 .leftMargin {
   position: absolute;
   margin-top: 3vh;
@@ -16,6 +136,18 @@
   opacity: 0.3;
 }
 
+@media (min-width: 768px) {
+  .leftMargin {
+    top: 90vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .leftMargin {
+    top: 0;
+  }
+}
+
 .leftMargin2 {
   position: absolute;
   margin-top: 0;
@@ -27,6 +159,33 @@
   justify-content: center;
   align-items: center;
   opacity: 0.10;
+}
+
+/* Mobile styles for old margin classes */
+@media (max-width: 800px) {
+  .leftMargin,
+  .leftMargin2 {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .leftMargin {
+    margin-top: 3vh;
+    left: 0;
+    height: 100vh;
+    opacity: 0.3;
+  }
+  
+  .leftMargin2 {
+    margin-top: 0;
+    left: -94px;
+    height: 125vh;
+    opacity: 0.10;
+  }
 }
 
 
@@ -44,6 +203,18 @@
     transform: scaleX(-1);
     overflow: hidden;
   }
+
+@media (min-width: 768px) {
+  .rightMargin {
+    top: 90vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .rightMargin {
+    top: 0;
+  }
+}
   .rightMarginBottom {
     position: fixed;
     right: 0;
@@ -180,25 +351,7 @@
   -ms-user-select: none;
 }
 
-/* Logo Container */
-.logoContainer {
-  position: relative;
-  top: 25%;
-  margin-top: 20rem;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  width: 100%;
-  max-width: 100vw;
-  margin-bottom: -20vh;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
+/* Logo Container - Removed (no longer used) */
 
 @keyframes float {
   0%, 100% {
@@ -209,23 +362,7 @@
   }
 }
 
-.logo {
-  position: fixed;
-  width: 915px;
-  height: auto;
-  max-width: 100vw;
-  cursor: pointer;
-  z-index: 1000;
-  filter: drop-shadow(0 38px 1px rgba(0, 0, 0, 0.164));
-  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: float 4s ease-in-out infinite;
-}
-
-.logo:hover {
-  transform: scale(1.02) translateY(-15px);
-  filter: drop-shadow(0 45px 15px rgba(0, 0, 0, 0.4));
-  animation-play-state: paused;
-}
+/* Logo styles removed - no longer used */
 
 /* Define the animation keyframes */
 @keyframes radial-reveal {
@@ -332,6 +469,7 @@
   flex-direction: column;
   gap:3rem;
   box-sizing: border-box;
+  position: relative;
 }
 
 .main {
@@ -366,7 +504,8 @@
 
 .footerLink:hover,
 .footerLink:focus {
-  color: #d0d0d0;
+  color: var(--foreground);
+  opacity: 0.7;
 }
 
 /* FONTS AND TEXTS */
@@ -398,7 +537,7 @@
 .navButton {
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.75rem 1.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
@@ -436,7 +575,7 @@
 .loginButton {
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.75rem 1.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
@@ -460,7 +599,7 @@
   right: 20px;
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.5rem 1rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
@@ -862,7 +1001,7 @@
   display: block;
   text-decoration: none;
   color: inherit;
-  background: #f9f9f9;
+  background: var(--background);
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 1.5rem;
@@ -889,7 +1028,7 @@
   font-size: 1.5rem;
   font-weight: 400;
   margin: 0;
-  color: #333;
+  color: var(--foreground);
   line-height: 1.3;
 }
 
@@ -1231,10 +1370,7 @@
   }
 
 
-  .logoContainer{
-    top: 7%;
-    margin-bottom: -20vh;
-  }
+  /* Logo container removed */
   .tagline{
     display: flex;
     flex-direction: column;
@@ -1361,15 +1497,55 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(255, 255, 255, 0.3) 10%,
-      rgba(255, 255, 255, 0.7) 20%,
-      rgba(255, 255, 255, 0.9) 30%,
-      rgba(255, 255, 255, 0.9) 70%,
-      rgba(255, 255, 255, 0.7) 80%,
-      rgba(255, 255, 255, 0.3) 90%,
+      rgba(0, 0, 0, 0.3) 10%,
+      rgba(0, 0, 0, 0.7) 20%,
+      rgba(0, 0, 0, 0.9) 30%,
+      rgba(0, 0, 0, 0.9) 70%,
+      rgba(0, 0, 0, 0.7) 80%,
+      rgba(0, 0, 0, 0.3) 90%,
       transparent 100%
     );
     padding: 3rem 1rem;
+  }
+  
+  /* Restore old mobile margin styles */
+  .leftMargin,
+  .leftMargin2 {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .leftMargin {
+    margin-top: 3vh;
+    left: 0;
+    height: 100vh;
+    opacity: 0.3;
+  }
+  
+  .leftMargin2 {
+    margin-top: 0;
+    left: -94px;
+    height: 125vh;
+    opacity: 0.10;
+  }
+  
+  .rightMargin {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    margin-top: 3vh;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.3;
+    transform: scaleX(-1);
+    overflow: hidden;
   }
   
   /* Exhibition List Mobile Styles */
@@ -1538,14 +1714,14 @@
   padding: 15px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: var(--background);
 }
 
 .imageUpdateSection h4 {
   margin: 0 0 15px 0;
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--foreground);
 }
 
 .imagePreview {
@@ -1556,7 +1732,8 @@
   margin: 5px 0;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--foreground);
+  opacity: 0.7;
 }
 
 .previewImage {
@@ -1853,6 +2030,16 @@
   .exhibitionInfo {
     padding: 0.75rem;
   }
+  
+  /* Featured Artworks Grid - Mobile */
+  .artworkGrid {
+    column-width: 140px;
+    column-gap: 0.5rem;
+  }
+  
+  .artworkCard {
+    margin-bottom: 0.5rem;
+  }
 }
 @media (max-width: 600px) {
   .title2{
@@ -1955,11 +2142,6 @@
     padding: 0 1rem;
   }
   
-  
-  .logoContainer {
-    padding: 0 0.5rem;
-  }
-  
   .tagline {
     padding: 0 0.5rem;
   }
@@ -1978,6 +2160,58 @@
   min-height: 60vh;
   width: 100%;
   max-width: 1200px;
+}
+
+/* Artist Filter Styles */
+.artist_filter_container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.artist_filter_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.artist_filter_button {
+  background: transparent;
+  border: 1px solid #333;
+  color: #333;
+  padding: 0.5rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.artist_filter_button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.artist_filter_button_active {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+.artist_filter_button_active:hover {
+  background-color: #444;
+  border-color: #444;
 }
 
 .artworks_header {
@@ -2087,19 +2321,21 @@
   font-size: 1rem;
   font-weight: 300;
   margin: 0;
-  color: #333;
+  color: var(--foreground);
   line-height: 1.3;
 }
 
 .artwork_artist {
   margin: 0;
   font-size: 1rem;
-  color: #666;
+  color: var(--foreground);
     font-family: var(--font-lovelt);
+  opacity: 0.7;
 }
 
 .artist_link {
-  color: #666;
+  color: var(--foreground);
+  opacity: 0.7;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -2122,6 +2358,20 @@
     gap: 1.5rem;
     justify-content: center;
   }
+  
+  .artist_filter_container {
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+  }
+  
+  .artist_filter_list {
+    gap: 0.75rem;
+  }
+  
+  .artist_filter_button {
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2130,6 +2380,19 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     justify-content: center;
+  }
+  
+  .artist_filter_container {
+    padding: 1rem 0.75rem;
+  }
+  
+  .artist_filter_list {
+    gap: 0.5rem;
+  }
+  
+  .artist_filter_button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.85rem;
   }
 
   .featured_artwork_section {
@@ -2174,6 +2437,29 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     justify-content: center;
+  }
+  
+  /* Featured Artworks Grid - Small Mobile */
+  .artworkGrid {
+    column-width: 110px;
+    column-gap: 0.5rem;
+  }
+  
+  .artworkCard {
+    margin-bottom: 0.5rem;
+  }
+  
+  .artist_filter_container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .artist_filter_list {
+    gap: 0.5rem;
+  }
+  
+  .artist_filter_button {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
   }
   
   .artwork_image_container {

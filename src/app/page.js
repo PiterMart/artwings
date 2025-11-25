@@ -13,6 +13,9 @@ export default function Home() {
   const [imagePositions, setImagePositions] = useState({});
   const [visibleSubtitles, setVisibleSubtitles] = useState(new Set());
   const [visibleImages, setVisibleImages] = useState(new Set());
+  const bannerRef = useRef(null);
+  const leftMarginRef = useRef(null);
+  const rightMarginRef = useRef(null);
 
   const openLightbox = (imageSrc, imageAlt) => {
     setLightboxImage({ src: imageSrc, alt: imageAlt });
@@ -120,10 +123,41 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  // Sync margin top with banner height
+  useEffect(() => {
+    const updateMarginPosition = () => {
+      if (bannerRef.current && leftMarginRef.current && rightMarginRef.current) {
+        const bannerHeight = bannerRef.current.offsetHeight;
+        leftMarginRef.current.style.top = `${bannerHeight}px`;
+        rightMarginRef.current.style.top = `${bannerHeight}px`;
+      }
+    };
+
+    // Update on mount
+    updateMarginPosition();
+
+    // Update on window resize
+    window.addEventListener('resize', updateMarginPosition);
+
+    // Update when images load
+    const bannerImages = bannerRef.current?.querySelectorAll('img');
+    bannerImages?.forEach(img => {
+      if (img.complete) {
+        updateMarginPosition();
+      } else {
+        img.addEventListener('load', updateMarginPosition);
+      }
+    });
+
+    return () => {
+      window.removeEventListener('resize', updateMarginPosition);
+    };
+  }, []);
+
   return (
     <div className={styles.page}>
       {/* Left margin image */}
-      <div className={styles.leftMargin}>
+      <div ref={leftMarginRef} className={styles.leftMargin}>
         <Image
           src="/maiden 11.png"
           alt="Left margin decoration"
@@ -134,7 +168,7 @@ export default function Home() {
       </div>
       
       {/* Right margin image */}
-      <div className={styles.rightMargin}>
+      <div ref={rightMarginRef} className={styles.rightMargin}>
         <Image
           src="/maiden 11.png"
           alt="Right margin decoration"
@@ -144,20 +178,26 @@ export default function Home() {
         />
       </div>
       
-      {/* Centered Logo */}
-      <div className={styles.logoContainer}>
+      {/* Hero Banner Section */}
+      <div ref={bannerRef} className={styles.heroBanner}>
         <Image
-          src="/artwingslogo2.png"
-          alt="ARTWINGS Logo"
-          width={400}
-          height={200}
-          className={styles.logo}
+          src="/banner/banner-desktop.jpg"
+          alt="ARTWINGS Hero Banner"
+          width={1920}
+          height={1080}
+          className={styles.heroBannerDesktop}
           priority
+          sizes="100vw"
         />
-        <div className={styles.tagline}>
-          {/* <p className={styles.taglineText}>Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market.</p> */}
-          {/* <p className={styles.taglineSubtext}>Resistance, remembrance, and reimagination. </p> */}
-        </div>
+        <Image
+          src="/banner/banner-mobile.jpg"
+          alt="ARTWINGS Hero Banner"
+          width={1080}
+          height={1920}
+          className={styles.heroBannerMobile}
+          priority
+          sizes="100vw"
+        />
       </div>
       {/* Exhibition Flyer Section */}
       {/* <div id="exhibitions" className={styles.exhibitionSection}>

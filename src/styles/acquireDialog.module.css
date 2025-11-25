@@ -28,6 +28,11 @@
   position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.1);
+  filter: invert(1);
+}
+
+.dialog > * {
+  filter: invert(1);
 }
 
 .closeButton {
@@ -38,7 +43,7 @@
   border: none;
   font-size: 1.8rem;
   cursor: pointer;
-  color: #707984;
+  color: var(--foreground);
   transition: color 0.3s ease;
   width: 32px;
   height: 32px;
@@ -56,14 +61,14 @@
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 0.5rem;
-  color: #707984;
+  color: var(--foreground);
   line-height: 1.2;
 }
 
 .subtitle {
   font-family: var(--font-lovelt);
   font-size: 1.1rem;
-  color: #707984;
+  color: var(--foreground);
   margin-bottom: 2rem;
   font-weight: 300;
 }
@@ -93,7 +98,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #707984;
+  color: var(--foreground);
   margin-bottom: 0.25rem;
 }
 
@@ -109,10 +114,10 @@
   font-size: 1rem;
   font-family: var(--font-lovelt);
   font-weight: 300;
-  color: #707984;
+  color: var(--foreground);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
-  background-color: white;
+  background-color: var(--background);
 }
 
 .input:focus,
@@ -148,7 +153,7 @@
 
 .buttonSecondary {
   background: none;
-  color: #707984;
+  color: var(--foreground);
   border: 1px solid #ddd;
 }
 
@@ -159,8 +164,8 @@
 
 .buttonPrimary {
   background: none;
-  color: #707984;
-  border: 1px solid #707984;
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
 }
 
 .buttonPrimary:hover:not(:disabled) {
