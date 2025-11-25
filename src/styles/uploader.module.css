@@ -58,7 +58,7 @@
 .navButton {
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.75rem 1.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
@@ -112,7 +112,7 @@
 .loginButton {
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.75rem 1.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
@@ -136,7 +136,7 @@
   right: 20px;
   background: transparent;
   border: 1px solid gray;
-  color: #333;
+  color: var(--foreground);
   padding: 0.5rem 1rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
@@ -158,10 +158,11 @@
 }
 
 .helpText {
-  color: #666;
+  color: var(--foreground);
   font-size: 0.9rem;
   margin: 0.5rem 0;
   font-style: italic;
+  opacity: 0.7;
 }
 
 /* Responsive Styles */
@@ -218,22 +219,23 @@
   gap: 0.25rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background-color: #f8f9fa;
+  background-color: var(--background);
   border: 1px solid #e9ecef;
 }
 
 .artistIdLabel {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #666;
+  color: var(--foreground);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  opacity: 0.7;
 }
 
 .artistIdValue {
   font-size: 0.9rem;
   font-weight: 400;
-  color: #333;
+  color: var(--foreground);
   font-family: monospace;
   padding: 0.25rem 0.5rem;
   border: 1px solid #ddd;
@@ -305,8 +307,9 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #666;
+  color: var(--foreground);
   padding: 2rem;
+  opacity: 0.7;
 }
 
 .profilePicturePlaceholder p {
@@ -352,7 +355,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #333;
+  color: var(--foreground);
   padding: 1rem;
   position: relative;
 }
@@ -376,8 +379,9 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #666;
+  color: var(--foreground);
   padding: 1rem;
+  opacity: 0.7;
 }
 
 
@@ -473,7 +477,7 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #333;
+  color: var(--foreground);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'Inter', sans-serif;
@@ -564,10 +568,11 @@
 }
 
 .helpText {
-  color: #666;
+  color: var(--foreground);
   font-size: 0.9rem;
   margin: 0.5rem 0;
   font-style: italic;
+  opacity: 0.7;
 }
 
 /* Artwork Form Section */
@@ -602,14 +607,14 @@
   padding: 15px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: var(--background);
 }
 
 .imageUpdateSection h4 {
   margin: 0 0 15px 0;
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--foreground);
 }
 
 .imagePreview {
@@ -754,10 +759,11 @@
 .addressLabel {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #666;
+  color: var(--foreground);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+  opacity: 0.7;
 }
 
 /* Artists List Styles */
@@ -800,7 +806,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: var(--foreground);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -808,28 +814,32 @@
 
 .expandIcon {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--foreground);
   transition: transform 0.3s ease;
   user-select: none;
+  opacity: 0.7;
 }
 
 .artistId {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--foreground);
   margin: 0 0 0.25rem 0;
   font-family: monospace;
+  opacity: 0.6;
 }
 
 .artistOrigin {
   font-size: 1rem;
-  color: #666;
+  color: var(--foreground);
   margin: 0 0 0.25rem 0;
+  opacity: 0.7;
 }
 
 .artistBirthDate {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--foreground);
   margin: 0;
+  opacity: 0.6;
 }
 
 .artistProfilePicture {
@@ -891,7 +901,7 @@
 .artistArtworks h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
-  color: #333;
+  color: var(--foreground);
   font-weight: 600;
 }
 
@@ -899,7 +909,7 @@
 .artistManifesto p {
   margin: 0 0 0.5rem 0;
   line-height: 1.5;
-  color: #555;
+  color: var(--foreground);
 }
 
 .artistBio p:last-child,
@@ -946,13 +956,14 @@
   margin: 0 0 0.25rem 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #333;
+  color: var(--foreground);
 }
 
 .artworkInfo p {
   margin: 0 0 0.25rem 0;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--foreground);
+  opacity: 0.7;
 }
 
 .artworkInfo p:last-child {
@@ -961,9 +972,10 @@
 
 .artworkId {
   font-size: 0.7rem;
-  color: #888;
+  color: var(--foreground);
   margin: 0 0 0.25rem 0;
   font-family: monospace;
+  opacity: 0.6;
 }
 
 /* Responsive Design */

@@ -15,6 +15,11 @@
   align-items: center;
   z-index: 9999;
   backdrop-filter: blur(10px);
+  filter: invert(1);
+}
+
+.loadingContainer > * {
+  filter: invert(1);
 }
 
 .logoContainer {
@@ -58,7 +63,7 @@
 
 .progressText {
   margin-top: 1rem;
-  color: #ffffff;
+  color: var(--foreground);
   font-size: 1rem;
   font-weight: 300;
   letter-spacing: 0.1em;
