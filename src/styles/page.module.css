@@ -1494,7 +1494,7 @@
     padding-top: 12rem;
   }
   .homepage_container{
-    background: linear-gradient(
+    /* background: linear-gradient(
       to bottom,
       transparent 0%,
       rgba(0, 0, 0, 0.3) 10%,
@@ -1504,7 +1504,7 @@
       rgba(0, 0, 0, 0.7) 80%,
       rgba(0, 0, 0, 0.3) 90%,
       transparent 100%
-    );
+    ); */
     padding: 3rem 1rem;
   }
   

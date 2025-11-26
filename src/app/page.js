@@ -16,6 +16,8 @@ export default function Home() {
   const bannerRef = useRef(null);
   const leftMarginRef = useRef(null);
   const rightMarginRef = useRef(null);
+  const subtitle3Ref = useRef(null);
+  const pageRef = useRef(null);
 
   const openLightbox = (imageSrc, imageAlt) => {
     setLightboxImage({ src: imageSrc, alt: imageAlt });
@@ -126,18 +128,35 @@ export default function Home() {
   // Sync margin top with banner height
   useEffect(() => {
     const updateMarginPosition = () => {
-      if (bannerRef.current && leftMarginRef.current && rightMarginRef.current) {
+      if (bannerRef.current && leftMarginRef.current && rightMarginRef.current && pageRef.current) {
         const bannerHeight = bannerRef.current.offsetHeight;
         leftMarginRef.current.style.top = `${bannerHeight}px`;
-        rightMarginRef.current.style.top = `${bannerHeight}px`;
+        
+        // Position right margin at the same position as subtitle3, but 10rem higher
+        if (subtitle3Ref.current) {
+          const subtitleRect = subtitle3Ref.current.getBoundingClientRect();
+          const pageRect = pageRef.current.getBoundingClientRect();
+          // Calculate position relative to page container
+          const subtitleTop = subtitleRect.top - pageRect.top;
+          // Convert 10rem to pixels and subtract from position
+          const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+          const remInPixels = 10 * rootFontSize;
+          const rightMarginTop = subtitleTop - remInPixels;
+          rightMarginRef.current.style.top = `${rightMarginTop}px`;
+        } else {
+          // Fallback to banner height if subtitle not found
+          rightMarginRef.current.style.top = `${bannerHeight}px`;
+        }
       }
     };
 
-    // Update on mount
+    // Update on mount with a small delay to ensure DOM is ready
+    setTimeout(updateMarginPosition, 100);
     updateMarginPosition();
 
     // Update on window resize
     window.addEventListener('resize', updateMarginPosition);
+    window.addEventListener('scroll', updateMarginPosition);
 
     // Update when images load
     const bannerImages = bannerRef.current?.querySelectorAll('img');
@@ -151,11 +170,12 @@ export default function Home() {
 
     return () => {
       window.removeEventListener('resize', updateMarginPosition);
+      window.removeEventListener('scroll', updateMarginPosition);
     };
   }, []);
 
   return (
-    <div className={styles.page}>
+    <div ref={pageRef} className={styles.page}>
       {/* Left margin image */}
       <div ref={leftMarginRef} className={styles.leftMargin}>
         <Image
@@ -312,6 +332,7 @@ export default function Home() {
               </p> */}
               
               <p 
+                ref={subtitle3Ref}
                 className={`${styles.sectionSubtitle} ${visibleSubtitles.has('subtitle3') ? styles.sectionSubtitleVisible : ''}`}
                 data-subtitle-id="subtitle3"
                 style={{marginTop: '5rem', fontSize: '2rem', lineHeight: '2rem'}}
