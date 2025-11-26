@@ -181,7 +181,7 @@ export default function Home() {
       {/* Hero Banner Section */}
       <div ref={bannerRef} className={styles.heroBanner}>
         <Image
-          src="/banner/banner-desktop.jpg"
+          src="/banner/banner-desktop-glare.jpg"
           alt="ARTWINGS Hero Banner"
           width={1920}
           height={1080}
@@ -190,7 +190,7 @@ export default function Home() {
           sizes="100vw"
         />
         <Image
-          src="/banner/banner-mobile.jpg"
+          src="/banner/banner-mobile-glare.jpg"
           alt="ARTWINGS Hero Banner"
           width={1080}
           height={1920}
