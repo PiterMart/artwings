@@ -280,7 +280,7 @@ export default function ArtistUploader() {
   
     try {
       const { name, origin, bio, manifesto, web } = formData;
-      if (!name || !origin) throw new Error("Name and origin are required");
+      if (!name) throw new Error("Name is required");
   
       const slug = generateSlug(name);
       const artistId = selectedArtist || doc(collection(firestore, "artists")).id;
