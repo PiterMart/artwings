@@ -16,6 +16,7 @@ export default function Home() {
   const bannerRef = useRef(null);
   const leftMarginRef = useRef(null);
   const rightMarginRef = useRef(null);
+  const subtitle2Ref = useRef(null);
   const subtitle3Ref = useRef(null);
   const pageRef = useRef(null);
 
@@ -130,7 +131,23 @@ export default function Home() {
     const updateMarginPosition = () => {
       if (bannerRef.current && leftMarginRef.current && rightMarginRef.current && pageRef.current) {
         const bannerHeight = bannerRef.current.offsetHeight;
-        leftMarginRef.current.style.top = `${bannerHeight}px`;
+        
+        // Convert 10rem to pixels (used for both margins)
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const remInPixels = 10 * rootFontSize;
+        
+        // Position left margin at the same position as subtitle2, but 10rem higher
+        if (subtitle2Ref.current) {
+          const subtitleRect = subtitle2Ref.current.getBoundingClientRect();
+          const pageRect = pageRef.current.getBoundingClientRect();
+          // Calculate position relative to page container
+          const subtitleTop = subtitleRect.top - pageRect.top;
+          const leftMarginTop = subtitleTop - remInPixels;
+          leftMarginRef.current.style.top = `${leftMarginTop}px`;
+        } else {
+          // Fallback to banner height if subtitle not found
+          leftMarginRef.current.style.top = `${bannerHeight}px`;
+        }
         
         // Position right margin at the same position as subtitle3, but 10rem higher
         if (subtitle3Ref.current) {
@@ -138,9 +155,6 @@ export default function Home() {
           const pageRect = pageRef.current.getBoundingClientRect();
           // Calculate position relative to page container
           const subtitleTop = subtitleRect.top - pageRect.top;
-          // Convert 10rem to pixels and subtract from position
-          const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-          const remInPixels = 10 * rootFontSize;
           const rightMarginTop = subtitleTop - remInPixels;
           rightMarginRef.current.style.top = `${rightMarginTop}px`;
         } else {
@@ -199,9 +213,9 @@ export default function Home() {
       </div>
       
       {/* Hero Banner Section */}
-      <div ref={bannerRef} className={styles.heroBanner}>
+      <div ref={bannerRef} className={styles.heroBanner} style={{ position: 'relative' }}>
         <Image
-          src="/banner/banner-desktop-glare.jpg"
+          src="/banner/banner-desktop-final.jpg"
           alt="ARTWINGS Hero Banner"
           width={1920}
           height={1080}
@@ -210,7 +224,7 @@ export default function Home() {
           sizes="100vw"
         />
         <Image
-          src="/banner/banner-mobile-glare.jpg"
+          src="/banner/banner-mobile-final.jpg"
           alt="ARTWINGS Hero Banner"
           width={1080}
           height={1920}
@@ -218,7 +232,75 @@ export default function Home() {
           priority
           sizes="100vw"
         />
+        <Link 
+          href="/exhibitions/metaxy"
+          style={{
+            position: 'absolute',
+            top: '65%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            textDecoration: 'none'
+          }}
+        >
+          <span 
+            className={styles.transgenesisArrowRight}
+            style={{
+              fontSize: '1.5rem',
+              color: '#a8a8a8',
+              display: 'block'
+            }}
+          >
+            →
+          </span>
+          <button
+            style={{
+              padding: '0.875rem 1.75rem',
+              background: 'rgba(0, 0, 0, 0.3)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              color: '#a8a8a8',
+              border: '1px solid #a8a8a8',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '300',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              transition: 'all 0.3s ease',
+              position: 'relative'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = 'rgba(0, 0, 0, 0.5)';
+              e.target.style.borderColor = '#a8a8a8';
+              e.target.style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'rgba(0, 0, 0, 0.3)';
+              e.target.style.borderColor = '#a8a8a8';
+              e.target.style.transform = 'translateY(0)';
+            }}
+          >
+            <span className={styles.transgenesisButtonText}>
+              TRANSGENESIS
+            </span>
+          </button>
+          <span 
+            className={styles.transgenesisArrowLeft}
+            style={{
+              fontSize: '1.5rem',
+              color: '#a8a8a8',
+              display: 'block'
+            }}
+          >
+            ←
+          </span>
+        </Link>
       </div>
+      
       {/* Exhibition Flyer Section */}
       {/* <div id="exhibitions" className={styles.exhibitionSection}>
       <p className={styles.title2}>Current Exhibition</p>
@@ -293,6 +375,7 @@ export default function Home() {
               </p> */}
               
               <p 
+                ref={subtitle2Ref}
                 className={`${styles.sectionSubtitle} ${visibleSubtitles.has('subtitle2') ? styles.sectionSubtitleVisible : ''}`}
                 data-subtitle-id="subtitle2"
                 style={{marginTop: '5rem', fontSize: '2rem', lineHeight: '2rem'}}
