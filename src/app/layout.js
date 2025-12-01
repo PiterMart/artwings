@@ -67,6 +67,13 @@ const helveticaBlack = localFont({
   variable: "--font-helvetica-black",
 });
 
+const megatransRegular = localFont({
+  src: "../../public/fonts/Megatrans-Regular.otf",
+  variable: "--font-megatrans-regular",
+  display: 'swap',
+  preload: true,
+});
+
 export const metadata = {
   title: "Artwings",
   description: " Berlin-based artspace redefining the boundaries of artistic expression. We offer a platform for emerging artists, diverse identities, alternative voices and seekers from all over the world to bring raw, intimate narratives into the spotlight, bridging the underground scene with the contemporary art world and market. ",
@@ -79,7 +86,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body 
-        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${helveticaRegular.variable} ${helveticaBold.variable} ${helveticaCondensed.variable} ${helveticaLight.variable} ${helveticaBlack.variable} ${inter.className}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${minecraftRegular.variable} ${minecraftItalic.variable} ${lovelt.variable} ${helveticaRegular.variable} ${helveticaBold.variable} ${helveticaCondensed.variable} ${helveticaLight.variable} ${helveticaBlack.variable} ${megatransRegular.variable} ${inter.className}`}
         style={{
           minHeight: '100vh',
           display: 'flex',
@@ -92,7 +99,7 @@ export default function RootLayout({ children }) {
           <main style={{ flex: 1 }}>
             {children}
           </main>
-          {/* <Footer/> */}
+          <Footer/>
         </LoadingProvider>
       </body>
     </html>

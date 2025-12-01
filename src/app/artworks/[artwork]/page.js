@@ -103,10 +103,10 @@ export default function Artwork({ params }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {artist ? (
                 <Link href={`/artists/${artist.slug}`}>
-                  <h2 style={{ fontWeight: "300", fontFamily: 'var(--font-lovelt)' }}>{artist.name}</h2>
+                  <h2 style={{ fontWeight: "300", fontFamily: "'Inter', sans-serif" }}>{artist.name}</h2>
                 </Link>
               ) : (
-                <h2 style={{ fontWeight: "300", fontFamily: 'var(--font-lovelt)' }}>Unknown Artist</h2>
+                <h2 style={{ fontWeight: "300", fontFamily: "'Inter', sans-serif" }}>Unknown Artist</h2>
               )}
               <p style={{ fontFamily: 'Inter, sans-serif' }}>{date}</p>
               <p style={{ fontFamily: 'Inter, sans-serif' }}>{medium}</p>
@@ -172,7 +172,7 @@ export default function Artwork({ params }) {
             {isImageLoading && (
               <div className={styles.image_loading_placeholder}>
                 <div className={styles.loading_spinner}></div>
-                <p style={{ fontFamily: 'var(--font-lovelt)' }}>Loading image...</p>
+                <p style={{ fontFamily: "'Inter', sans-serif" }}>Loading image...</p>
               </div>
             )}
             <img

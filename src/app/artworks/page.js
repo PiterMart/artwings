@@ -126,7 +126,7 @@ export default function ArtworksPage() {
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
           <div className={styles.artworks_page}>
             <div className={styles.artworks_header}>
-              {/* <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1> */}
+              <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1>
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>
@@ -160,7 +160,7 @@ export default function ArtworksPage() {
                         )}
 
                         </div>
-                          <h2 className={styles.featured_title} style={{fontFamily: 'var(--font-lovelt)', color: "#707984"}}>The Complete Artwings Collection</h2>
+                          <h2 className={styles.featured_title} style={{fontFamily: "'Inter', sans-serif", color: "#707984"}}>The Complete Artwings Collection</h2>
                       </div>
                     </div>
                   )}
