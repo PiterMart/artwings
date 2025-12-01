@@ -233,7 +233,7 @@ export default function Home() {
           sizes="100vw"
         />
         <Link 
-          href="/exhibitions/metaxy"
+          href="/exhibitions/transgenesis"
           style={{
             position: 'absolute',
             top: '65%',
