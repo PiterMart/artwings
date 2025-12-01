@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -14,13 +14,15 @@ export default function Nav() {
     const [exhibitions, setExhibitions] = useState([]);
     const [isExhibitionsOpen, setIsExhibitionsOpen] = useState(false);
     const [isLoadingExhibitions, setIsLoadingExhibitions] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+    const dropdownRef = useRef(null);
     const currentPath = usePathname();
     const router = useRouter();
 
     const pages = [
         { name: 'Artworks', path: '/artworks' },
         // { name: 'Artists', path: '/artists' },
-        { name: 'About', path: '/', section: 'about' },
+        { name: 'About', path: '/about' },
         { name: 'Contact', path: '/', section: 'contact' },
     ];
 
@@ -57,6 +59,30 @@ export default function Nav() {
 
         fetchExhibitions();
     }, []);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 1000);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    useEffect(() => {
+        // Close dropdown when clicking outside on desktop
+        if (!isMobile && isExhibitionsOpen) {
+            const handleClickOutside = (event) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                    setIsExhibitionsOpen(false);
+                }
+            };
+
+            document.addEventListener('click', handleClickOutside);
+            return () => document.removeEventListener('click', handleClickOutside);
+        }
+    }, [isMobile, isExhibitionsOpen]);
 
     const scrollToSection = (sectionId) => {
         // If we're not on the homepage, navigate there first
@@ -142,11 +168,20 @@ export default function Nav() {
             </button>
             <div className={`${styles.nav_list} ${isMenuOpen ? styles.active : ''}`} id="navMenu">
                 <ul>
-                    <li className={styles.dropdown}>
+                    <li className={styles.dropdown} ref={dropdownRef}>
                         <button
                             type="button"
                             className={`${styles.dropdownToggle} ${isExhibitionsOpen ? styles.dropdownToggle_open : ''}`}
-                            onClick={() => setIsExhibitionsOpen((prev) => !prev)}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                // On desktop, always allow toggle. On mobile, only when menu is open.
+                                if (!isMobile || isMenuOpen) {
+                                    setIsExhibitionsOpen((prev) => !prev);
+                                }
+                            }}
+                            disabled={isMobile && !isMenuOpen}
+                            aria-disabled={isMobile && !isMenuOpen}
                         >
                             Exhibitions
                         </button>
@@ -156,18 +191,27 @@ export default function Nav() {
                             ) : exhibitions.length === 0 ? (
                                 <span className={styles.dropdownStatus}>No exhibitions available</span>
                             ) : (
-                                exhibitions.map((exhibition) => (
-                                    <Link
-                                        key={exhibition.id}
-                                        href={`/exhibitions/${exhibition.slug ?? exhibition.id}`}
-                                        onClick={() => {
-                                            setIsMenuOpen(false);
-                                            setIsExhibitionsOpen(false);
-                                        }}
-                                    >
-                                        {exhibition.name}
-                                    </Link>
-                                ))
+                                exhibitions.map((exhibition) => {
+                                    const isMetaxy = exhibition.name?.toLowerCase() === 'metaxy' || 
+                                                     exhibition.slug?.toLowerCase() === 'metaxy' ||
+                                                     exhibition.id?.toLowerCase() === 'metaxy';
+                                    const isTransgenesis = exhibition.name?.toLowerCase() === 'transgenesis' || 
+                                                           exhibition.slug?.toLowerCase() === 'transgenesis' ||
+                                                           exhibition.id?.toLowerCase() === 'transgenesis';
+                                    return (
+                                        <Link
+                                            key={exhibition.id}
+                                            href={`/exhibitions/${exhibition.slug ?? exhibition.id}`}
+                                            onClick={() => {
+                                                setIsMenuOpen(false);
+                                                setIsExhibitionsOpen(false);
+                                            }}
+                                            className={`${isMetaxy ? 'metaxy' : ''} ${isTransgenesis ? 'transgenesis' : ''}`}
+                                        >
+                                            {exhibition.name}
+                                        </Link>
+                                    );
+                                })
                             )}
                         </div>
                     </li>

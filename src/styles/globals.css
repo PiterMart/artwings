@@ -11,6 +11,7 @@
   --font-helvetica-condensed: var(--font-helvetica-condensed);
   --font-helvetica-light: var(--font-helvetica-light);
   --font-helvetica-black: var(--font-helvetica-black);
+  --font-megatrans-regular: var(--font-megatrans-regular);
 }
 
 html,
@@ -22,11 +23,47 @@ body {
 
 body {
   color: var(--foreground);
-  font-family: var(--font-lovelt), Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* cursor: url('/artwingscursor3.cur') 16 16, auto; */
   position: relative;
+}
+
+/* Metaxy-specific styling - uses Lovelt font */
+.metaxy,
+.metaxy * {
+  font-family: var(--font-lovelt), Arial, Helvetica, sans-serif !important;
+  color: #707984 !important;
+}
+
+/* Hide inverted background when metaxy is present */
+body:has(.metaxy)::before {
+  display: none;
+}
+
+/* Metaxy background - non-inverted */
+.metaxy::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/metaltextureverticaledited2.jpg');
+  background-size: auto;
+  background-position: center;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  filter: none;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Transgenesis-specific styling - uses Megatrans-Regular font */
+.transgenesis,
+.transgenesis * {
+  font-family: var(--font-megatrans-regular), Arial, Helvetica, sans-serif !important;
 }
 
 body::before {
@@ -56,7 +93,6 @@ body::before {
 section { 
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
 }
 p{
   line-height: 1.5rem;

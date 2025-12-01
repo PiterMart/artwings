@@ -395,7 +395,7 @@
 }
 
 .taglineText {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   margin: 0;
   line-height: 1.2;
@@ -421,7 +421,7 @@
 }
 
 .taglineSubtext {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 1.2rem;
   color: #b0b0b0; /* A color slightly darker than the background */
   text-shadow:
@@ -511,7 +511,7 @@
 /* FONTS AND TEXTS */
 
 .title{
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 4.5rem;
   font-weight: 300;
   line-height: 1;
@@ -636,7 +636,7 @@
 /* ARTIST PAGE */
 
 .name_list{
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -661,7 +661,7 @@
   justify-content: center;
   min-height: 50vh;
   gap: 2rem;
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   opacity: 0;
   animation: fadeIn 0.5s ease-in-out 0.3s forwards;
@@ -721,7 +721,7 @@
 }
 
 .subtitle_skeleton {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   height: 2rem;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
@@ -977,8 +977,42 @@
   padding-top: 8rem;
   display: flex;
   flex-direction: column;
-  gap: 5rem;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: auto;
 }
+
+.exhibitionHeaderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: auto;
+}
+
+.curatorialTextContainer {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .curatorialTextContainer {
+    margin-left: 25vw;
+    margin-right: auto;
+  }
+}
+
+.exhibitionInfoContainer {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .exhibitionInfoContainer {
+    margin-left: 0;
+    margin-right: 25vw;
+  }
+}
+
 .exhibitions_page{
   padding-top: 6rem;
   display: flex;
@@ -1024,7 +1058,7 @@
 }
 
 .exhibition_name {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 400;
   margin: 0;
@@ -1635,7 +1669,7 @@
     padding-top: 8rem;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 1rem;
     width: 95;
   }
   .video{
@@ -1815,7 +1849,7 @@
 }
 
 .exhibitionTitle {
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 4rem;
   font-weight: 200;
   margin: 0;
@@ -1857,7 +1891,11 @@
 
 .flyerVideo {
   max-height: 80vh;
+  max-width: 100%;
+  width: auto;
+  height: auto;
   border-radius: 0;
+  object-fit: contain;
 }
 
 .artistListSection {
@@ -1953,7 +1991,7 @@
 }
 
 .exhibitionDate {
-  font-family: var(--font-lovelt), 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.8rem;
   font-weight: 600;
   color: #8B7355;
@@ -2220,7 +2258,7 @@
 }
 
 .artworks_title {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 3rem;
   font-weight: 300;
   margin-bottom: 2rem;
@@ -2329,7 +2367,7 @@
   margin: 0;
   font-size: 1rem;
   color: var(--foreground);
-    font-family: var(--font-lovelt);
+    font-family: 'Inter', sans-serif;
   opacity: 0.7;
 }
 
@@ -2347,7 +2385,7 @@
 
 .artwork_availability {
   margin: 0;
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
 }
 
 

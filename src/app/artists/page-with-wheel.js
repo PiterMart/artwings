@@ -196,7 +196,7 @@ export default function ArtistsPageWithWheel() {
       </div>
           <div className={styles.artists_page}>
             <div className={styles.name_list}>
-              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artists</p>
+              <p className={styles.artists_title} style={{fontSize: '3rem', fontFamily: "'Inter', sans-serif", marginBottom: '2rem', paddingTop: '1rem'}}>Artists</p>
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>

@@ -38,7 +38,7 @@
 
 /* Title and Text Styles */
 .title {
-  font-family: var(--font-lovelt);
+  font-family: 'Inter', sans-serif;
   font-size: 4.5rem;
   font-weight: 300;
   line-height: 1;

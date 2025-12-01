@@ -96,6 +96,8 @@
   position: relative;
   display: flex;
   align-items: center;
+  background: none !important;
+  background-color: transparent !important;
 }
 
 .dropdownToggle {
@@ -114,6 +116,11 @@
   outline-offset: 4px;
 }
 
+.dropdownToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .dropdownToggle_open {
   color: var(--foreground);
 }
@@ -123,18 +130,75 @@
   top: calc(100% + 0.5rem);
   left: 50%;
   transform: translate(-50%, 0.75rem);
-  background: transparent;
+  background-color: transparent !important;
+  background: transparent !important;
+  background-image: none !important;
+  background-size: unset !important;
+  background-position: unset !important;
+  background-repeat: unset !important;
+  background-attachment: unset !important;
   color: inherit;
   padding: 0.5rem 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   min-width: 14rem;
-  z-index: 20;
+  z-index: 1001;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Prevent metaxy/transgenesis background from appearing in dropdown menu */
+.dropdownMenu::before,
+.dropdownMenu::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+/* Override metaxy/transgenesis backgrounds in dropdown - must be very specific */
+.dropdownMenu .metaxy::before,
+.dropdownMenu .transgenesis::before,
+.dropdownMenu a.metaxy::before,
+.dropdownMenu a.transgenesis::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.dropdownMenu .metaxy,
+.dropdownMenu .transgenesis,
+.dropdownMenu a.metaxy,
+.dropdownMenu a.transgenesis {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  position: relative !important;
+}
+
+/* Ensure dropdown menu itself blocks any background */
+.dropdownMenu * {
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.dropdownMenu *::before,
+.dropdownMenu *::after {
+  background: none !important;
+  background-image: none !important;
 }
 
 .dropdownMenu a {
@@ -142,13 +206,33 @@
   color: inherit;
   font-size: 1.5rem;
   font-weight: 200;
-  transition: color 0.2s ease;
+  transition: none !important;
   text-shadow: inherit;
   line-height: 1.2;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  transform: none !important;
+  opacity: 1 !important;
 }
 
 .dropdownMenu a:hover {
-  color: var(--foreground);
+  color: inherit !important;
+  transform: none !important;
+  opacity: 1 !important;
+  text-shadow: inherit !important;
+}
+
+/* Prevent dropdown menu items from inheriting parent hover effects */
+.dropdownMenu li,
+.dropdownMenu li:hover {
+  transform: none !important;
+  transition: none !important;
+}
+
+.dropdownMenu li::after {
+  display: none !important;
+  opacity: 0 !important;
 }
 
 .dropdownStatus {
@@ -156,6 +240,9 @@
   font-weight: 300;
   color: rgba(31, 31, 31, 0.7);
   white-space: nowrap;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 .dropdownMenu_open {
@@ -163,6 +250,7 @@
   visibility: visible;
   pointer-events: auto;
   transform: translate(-50%, 0);
+  color: var(--foreground);
 }
 
 .page_current {
@@ -241,6 +329,7 @@
     align-items: center;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 10;
     filter: invert(1);
@@ -269,6 +358,7 @@
   .nav_list.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
   }
 
   .nav_hidden {
@@ -293,28 +383,80 @@
   .dropdownMenu {
     position: static;
     transform: none;
-    background: transparent;
+    background-color: transparent !important;
+    background: transparent !important;
+    background-image: none !important;
     box-shadow: none;
     padding: 1rem 0 0;
     align-items: center;
     min-width: unset;
     color: inherit;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    max-height: 0;
+    overflow: hidden;
+    transform: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease, max-height 0.25s ease, padding 0.25s ease;
+  }
+
+  /* Show dropdown menu when open on mobile */
+  .dropdownMenu_open {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: none;
-    transition: none;
+    max-height: 1000px;
+  }
+
+  /* Disable dropdown toggle and all nav_list children when menu is closed */
+  .nav_list:not(.active) * {
+    pointer-events: none !important;
+    cursor: default !important;
+  }
+
+  /* Prevent metaxy/transgenesis background from appearing in mobile dropdown menu */
+  .dropdownMenu::before,
+  .dropdownMenu::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .dropdownMenu .metaxy::before,
+  .dropdownMenu .transgenesis::before,
+  .dropdownMenu a.metaxy::before,
+  .dropdownMenu a.transgenesis::before {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+    background-image: none !important;
   }
 
   .dropdownMenu a {
     font-size: 2rem;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .dropdownMenu a:hover {
+    color: inherit !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .dropdownMenu li,
+  .dropdownMenu li:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .dropdownMenu li::after {
+    display: none !important;
+    opacity: 0 !important;
   }
 
   .dropdownStatus {
     font-size: 1.5rem;
   }
 
-  .dropdownMenu_open {
-    transform: none;
-  }
 }
