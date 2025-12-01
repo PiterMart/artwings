@@ -101,17 +101,6 @@ export default function Footer() {
           {/* Navigation Section */}
           <div className={styles.footerSection}>
             <p className={styles.footerSectionTitle}>Navigation</p>
-            <div className={styles.footerLinks}>
-              {pages.map((page, index) => (
-                <Link
-                  key={index}
-                  href={page.path}
-                  onClick={(e) => handleNavigation(page, e)}
-                >
-                  {page.name}
-                </Link>
-              ))}
-            </div>
             <div className={styles.exhibitionsList}>
               <p className={styles.exhibitionsTitle}>Exhibitions</p>
               {isLoadingExhibitions ? (
@@ -129,6 +118,17 @@ export default function Footer() {
                   </Link>
                 ))
               )}
+            </div>
+            <div className={styles.footerLinks}>
+              {pages.map((page, index) => (
+                <Link
+                  key={index}
+                  href={page.path}
+                  onClick={(e) => handleNavigation(page, e)}
+                >
+                  {page.name}
+                </Link>
+              ))}
             </div>
           </div>
 
