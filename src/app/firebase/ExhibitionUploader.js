@@ -41,14 +41,18 @@ export default function ExhibitionUploader() {
   const [deletedExistingImages, setDeletedExistingImages] = useState([]);
   const [bannerImage, setBannerImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
+  const [bannerMobileImage, setBannerMobileImage] = useState(null);
+  const [bannerMobilePreview, setBannerMobilePreview] = useState(null);
   const [flyerImage, setFlyerImage] = useState(null);
   const [flyerPreview, setFlyerPreview] = useState(null);
   const fileInputRef = useRef(null);
   const bannerInputRef = useRef(null);
+  const bannerMobileInputRef = useRef(null);
   const flyerInputRef = useRef(null);
   
   // Drag and drop states
   const [isBannerDragOver, setIsBannerDragOver] = useState(false);
+  const [isBannerMobileDragOver, setIsBannerMobileDragOver] = useState(false);
   const [isFlyerDragOver, setIsFlyerDragOver] = useState(false);
   const [isGalleryDragOver, setIsGalleryDragOver] = useState(false);
 
@@ -181,6 +185,7 @@ export default function ExhibitionUploader() {
         setImagePreviews(existingGalleryData.map(img => img.url));
         setImageDescriptions(existingGalleryData.map(img => img.description || ''));
         setBannerPreview(data.banner || null);
+        setBannerMobilePreview(data.bannermobile || null);
         setFlyerPreview(data.flyer || null);
       }
     } catch (error) {
@@ -212,6 +217,13 @@ export default function ExhibitionUploader() {
         throw new Error("Banner image processing failed: " + error.message);
       }
 
+      let bannerMobileUrl;
+      try {
+        bannerMobileUrl = await uploadBannerMobileImage(exhibitionId);
+      } catch (error) {
+        throw new Error("Mobile banner image processing failed: " + error.message);
+      }
+
       let flyerUrl;
       try {
         flyerUrl = await uploadFlyerImage(exhibitionId);
@@ -234,6 +246,7 @@ export default function ExhibitionUploader() {
         ...formData,
         slug,
         banner: bannerUrl,
+        bannermobile: bannerMobileUrl,
         flyer: flyerUrl,
         gallery: galleryData,
         openingDate: Timestamp.fromDate(new Date(openingDate)),
@@ -365,6 +378,13 @@ export default function ExhibitionUploader() {
     }
   };
 
+  const handleBannerMobileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleBannerMobileFile(file);
+    }
+  };
+
   // Banner Drag and Drop Handlers
   const handleBannerFile = (file) => {
     if (file && file.type.startsWith('image/')) {
@@ -391,6 +411,35 @@ export default function ExhibitionUploader() {
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       handleBannerFile(files[0]);
+    }
+  };
+
+  // Banner Mobile Drag and Drop Handlers
+  const handleBannerMobileFile = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setBannerMobileImage(file);
+      setBannerMobilePreview(URL.createObjectURL(file));
+    } else {
+      setError('Please select a valid image file for mobile banner.');
+    }
+  };
+
+  const handleBannerMobileDragOver = (e) => {
+    e.preventDefault();
+    setIsBannerMobileDragOver(true);
+  };
+
+  const handleBannerMobileDragLeave = (e) => {
+    e.preventDefault();
+    setIsBannerMobileDragOver(false);
+  };
+
+  const handleBannerMobileDrop = (e) => {
+    e.preventDefault();
+    setIsBannerMobileDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleBannerMobileFile(files[0]);
     }
   };
 
@@ -466,6 +515,25 @@ export default function ExhibitionUploader() {
     } catch (error) {
       console.error("Error compressing banner image:", error);
       throw new Error("Banner image upload failed");
+    }
+  };
+
+  const uploadBannerMobileImage = async (exhibitionId) => {
+    if (!bannerMobileImage) return bannerMobilePreview;
+  
+    try {
+      const compressedFile = await imageCompression(bannerMobileImage, {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 2000,
+        useWebWorker: true,
+      });
+  
+      const bannerMobileRef = ref(storage, `exhibitions/${exhibitionId}/images/${exhibitionId}_bannermobile`);
+      await uploadBytes(bannerMobileRef, compressedFile);
+      return await getDownloadURL(bannerMobileRef);
+    } catch (error) {
+      console.error("Error compressing mobile banner image:", error);
+      throw new Error("Mobile banner image upload failed");
     }
   };
 
@@ -582,6 +650,9 @@ const uploadImages = async (exhibitionId) => {
     if (bannerPreview && bannerImage instanceof File) {
       URL.revokeObjectURL(bannerPreview);
     }
+    if (bannerMobilePreview && bannerMobileImage instanceof File) {
+      URL.revokeObjectURL(bannerMobilePreview);
+    }
     if (flyerPreview && flyerImage instanceof File) {
       URL.revokeObjectURL(flyerPreview);
     }
@@ -613,6 +684,8 @@ const uploadImages = async (exhibitionId) => {
     setSelectedExhibition(null);
     setBannerImage(null);
     setBannerPreview(null);
+    setBannerMobileImage(null);
+    setBannerMobilePreview(null);
     setFlyerImage(null);
     setFlyerPreview(null);
     setExistingGallery([]);
@@ -622,6 +695,9 @@ const uploadImages = async (exhibitionId) => {
     }
     if (bannerInputRef.current) {
       bannerInputRef.current.value = "";
+    }
+    if (bannerMobileInputRef.current) {
+      bannerMobileInputRef.current.value = "";
     }
     if (flyerInputRef.current) {
       flyerInputRef.current.value = "";
@@ -634,6 +710,9 @@ const uploadImages = async (exhibitionId) => {
       if (bannerPreview && bannerImage instanceof File) {
         URL.revokeObjectURL(bannerPreview);
       }
+      if (bannerMobilePreview && bannerMobileImage instanceof File) {
+        URL.revokeObjectURL(bannerMobilePreview);
+      }
       if (flyerPreview && flyerImage instanceof File) {
         URL.revokeObjectURL(flyerPreview);
       }
@@ -643,7 +722,7 @@ const uploadImages = async (exhibitionId) => {
         }
       });
     };
-  }, [bannerPreview, bannerImage, flyerPreview, flyerImage, imagePreviews, newImages]);
+  }, [bannerPreview, bannerImage, bannerMobilePreview, bannerMobileImage, flyerPreview, flyerImage, imagePreviews, newImages]);
 
   const addNewExhibition = async () => {
     setLoading(true);
@@ -668,6 +747,7 @@ const uploadImages = async (exhibitionId) => {
       if (!galleryData) throw new Error("Image upload failed.");
 
       const bannerUrl = await uploadBannerImage(exhibitionId);
+      const bannerMobileUrl = await uploadBannerMobileImage(exhibitionId);
       const flyerUrl = await uploadFlyerImage(exhibitionId);
   
 
@@ -680,6 +760,7 @@ const uploadImages = async (exhibitionId) => {
         slug,
         gallery: galleryData,
         banner: bannerUrl,
+        bannermobile: bannerMobileUrl,
         flyer: flyerUrl,
         openingDate: openingDateTimestamp,
         closingDate: closingDateTimestamp,
@@ -954,6 +1035,47 @@ const uploadImages = async (exhibitionId) => {
             />
           </div>
 
+          {/* Banner Mobile Image */}
+          <div className={styles.inputGroup}>
+            <p className={styles.subtitle}>BANNER IMAGE (MOBILE)</p>
+            <div
+              className={`${styles.profilePictureDropZone} ${isBannerMobileDragOver ? styles.dragOver : ''}`}
+              onDragOver={handleBannerMobileDragOver}
+              onDragLeave={handleBannerMobileDragLeave}
+              onDrop={handleBannerMobileDrop}
+              onClick={() => bannerMobileInputRef.current?.click()}
+            >
+              {bannerMobilePreview ? (
+                <div className={styles.profilePicturePreview}>
+                  <img 
+                    src={bannerMobilePreview} 
+                    alt="Mobile Banner Preview" 
+                    className={styles.profilePreviewImage}
+                  />
+                  <div className={styles.profilePictureOverlay}>
+                    <span>Click or drag to change</span>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.profilePicturePlaceholder}>
+                  <p>Drag & drop mobile banner image here</p>
+                  <p>or click to browse</p>
+                  <small>Max size: 2000px width</small>
+                </div>
+              )}
+            </div>
+            <input
+              ref={bannerMobileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleBannerMobileChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+        </div>
+
+        {/* Flyer Row */}
+        <div className={styles.profileAndBasicInfoRow}>
           {/* Flyer Image/Video */}
           <div className={styles.inputGroup}>
             <p className={styles.subtitle}>FLYER IMAGE/VIDEO</p>

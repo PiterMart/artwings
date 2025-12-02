@@ -2,14 +2,16 @@
 import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig";
 import Link from "next/link";
+import Image from "next/image";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
 
 export default function Exhibition({ params }) {
   const { exhibition: exhibitionSlug } = params; // Get slug from params
   const [exhibition, setExhibition] = useState(null); // State to store the exhibition data
   const [artistsData, setArtistsData] = useState([]); // State to store the artist details
+  const bannerRef = useRef(null);
 
   // Fetch the exhibition details based on the slug
   const fetchExhibition = async () => {
@@ -149,16 +151,44 @@ export default function Exhibition({ params }) {
           <div className={styles.exhibition_page}>
             {/* 1. Exhibition Name and Curator */}
             <div className={styles.exhibitionHeaderContainer}>
-                          {/* Banner Image */}
-            {exhibition.banner && (
-              <div style={{ margin: "2rem auto", textAlign: "center" }}>
-                <img
-                  src={exhibition.banner}
-                  alt={`${exhibition.name} banner`}
-                  style={{ maxWidth: "100%", height: "auto" }}
-                />
-              </div>
-            )}
+              {/* Banner Image */}
+              {(exhibition.banner || exhibition.bannermobile) && (
+                <div ref={bannerRef} className={styles.heroBanner} style={{ position: 'relative' }}>
+                  {exhibition.banner && (
+                    <Image
+                      src={exhibition.banner}
+                      alt={`${exhibition.name} banner`}
+                      width={1920}
+                      height={1080}
+                      className={styles.heroBannerDesktop}
+                      priority
+                      sizes="100vw"
+                    />
+                  )}
+                  {exhibition.bannermobile && (
+                    <Image
+                      src={exhibition.bannermobile}
+                      alt={`${exhibition.name} mobile banner`}
+                      width={1080}
+                      height={1920}
+                      className={styles.heroBannerMobile}
+                      priority
+                      sizes="100vw"
+                    />
+                  )}
+                  {!exhibition.bannermobile && exhibition.banner && (
+                    <Image
+                      src={exhibition.banner}
+                      alt={`${exhibition.name} mobile banner`}
+                      width={1080}
+                      height={1920}
+                      className={styles.heroBannerMobile}
+                      priority
+                      sizes="100vw"
+                    />
+                  )}
+                </div>
+              )}
               <h1 className={styles.exhibitionTitle}>{exhibition.name}</h1>
               {exhibition.curator && (
                 <p className={styles.paragraph} style={{ fontSize: "0.9rem", textAlign: "right", padding: "1rem"}}>
