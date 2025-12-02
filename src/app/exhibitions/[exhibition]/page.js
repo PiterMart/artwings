@@ -95,7 +95,14 @@ export default function Exhibition({ params }) {
     fetchExhibition();
   }, [exhibitionSlug]);
 
-  if (exhibition === null) return <p>Loading exhibition data...</p>;
+  if (exhibition === null) {
+    return (
+      <div className={styles.loading_container}>
+        <div className={styles.loading_spinner}></div>
+        <p style={{ fontSize: '1rem', color: '#707984', marginTop: '1rem' }}>Loading exhibition...</p>
+      </div>
+    );
+  }
   if (!exhibition) return <p>No exhibition found.</p>;
 
   const exhibitionSlides = (exhibition.gallery || []).map((gallery) => ({
