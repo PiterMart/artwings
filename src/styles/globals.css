@@ -66,6 +66,29 @@ body:has(.metaxy)::before {
   font-family: var(--font-megatrans-regular), Arial, Helvetica, sans-serif !important;
 }
 
+/* Hide inverted background when transgenesis is present */
+body:has(.transgenesis)::before {
+  display: none;
+}
+
+/* Transgenesis background - non-inverted */
+.transgenesis::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/BACKGROUNDDEMO3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: none;
+  z-index: -1;
+  pointer-events: none;
+}
+
 body::before {
   content: '';
   position: fixed;
