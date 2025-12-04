@@ -12,6 +12,7 @@ export default function ArtworksPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [artistNames, setArtistNames] = useState([]);
+  const [artistsList, setArtistsList] = useState([]);
   const [featuredArtwork, setFeaturedArtwork] = useState(null);
 
   // Scroll to top when component mounts
@@ -65,7 +66,24 @@ export default function ArtworksPage() {
             .filter(name => name)
         )].sort();
 
+        // Extract unique artists with their slugs for the list
+        const artistMap = new Map();
+        artworksWithArtists.forEach(artwork => {
+          if (artwork.artist && artwork.artist.name && artwork.artist.slug) {
+            if (!artistMap.has(artwork.artist.name)) {
+              artistMap.set(artwork.artist.name, {
+                name: artwork.artist.name,
+                slug: artwork.artist.slug
+              });
+            }
+          }
+        });
+        const uniqueArtists = Array.from(artistMap.values()).sort((a, b) => 
+          a.name.localeCompare(b.name)
+        );
+
         setArtistNames(uniqueArtistNames);
+        setArtistsList(uniqueArtists);
         setArtworks(artworksWithArtists);
         
         // Select a random featured artwork from all artworks
@@ -126,7 +144,9 @@ export default function ArtworksPage() {
         <div className={styles.page_container} style={{marginBottom: "10rem"}}>
           <div className={styles.artworks_page}>
             <div className={styles.artworks_header}>
-              <h1 className={styles.artworks_title} style={{fontSize: '3rem', fontFamily: 'var(--font-lovelt)', marginBottom: '2rem', paddingTop: '1rem'}}>Artworks</h1>
+              {/* Title moved to top */}
+              {/* <h2 className={styles.featured_title} style={{fontFamily: "'Inter', sans-serif", color: "#707984", fontSize: '1.5rem', textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem'}}>The Complete Artwings Collection</h2> */}
+              
               {isLoading ? (
                 <div className={styles.loading_container}>
                   <div className={styles.loading_spinner}></div>
@@ -158,27 +178,31 @@ export default function ArtworksPage() {
                         {featuredArtwork.artist && (
                           <p className={styles.featured_artist_name}>by {featuredArtwork.artist.name}</p>
                         )}
-
                         </div>
-                          <h2 className={styles.featured_title} style={{fontFamily: "'Inter', sans-serif", color: "#707984"}}>The Complete Artwings Collection</h2>
                       </div>
                     </div>
                   )}
                   
-                  {/* Artist Filter List */}
-                  <div className={styles.artist_filter_container}>
-                    <div className={styles.artist_filter_list}>
-                      {artistNames.map((artistName) => (
-                        <button
-                          key={artistName}
-                          className={`${styles.artist_filter_button} ${selectedArtist === artistName ? styles.artist_filter_button_active : ''}`}
-                          onClick={() => handleArtistSelect(artistName)}
-                        >
-                          {artistName}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Artist Filter List - styled like exhibition page */}
+                  {artistsList.length > 0 && (
+                    <section className={styles.artistListSection} style={{ marginTop: "3rem" }}>
+                      <ul className={styles.artistList}>
+                        {artistsList.map((artist) => (
+                          <li key={artist.name}>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleArtistSelect(artist.name);
+                              }}
+                            >
+                              {artist.name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
 
                   {/* Artworks Grid */}
                   <div className={styles.artworks_grid}>

@@ -228,13 +228,47 @@
   transform: scaleX(-1);
   overflow: hidden;
 }
+
+.bioUnderline {
+  position: absolute;
+  bottom: -87px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 666px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: -1;
+}
+
+.bioUnderlineImage {
+  width: 100%;
+  max-width: 666px;
+  height: auto;
+  object-fit: contain;
+  z-index: -1;
+}
+
+@media (max-width: 768px) {
+  .bioUnderline {
+    max-width: 100%;
+    bottom: -39px;
+  }
+  
+  .bioUnderlineImage {
+    max-width: 120%;
+    width: 120%;
+  }
+}
+
   .rightMarginBottom {
     position: fixed;
     right: 0;
     bottom: 0;
     height: 125vh;  
     margin-top: 2vh;
-    z-index: -1;
+    z-index: -2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1873,7 +1907,7 @@
 .exhibitionTitle {
   font-family: 'Inter', sans-serif;
   font-size: 4rem;
-  font-weight: 200;
+  font-weight: 900;
   margin: 0;
   letter-spacing: 2px;
   text-transform: uppercase;

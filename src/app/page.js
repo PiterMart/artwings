@@ -300,65 +300,61 @@ export default function Home() {
           </span>
         </Link>
       </div>
-      
-      {/* Exhibition Flyer Section */}
-      {/* <div id="exhibitions" className={styles.exhibitionSection}>
-      <p className={styles.title2}>Current Exhibition</p>
-      <p className={styles.exhibitionTitle}>METAXY</p>
-        <div className={styles.flyerContainer}>
-          <video
-            src="/metxyflyer.mp4"
-            className={styles.flyerImage}
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ width: '600px', height: 'auto', objectFit: 'contain' }}
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      </div> */}
       <div className={styles.page_container}>
           <div className={styles.homepage_container} style={{paddingTop: '0rem'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', margin: "auto", maxWidth: '666px', marginTop: '5rem'}}>
-            <div>
-                <p className={styles.exhibitionTitle} style={{ marginTop: '0rem', marginBottom: '1rem', lineHeight: '3rem'}}>The artwings Collection</p>
+            <div style={{ position: 'relative' }}>
+                <p className={styles.exhibitionTitle} style={{ marginTop: '0rem', marginBottom: '1rem', lineHeight: '3rem', zIndex: "-1", position: "relative"}}><span style={{fontWeight: "200"}}>The</span> artwings <span style={{fontWeight: "400", letterSpacing: "0.2em", fontStyle: "italic"}}>Collection</span></p>
                 <p 
                   className={`${styles.sectionSubtitle} ${visibleSubtitles.has('subtitle4') ? styles.sectionSubtitleVisible : ''}`}
                   data-subtitle-id="subtitle4"
-                  style={{marginBottom: '1rem'}}
+                  style={{marginBottom: '1rem', textAlign: "right", fontStyle: "italic", fontWeight: "100"}}
                 >
                   See our curated selection of artworks from the diverse community of artists we champion.
                 </p>
-                  <Link href="/artworks">
-                    <button 
-                    style={{
-                      padding: "0.875rem 1.75rem",
-                      background: "none",
-                      color: "#707984",
-                      border: "1px solid #707984",
-                      cursor: "pointer",
-                      fontSize: "1rem",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: "300",
-                      transition: "all 0.3s ease",
-                      marginRight: "0",
-                    }}
-                    onMouseOver={(e) => {
-                      e.target.style.color = "#000";
-                      e.target.style.borderColor = "#000";
-                      e.target.style.transform = "translateY(-1px)";
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.color = "#707984";
-                      e.target.style.borderColor = "#707984";
-                      e.target.style.transform = "translateY(0)";
-                    }}
-                  >
-                    See Collection
-                  </button>
-                  </Link>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', position: 'relative', zIndex: 2 }}>
+                    <Link href="/artworks" style={{ textDecoration: 'none' }}>
+                      <button 
+                        style={{
+                          padding: '0.875rem 1.75rem',
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          color: '#a8a8a8',
+                          border: '1px solid #a8a8a8',
+                          cursor: 'pointer',
+                          fontSize: '1rem',
+                          fontFamily: 'var(--font-helvetica-regular), Arial, Helvetica, sans-serif',
+                          fontWeight: '300',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.1em',
+                          transition: 'all 0.3s ease',
+                          position: 'relative',
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.background = 'rgba(0, 0, 0, 0.5)';
+                          e.target.style.borderColor = '#a8a8a8';
+                          e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.background = 'rgba(0, 0, 0, 0.3)';
+                          e.target.style.borderColor = '#a8a8a8';
+                          e.target.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        See Collection
+                      </button>
+                    </Link>
+                  </div>
+                  <div className={styles.bioUnderline}>
+                  <Image
+                    src="/tendrils-underline.png"
+                    alt="Collection title underline"
+                    width={666}
+                    height={50}
+                    className={styles.bioUnderlineImage}
+                  />
+                </div>
               </div>
               </div>
             </div>
