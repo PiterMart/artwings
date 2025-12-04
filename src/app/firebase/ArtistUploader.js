@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { firestore, storage } from "./firebaseConfig";
 import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { logCreate, logUpdate, RESOURCE_TYPES } from "./activityLogger";
 import styles from "../../styles/uploader.module.css";
 import imageCompression from 'browser-image-compression';
 
@@ -56,6 +57,8 @@ export default function ArtistUploader() {
   const [editingArtworkIndex, setEditingArtworkIndex] = useState(null);
   const [updateMainImageDragOver, setUpdateMainImageDragOver] = useState({});
   const [updateDetailImagesDragOver, setUpdateDetailImagesDragOver] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -72,6 +75,50 @@ export default function ArtistUploader() {
     };
     fetchArtists();
   }, []);
+
+  // Filter artists based on search query and get top 4 matches
+  const filteredArtists = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return artists;
+    }
+    const query = searchQuery.toLowerCase().trim();
+    const matches = artists.filter((artist) => {
+      const name = (artist.name || "").toLowerCase();
+      return name.includes(query);
+    });
+    
+    // Sort by relevance (exact matches first, then by position of match)
+    const sorted = matches.sort((a, b) => {
+      const nameA = (a.name || "").toLowerCase();
+      const nameB = (b.name || "").toLowerCase();
+      
+      // Exact match gets highest priority
+      if (nameA === query) return -1;
+      if (nameB === query) return 1;
+      
+      // Starts with query gets second priority
+      if (nameA.startsWith(query)) return -1;
+      if (nameB.startsWith(query)) return 1;
+      
+      // Otherwise sort by position of match (earlier match = higher priority)
+      const indexA = nameA.indexOf(query);
+      const indexB = nameB.indexOf(query);
+      if (indexA !== indexB) return indexA - indexB;
+      
+      // Finally sort alphabetically
+      return nameA.localeCompare(nameB);
+    });
+    
+    return sorted;
+  }, [artists, searchQuery]);
+
+  // Get top 4 search results for dropdown
+  const topSearchResults = useMemo(() => {
+    if (!searchQuery.trim() || filteredArtists.length === 0) {
+      return [];
+    }
+    return filteredArtists.slice(0, 4);
+  }, [filteredArtists, searchQuery]);
 
   const handleArtistSelection = async (artistId) => {
     setSelectedArtist(artistId);
@@ -408,10 +455,17 @@ export default function ArtistUploader() {
   
       if (selectedArtist) {
         await updateDoc(doc(firestore, "artists", selectedArtist), artistData);
+        await logUpdate(RESOURCE_TYPES.ARTIST, selectedArtist, {
+          artistName: name,
+          fieldsUpdated: Object.keys(artistData),
+        });
         setSuccess("Artist updated successfully! Please refresh the page to see the updated artist.");
       } else {
         const artistRef = doc(firestore, "artists", artistId);
         await setDoc(artistRef, artistData);
+        await logCreate(RESOURCE_TYPES.ARTIST, artistId, {
+          artistName: name,
+        });
         setSelectedArtist(artistId);
         setSuccess("Artist created successfully! Please refresh the page to see the new artist.");
       }
@@ -814,12 +868,131 @@ export default function ArtistUploader() {
     <div className={styles.form}>
       <div>
       <p className={styles.subtitle}>SELECT ARTIST TO EDIT</p>
+        <div style={{ marginBottom: "0.5rem", position: "relative" }}>
+          <input
+            type="text"
+            placeholder="Search artist..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSearchResults(true);
+            }}
+            onFocus={() => {
+              if (searchQuery.trim()) {
+                setShowSearchResults(true);
+              }
+            }}
+            onBlur={(e) => {
+              // Delay hiding dropdown to allow click events
+              setTimeout(() => {
+                // Check if the blur is due to clicking on a result
+                const relatedTarget = e.relatedTarget || document.activeElement;
+                if (!relatedTarget || !relatedTarget.closest('.search-results-dropdown')) {
+                  setShowSearchResults(false);
+                }
+              }, 200);
+            }}
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              fontSize: "1rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+            }}
+          />
+          {/* Search Results Dropdown */}
+          {showSearchResults && searchQuery.trim() && topSearchResults.length > 0 && (
+            <div 
+              className="search-results-dropdown"
+              onMouseDown={(e) => e.preventDefault()} // Prevent input blur
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                backgroundColor: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                marginTop: "0.25rem",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                zIndex: 1000,
+                maxHeight: "300px",
+                overflowY: "auto",
+              }}
+            >
+              {topSearchResults.map((artist) => (
+                <div
+                  key={artist.id}
+                  onClick={() => {
+                    handleArtistSelection(artist.id);
+                    setSearchQuery("");
+                    setShowSearchResults(false);
+                  }}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #eee",
+                    transition: "background-color 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f5f5f5";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <div style={{ fontWeight: "500", color: "#333" }}>
+                    {artist.name}
+                  </div>
+                  {artist.origin && (
+                    <div style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.25rem" }}>
+                      {artist.origin}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {filteredArtists.length > 4 && (
+                <div style={{
+                  padding: "0.5rem 1rem",
+                  fontSize: "0.85rem",
+                  color: "#666",
+                  borderTop: "1px solid #eee",
+                  backgroundColor: "#f9f9f9",
+                }}>
+                  +{filteredArtists.length - 4} more results. Use dropdown to see all.
+                </div>
+              )}
+            </div>
+          )}
+          {showSearchResults && searchQuery.trim() && topSearchResults.length === 0 && (
+            <div 
+              className="search-results-dropdown"
+              onMouseDown={(e) => e.preventDefault()}
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                backgroundColor: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                marginTop: "0.25rem",
+                padding: "0.75rem 1rem",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                zIndex: 1000,
+                color: "#666",
+              }}
+            >
+              No artists found
+            </div>
+          )}
+        </div>
         <select
           value={selectedArtist || ""}
           onChange={(e) => handleArtistSelection(e.target.value)}
         >
           <option value="">Create New Artist</option>
-          {artists.map(artist => (
+          {filteredArtists.map(artist => (
             <option key={artist.id} value={artist.id}>
               {artist.name}
             </option>

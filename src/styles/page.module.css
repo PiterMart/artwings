@@ -217,15 +217,14 @@
 }
 
 .bioMargin {
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: fixed;
+  top: -100vh;
   height: 200vh;
   z-index: -1;
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0.3;
+  opacity: 0.5;
   transform: scaleX(-1);
   overflow: hidden;
 }

@@ -160,30 +160,58 @@ export default function Home() {
     };
   }, []);
 
+  // Parallax effect for bioMargin element
+  useEffect(() => {
+    const handleParallaxScroll = () => {
+      if (rightMarginRef.current && bannerRef.current) {
+        const scrollY = window.scrollY || window.pageYOffset;
+        // Parallax speed factor - lower values create slower scrolling effect
+        // 0.5 means it scrolls at half the speed of normal content, creating depth
+        const parallaxSpeed = 0.5;
+        const parallaxOffset = scrollY * parallaxSpeed;
+        
+        // Apply transform to create parallax effect while preserving scaleX(-1) from CSS
+        rightMarginRef.current.style.transform = `translateY(${parallaxOffset}px) scaleX(-1)`;
+      }
+    };
+
+    // Use requestAnimationFrame for smooth performance
+    let ticking = false;
+    const optimizedScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleParallaxScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', optimizedScroll, { passive: true });
+    
+    // Initial call with a small delay to ensure DOM is ready
+    setTimeout(handleParallaxScroll, 100);
+    handleParallaxScroll();
+
+    return () => {
+      window.removeEventListener('scroll', optimizedScroll);
+    };
+  }, []);
+
   return (
     <div ref={pageRef} className={styles.page}>
-      {/* Left margin image */}
-      {/* <div ref={leftMarginRef} className={styles.leftMargin}>
-        <Image
-          src="/tendrils2.png"
-          alt="Left margin decoration"
-          width={200}
-          height={800}
-          className={styles.marginImage}
-        />
-      </div> */}
       
-      {/* Right margin image */}
+      {/* Bio margin image */}
       <div ref={rightMarginRef} className={styles.bioMargin}>
         <Image
-          src="/tendrils2.png"
+          src="/tendrils-ornament.png"
           alt="Right margin decoration"
           width={200}
           height={800}
           className={styles.marginImage}
         />
       </div>
-      
+
       {/* Hero Banner Section */}
       <div ref={bannerRef} className={styles.heroBanner} style={{ position: 'relative' }}>
         <Image

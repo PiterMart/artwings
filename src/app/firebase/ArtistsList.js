@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { firestore } from "./firebaseConfig";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import styles from "../../styles/uploader.module.css";
@@ -9,6 +9,8 @@ export default function ArtistsList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedArtists, setExpandedArtists] = useState(new Set());
+  const [sortMode, setSortMode] = useState("name-asc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -80,6 +82,51 @@ export default function ArtistsList() {
     });
   };
 
+  // Filter artists based on search query
+  const filteredArtists = useMemo(() => {
+    let filtered = artists;
+    
+    // Filter by search query (names only)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = artists.filter((artist) => {
+        const name = (artist.name || "").toLowerCase();
+        return name.includes(query);
+      });
+    }
+    
+    return filtered;
+  }, [artists, searchQuery]);
+
+  // Sort artists
+  const sortedArtists = useMemo(() => {
+    const comparator = (a, b) => {
+      const nameA = String(a.name || "").toLowerCase();
+      const nameB = String(b.name || "").toLowerCase();
+      const nameComparison = nameA.localeCompare(nameB);
+      
+      const artworkCountA = (a.artworks || []).length;
+      const artworkCountB = (b.artworks || []).length;
+      const artworkComparison = artworkCountB - artworkCountA; // Descending by default
+
+      if (sortMode === "name-asc") {
+        return nameComparison;
+      }
+      if (sortMode === "name-desc") {
+        return nameComparison * -1;
+      }
+      if (sortMode === "artworks-desc") {
+        return artworkComparison || nameComparison;
+      }
+      if (sortMode === "artworks-asc") {
+        return (artworkComparison * -1) || nameComparison;
+      }
+      return nameComparison;
+    };
+
+    return [...filteredArtists].sort(comparator);
+  }, [filteredArtists, sortMode]);
+
   if (isLoading) {
     return (
       <div className={styles.form}>
@@ -98,13 +145,43 @@ export default function ArtistsList() {
 
   return (
     <div className={styles.form}>
-      <h2 className={styles.title}>Artists ({artists.length})</h2>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center", marginBottom: "1.5rem" }}>
+        <h2 className={styles.title} style={{ margin: 0 }}>
+          Artists ({sortedArtists.length})
+        </h2>
+        <div style={{ marginLeft: "auto", display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <p className={styles.subtitle} style={{ marginBottom: "0.25rem" }}>Search</p>
+            <input
+              type="text"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.input}
+              style={{ minWidth: "250px" }}
+            />
+          </div>
+          <div>
+            <p className={styles.subtitle} style={{ marginBottom: "0.25rem" }}>Sort by</p>
+            <select
+              value={sortMode}
+              onChange={(e) => setSortMode(e.target.value)}
+              className={styles.input}
+            >
+              <option value="name-asc">Name (A → Z)</option>
+              <option value="name-desc">Name (Z → A)</option>
+              <option value="artworks-desc">Artworks (Most first)</option>
+              <option value="artworks-asc">Artworks (Least first)</option>
+            </select>
+          </div>
+        </div>
+      </div>
       
-      {artists.length === 0 ? (
+      {sortedArtists.length === 0 ? (
         <p>No artists found.</p>
       ) : (
         <div className={styles.artistsList}>
-          {artists.map((artist) => {
+          {sortedArtists.map((artist) => {
             const isExpanded = expandedArtists.has(artist.id);
             return (
               <div key={artist.id} className={styles.artistCard}>

@@ -8,6 +8,7 @@ import ExhibitionUploader from "../firebase/ExhibitionUploader";
 import FairUploader from "../firebase/FairUpdater";
 import HeadquarterEditor from "../firebase/HeadquarterEditor";
 import ArtistsList from "../firebase/ArtistsList";
+import ExhibitionsList from "../firebase/ExhibitionsList";
 import { runMigration } from "../firebase/migrateArtworks";
 
 export default function Home() {
@@ -97,9 +98,23 @@ export default function Home() {
           <p className={styles.title}> What are you working on?</p>
         </div>
         <div className={styles.navContainer}>
-          <button onClick={() => setActiveSection("artist")} className={styles.navButton}>Artists</button>
-          <button onClick={() => setActiveSection("artistsList")} className={styles.navButton}>Artist List</button>
-          <button onClick={() => setActiveSection("exhibition")} className={styles.navButton}>Exhibitions</button>
+          <div className={styles.navGroup}>
+            <button onClick={() => setActiveSection("artist")} className={styles.navButton}>Artists</button>
+            <button onClick={() => setActiveSection("artistsList")} className={styles.navButton}>Artist List</button>
+          </div>
+          <div className={styles.navGroup}>
+            <button onClick={() => setActiveSection("exhibition")} className={styles.navButton}>Exhibitions</button>
+            <button onClick={() => setActiveSection("exhibitionsList")} className={styles.navButton}>Exhibition List</button>
+          </div>
+          <div className={styles.navGroup}>
+            <button 
+              onClick={() => window.location.href = '/uploader-activity'} 
+              className={styles.navButton}
+              style={{ backgroundColor: "#666", color: "white" }}
+            >
+              Activity Logs
+            </button>
+          </div>
           {/* <button onClick={runMigration} className={styles.subtitle} style={{ backgroundColor: "#ff6b6b", color: "white" }}>Migrate Artworks</button> */}
           {/* <button onClick={() => setActiveSection("fair")} className={styles.subtitle}>Fairs</button>
           <button onClick={() => setActiveSection("headquarter")} className={styles.subtitle}>Headquarters</button> */}
@@ -126,6 +141,14 @@ export default function Home() {
           <div id="exhibition" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "auto" }}>
             <p className={styles.title}>EXHIBITION UPLOADER</p>
             <ExhibitionUploader />
+          </div>
+        )}
+
+        {/* Exhibitions List Section */}
+        {activeSection === "exhibitionsList" && (
+          <div id="exhibitionsList" style={{ width: "100%", padding: "1rem", display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "1000px", margin: "auto" }}>
+            <p className={styles.title}>ALL EXHIBITIONS</p>
+            <ExhibitionsList />
           </div>
         )}
 
