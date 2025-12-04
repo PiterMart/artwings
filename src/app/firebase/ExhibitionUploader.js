@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { firestore, storage } from "./firebaseConfig";
 import { getDocs, addDoc, collection, doc, updateDoc, Timestamp, arrayUnion, getDoc, setDoc } from "firebase/firestore";  
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { logCreate, logUpdate, RESOURCE_TYPES } from "./activityLogger";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "../../styles/uploader.module.css";
@@ -260,6 +261,10 @@ export default function ExhibitionUploader() {
 
       if (selectedExhibition) {
         await updateDoc(doc(firestore, "exhibitions", selectedExhibition), exhibitionData);
+        await logUpdate(RESOURCE_TYPES.EXHIBITION, selectedExhibition, {
+          exhibitionName: name,
+          fieldsUpdated: Object.keys(exhibitionData),
+        });
         if (deletedExistingImages.length > 0) {
           await Promise.all(
             deletedExistingImages.map(url => 
@@ -273,6 +278,9 @@ export default function ExhibitionUploader() {
       } else {
         // Use setDoc instead of addDoc to use the pre-generated ID
         await setDoc(doc(firestore, "exhibitions", exhibitionId), exhibitionData);
+        await logCreate(RESOURCE_TYPES.EXHIBITION, exhibitionId, {
+          exhibitionName: name,
+        });
 
         for (const artistSlug of selectedArtists) {
           const artist = artists.find(a => a.slug === artistSlug);

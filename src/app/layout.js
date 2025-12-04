@@ -91,12 +91,12 @@ export default function RootLayout({ children }) {
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: 'var(--background)'
+          backgroundColor: 'transparent'
         }}
       >
         <LoadingProvider>
           <Nav/>
-          <main style={{ flex: 1 }}>
+          <main style={{ flex: 1, backgroundColor: 'transparent' }}>
             {children}
           </main>
           <Footer/>

@@ -19,6 +19,11 @@ export const ACTION_TYPES = {
 
 // Resource types
 export const RESOURCE_TYPES = {
+  ARTIST: "artist",
+  EXHIBITION: "exhibition",
+  ARTWORK: "artwork",
+  FAIR: "fair",
+  HEADQUARTER: "headquarter",
   MEMBER: "member",
   EVENT: "event",
   ARTICLE: "article",
@@ -42,7 +47,7 @@ const getCurrentUser = () => {
 /**
  * Create a log entry in Firebase
  * @param {string} actionType - Type of action (login, logout, create, update, delete)
- * @param {string} resourceType - Type of resource (member, event, article)
+ * @param {string} resourceType - Type of resource (artist, exhibition, artwork, etc.)
  * @param {string} resourceId - ID of the resource (optional)
  * @param {object} metadata - Additional metadata about the action
  */
@@ -101,7 +106,7 @@ export const logLogout = async () => {
 
 /**
  * Log a create operation
- * @param {string} resourceType - Type of resource (member, event, article)
+ * @param {string} resourceType - Type of resource (artist, exhibition, artwork, etc.)
  * @param {string} resourceId - ID of the created resource
  * @param {object} metadata - Additional metadata (e.g., resource name)
  */
@@ -111,7 +116,7 @@ export const logCreate = async (resourceType, resourceId, metadata = {}) => {
 
 /**
  * Log an update operation
- * @param {string} resourceType - Type of resource (member, event, article)
+ * @param {string} resourceType - Type of resource (artist, exhibition, artwork, etc.)
  * @param {string} resourceId - ID of the updated resource
  * @param {object} metadata - Additional metadata (e.g., changed fields, resource name)
  */
@@ -121,13 +126,11 @@ export const logUpdate = async (resourceType, resourceId, metadata = {}) => {
 
 /**
  * Log a delete operation
- * @param {string} resourceType - Type of resource (member, event, article)
+ * @param {string} resourceType - Type of resource (artist, exhibition, artwork, etc.)
  * @param {string} resourceId - ID of the deleted resource
  * @param {object} metadata - Additional metadata (e.g., resource name)
  */
 export const logDelete = async (resourceType, resourceId, metadata = {}) => {
   await logActivity(ACTION_TYPES.DELETE, resourceType, resourceId, metadata);
 };
-
-
 

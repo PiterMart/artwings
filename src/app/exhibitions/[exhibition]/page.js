@@ -12,6 +12,7 @@ export default function Exhibition({ params }) {
   const [exhibition, setExhibition] = useState(null); // State to store the exhibition data
   const [artistsData, setArtistsData] = useState([]); // State to store the artist details
   const bannerRef = useRef(null);
+  const rightMarginRef = useRef(null);
 
   // Fetch the exhibition details based on the slug
   const fetchExhibition = async () => {
@@ -95,6 +96,49 @@ export default function Exhibition({ params }) {
     fetchExhibition();
   }, [exhibitionSlug]);
 
+  // Parallax effect for bioMargin element (only for transgenesis with specific ID)
+  useEffect(() => {
+    const isTransgenesisWithId = exhibition?.id === 'eUEHALi4J0bVBwhouuu4' && 
+                                  exhibition?.name?.toLowerCase() === 'transgenesis';
+    
+    if (!isTransgenesisWithId) return;
+
+    const handleParallaxScroll = () => {
+      if (rightMarginRef.current && bannerRef.current) {
+        const scrollY = window.scrollY || window.pageYOffset;
+        // Parallax speed factor - lower values create slower scrolling effect
+        // 0.5 means it scrolls at half the speed of normal content, creating depth
+        const parallaxSpeed = 0.5;
+        const parallaxOffset = scrollY * parallaxSpeed;
+        
+        // Apply transform to create parallax effect while preserving scaleX(-1) from CSS
+        rightMarginRef.current.style.transform = `translateY(${parallaxOffset}px) scaleX(-1)`;
+      }
+    };
+
+    // Use requestAnimationFrame for smooth performance
+    let ticking = false;
+    const optimizedScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleParallaxScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', optimizedScroll, { passive: true });
+    
+    // Initial call with a small delay to ensure DOM is ready
+    setTimeout(handleParallaxScroll, 100);
+    handleParallaxScroll();
+
+    return () => {
+      window.removeEventListener('scroll', optimizedScroll);
+    };
+  }, [exhibition]);
+
   if (exhibition === null) {
     return (
       <div className={styles.loading_container}>
@@ -128,6 +172,9 @@ export default function Exhibition({ params }) {
   const isTransgenesis = exhibition?.name?.toLowerCase() === 'transgenesis' || 
                          exhibition?.slug?.toLowerCase() === 'transgenesis' ||
                          exhibitionSlug?.toLowerCase() === 'transgenesis';
+  
+  const isTransgenesisWithId = exhibition?.id === 'eUEHALi4J0bVBwhouuu4' && 
+                                exhibition?.name?.toLowerCase() === 'transgenesis';
 
   // Helper function to format dates from Firestore timestamps
   const formatDate = (dateValue) => {
@@ -153,6 +200,19 @@ export default function Exhibition({ params }) {
 
   return (
     <div className={`${styles.page} ${isMetaxy ? 'metaxy' : ''} ${isTransgenesis ? 'transgenesis' : ''}`}>
+      {/* Bio margin image - only for transgenesis with specific ID */}
+      {isTransgenesisWithId && (
+        <div ref={rightMarginRef} className={styles.bioMargin}>
+          <Image
+            src="/tendrils-ornament.png"
+            alt="Right margin decoration"
+            width={200}
+            height={800}
+            className={styles.marginImage}
+          />
+        </div>
+      )}
+      
       <main className={styles.main}>
         <div className={styles.page_container}>
           <div className={styles.exhibition_page}>

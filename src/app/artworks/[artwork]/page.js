@@ -63,6 +63,7 @@ export default function Artwork({ params }) {
             if (artistDocSnap.exists()) {
               const artistData = artistDocSnap.data();
               setArtist({
+                id: artworkData.artistId,
                 name: artistData.name,
                 slug: artistData.slug,
               });
@@ -102,7 +103,7 @@ export default function Artwork({ params }) {
             <p className={styles.title} style={{ fontWeight: "400", fontFamily: 'Inter, sans-serif', fontSize: '1.5rem' }}>{title}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               {artist ? (
-                <Link href={`/artists/${artist.slug}`}>
+                <Link href={`/artists/${artist.id}`}>
                   <h2 style={{ fontWeight: "300", fontFamily: "'Inter', sans-serif" }}>{artist.name}</h2>
                 </Link>
               ) : (
