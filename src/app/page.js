@@ -163,20 +163,20 @@ export default function Home() {
   return (
     <div ref={pageRef} className={styles.page}>
       {/* Left margin image */}
-      <div ref={leftMarginRef} className={styles.leftMargin}>
+      {/* <div ref={leftMarginRef} className={styles.leftMargin}>
         <Image
-          src="/maiden 11.png"
+          src="/tendrils2.png"
           alt="Left margin decoration"
           width={200}
           height={800}
           className={styles.marginImage}
         />
-      </div>
+      </div> */}
       
       {/* Right margin image */}
-      <div ref={rightMarginRef} className={styles.rightMargin}>
+      <div ref={rightMarginRef} className={styles.bioMargin}>
         <Image
-          src="/maiden 11.png"
+          src="/tendrils2.png"
           alt="Right margin decoration"
           width={200}
           height={800}

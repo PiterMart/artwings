@@ -14,6 +14,10 @@
   --font-megatrans-regular: var(--font-megatrans-regular);
 }
 
+html {
+  background-color: transparent;
+}
+
 html,
 body {
   max-width: 100vw;
@@ -28,6 +32,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* cursor: url('/artwingscursor3.cur') 16 16, auto; */
   position: relative;
+  background-color: transparent;
 }
 
 /* Metaxy-specific styling - uses Lovelt font */
@@ -37,8 +42,8 @@ body {
   color: #707984 !important;
 }
 
-/* Hide inverted background when metaxy is present */
-body:has(.metaxy)::before {
+/* Hide inverted background when metaxy is present - only when .page has the class (not nav links) */
+body:has(.page.metaxy)::before {
   display: none;
 }
 
@@ -66,8 +71,8 @@ body:has(.metaxy)::before {
   font-family: var(--font-megatrans-regular), Arial, Helvetica, sans-serif !important;
 }
 
-/* Hide inverted background when transgenesis is present */
-body:has(.transgenesis)::before {
+/* Hide inverted background when transgenesis is present - only when .page has the class (not nav links) */
+body:has(.page.transgenesis)::before {
   display: none;
 }
 

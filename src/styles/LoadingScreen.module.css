@@ -91,6 +91,7 @@
 /* Fade out animation */
 .loadingContainer.fadeOut {
   animation: fadeOut 0.5s ease-out forwards;
+  pointer-events: none;
 }
 
 @keyframes fadeOut {
@@ -101,5 +102,6 @@
   to {
     opacity: 0;
     transform: scale(1.1);
+    visibility: hidden;
   }
 }
