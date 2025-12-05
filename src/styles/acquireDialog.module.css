@@ -144,7 +144,7 @@
   padding: 1rem;
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
@@ -159,11 +159,12 @@
 }
 
 .buttonSecondary:hover {
-  color: #000;
+  color: #9e3d3d;
   border-color: #000;
 }
 
 .buttonPrimary {
+  width: 100%;
   background: none;
   color: var(--foreground);
   border: 1px solid var(--foreground);
@@ -171,8 +172,9 @@
 
 .buttonPrimary:hover:not(:disabled) {
   color: #000;
-  border-color: #000;
+  border-color: #919191;
   transform: translateY(-1px);
+  background-color: #919191;
 }
 
 .buttonPrimary:disabled {
