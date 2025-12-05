@@ -184,21 +184,20 @@ const AcquireDialog = ({ isOpen, onClose, artwork, artist }) => {
               className={styles.textarea}
             />
           </div>
-
-          <div className={styles.buttonGroup}>
-            <button
-              type="button"
-              onClick={onClose}
-              className={`${styles.button} ${styles.buttonSecondary}`}
-            >
-              Cancel
-            </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className={`${styles.button} ${styles.buttonPrimary}`}
             >
               {isSubmitting ? 'Sending...' : 'Send Inquiry'}
+            </button>
+            <div className={styles.buttonGroup}>
+            <button
+              type="button"
+              onClick={onClose}
+              className={`${styles.button} ${styles.buttonSecondary}`}
+            >
+              Cancel
             </button>
           </div>
         </form>
