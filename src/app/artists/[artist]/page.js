@@ -24,7 +24,7 @@ export default function Artist({ params }) {
   const artistId = params.artist;
 
   useEffect(() => {
-    // Scroll to top when component mounts
+    // Scroll to top when component mountss
     window.scrollTo(0, 0);
     
     const fetchArtistData = async () => {
@@ -186,9 +186,26 @@ export default function Artist({ params }) {
                 <h1 className={styles.title} style={{ paddingTop: "5rem" }}>
                   {artist.name}
                 </h1>
-                <div>
+                <div className={styles.subtitle}>
                   <h1 className={styles.subtitle}>{artist.origin},</h1>
                   <h1 className={styles.subtitle}>{artist.birthDate}.</h1>
+                  {artist.web && (
+                  <div  style={{ marginTop: "1rem" } } >
+                    <a 
+                      href={artist.web} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ 
+                        color: "inherit", 
+                        textDecoration: "none",
+                        fontFamily: "inherit",
+                        fontWeight: '100'
+                      }}
+                    >
+                       web
+                    </a>
+                  </div>
+                )}
                 </div>
               </div>
             </div>
@@ -197,7 +214,7 @@ export default function Artist({ params }) {
                 {/* <div>
                   <p style={{ fontSize: '1.5rem', lineHeight: "1.75rem", textAlign: 'left'}}>{artist.bio[0]}</p>
                 </div> */}
-                                  <p className={styles.title} style={{marginBottom: '-1rem', marginTop: '1rem', fontSize: '2rem', textAlign: 'center'}}>BIO</p>
+                  <p className={styles.title} style={{marginBottom: '-1rem', marginTop: '1rem', fontSize: '2rem', textAlign: 'center'}}>BIO</p>
                 <div
                   className={styles.artist_page_contents_bio}
                   id="bio"

@@ -180,12 +180,13 @@ export default function Artwork({ params }) {
               src={mainImage}
               alt={title}
               style={{ 
-                width: "100%", 
+                width: "auto", 
                 height: "auto", 
-                maxWidth: "800px",
+                maxWidth: "100%",
                 maxHeight: "80vh",
                 cursor: "pointer",
-                display: isImageLoading ? "none" : "block"
+                display: isImageLoading ? "none" : "block",
+                objectFit: "contain"
               }}
               onClick={() => openLightbox(mainImage, title)}
               onLoad={() => setIsImageLoading(false)}

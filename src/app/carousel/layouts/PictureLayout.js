@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../../../styles/page.module.css";
 import Image from "next/image";
 
-const PictureLayout = ({ slide }) => {
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [photoIndex, setPhotoIndex] = useState(0); 
-
+const PictureLayout = ({ slide, onImageClick }) => {
   const handleImageClick = () => {
-    setPhotoIndex(0);
+    if (onImageClick) {
+      onImageClick(slide.image, slide.title || slide.alt || "Gallery image");
+    }
   };
 
   return (
@@ -15,7 +14,7 @@ const PictureLayout = ({ slide }) => {
       <div className={styles.artist_page_image_container}>
         <Image
           src={slide.image}
-          alt={slide.title}
+          alt={slide.title || slide.alt || "Gallery image"}
           style={{ width: "100%", cursor: "pointer" }} 
           onClick={handleImageClick} 
           width={0}

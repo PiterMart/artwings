@@ -6,11 +6,14 @@ import Image from "next/image";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState, useRef } from "react";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
+import Lightbox from "../../../components/Lightbox";
 
 export default function Exhibition({ params }) {
   const { exhibition: exhibitionSlug } = params; // Get slug from params
   const [exhibition, setExhibition] = useState(null); // State to store the exhibition data
   const [artistsData, setArtistsData] = useState([]); // State to store the artist details
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
   const bannerRef = useRef(null);
   const rightMarginRef = useRef(null);
 
@@ -152,6 +155,15 @@ export default function Exhibition({ params }) {
   const exhibitionSlides = (exhibition.gallery || []).map((gallery) => ({
     image: gallery.url,
   }));
+
+  const openLightbox = (imageSrc, imageAlt) => {
+    setLightboxImage({ src: imageSrc, alt: imageAlt });
+    setIsLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+  };
 
   const allArtworks = artistsData.flatMap((artist) =>
     (artist.selectedArtworks || []).map((artwork) => ({
@@ -416,7 +428,11 @@ export default function Exhibition({ params }) {
             {/* 7. Image Gallery */}
             {exhibition.gallery && exhibition.gallery.length > 0 && (
               <div style={{ marginTop: "3rem" }}>
-                <EmblaCarousel slides={exhibitionSlides} type="picture" />
+                <EmblaCarousel 
+                  slides={exhibitionSlides} 
+                  type="picture" 
+                  onImageClick={openLightbox}
+                />
               </div>
             )}
 
@@ -444,6 +460,14 @@ export default function Exhibition({ params }) {
         </div>
       </main>
       <footer className={styles.footer}></footer>
+
+      {/* Lightbox Component */}
+      <Lightbox
+        isOpen={isLightboxOpen}
+        imageSrc={lightboxImage.src}
+        imageAlt={lightboxImage.alt}
+        onClose={closeLightbox}
+      />
     </div>
   );
 }

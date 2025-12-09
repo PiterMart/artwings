@@ -220,7 +220,7 @@ export default function ArtworksPage() {
                             />
                           </div>
                           <div className={styles.artwork_info}>
-                            <h3 className={styles.artwork_title}>{artwork.title}</h3>
+                            {/* <h3 className={styles.artwork_title}>{artwork.title}</h3> */}
                             {artwork.artist && (
                               <p className={styles.artwork_artist}>
                                 {/* <Link href={`/artists/${artwork.artist.slug}`} className={styles.artist_link}>
@@ -228,7 +228,7 @@ export default function ArtworksPage() {
                                 </Link> */}
                               </p>
                             )}
-                            {artwork.availability_status && (
+                            {/* {artwork.availability_status && (
                               <p className={styles.artwork_availability} style={{ 
                                 fontWeight: "400", 
                                 fontSize: "0.9rem", 
@@ -239,7 +239,7 @@ export default function ArtworksPage() {
                               }}>
                                 {artwork.availability_status.replace(/_/g, ' ')}
                               </p>
-                            )}
+                            )} */}
                           </div>
                         </Link>
                       </div>

@@ -136,11 +136,6 @@
   opacity: 0.3;
 }
 
-@media (min-width: 768px) {
-  .leftMargin {
-    top: 90vh;
-  }
-}
 
 @media (max-width: 767px) {
   .leftMargin {
@@ -206,13 +201,16 @@
 
 @media (min-width: 768px) {
   .rightMargin {
-    top: 90vh;
+    top: 0;
+  }
+  .leftMargin {
+    top: 0;
   }
 }
 
 @media (max-width: 767px) {
   .rightMargin {
-    top: 0;
+    top: 90vh;
   }
 }
 
@@ -2368,9 +2366,9 @@
   position: relative;
 }
 
-.artwork_card:hover {
+/* .artwork_card:hover {
   transform: translateY(-5px);
-}
+} */
 
 .artwork_link {
   text-decoration: none;
@@ -2399,7 +2397,7 @@
 }
 
 .artwork_card:hover .artwork_image {
-  transform: scale(1.05);
+  /* transform: scale(1.05); */
 }
 
 .artwork_info {
@@ -2690,7 +2688,6 @@
   margin-bottom: 4rem;
   padding: 2rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 800px;
   margin: auto;
 }
