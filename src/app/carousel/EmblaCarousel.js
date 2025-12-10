@@ -17,7 +17,7 @@ const layouts = {
   fair: FairLayout,
 };
 
-const EmblaCarousel = ({ slides, options = {}, type, onImageClick }) => {
+const EmblaCarousel = ({ slides, options = {}, type }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
@@ -56,7 +56,7 @@ const EmblaCarousel = ({ slides, options = {}, type, onImageClick }) => {
         <div className={styles.embla__container}>
           {slides.map((slide, index) => (
             <div className={styles.embla__slide} key={index}>
-              {LayoutComponent ? <LayoutComponent slide={slide} onImageClick={onImageClick} /> : null}
+              {LayoutComponent ? <LayoutComponent slide={slide} /> : null}
             </div>
           ))}
         </div>

@@ -374,11 +374,11 @@ export default function Home() {
           }}
           onMouseDown={(e) => handleDragStart(e, 'image1')}
           onTouchStart={(e) => handleDragStart(e, 'image1')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (28).jpg", "Artwings photo by Rubi Azul")}
+          onClick={() => openLightbox("/pictures/DSC00346.jpg", "Artwings Collection")}
         >
           <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (28).jpg"
-            alt="Artwings photo by Rubi Azul"
+            src="/pictures/DSC00346.jpg"
+            alt="Artwings Collection"
             width={400}
             height={600}
             className={styles.galleryImage}
@@ -397,11 +397,11 @@ export default function Home() {
           }}
           onMouseDown={(e) => handleDragStart(e, 'image2')}
           onTouchStart={(e) => handleDragStart(e, 'image2')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg", "Artwings photo by Rubi Azul")}
+          onClick={() => openLightbox("/pictures/DSC00348.jpg", "Artwings Collection")}
         >
           <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (38).jpg"
-            alt="Artwings photo by Rubi Azul"
+            src="/pictures/DSC00348.jpg"
+            alt="Artwings Collection"
             width={400}
             height={600}
             className={styles.galleryImage}
@@ -420,11 +420,11 @@ export default function Home() {
           }}
           onMouseDown={(e) => handleDragStart(e, 'image3')}
           onTouchStart={(e) => handleDragStart(e, 'image3')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (9).jpg", "Artwings photo by Xowkyu")}
+          onClick={() => openLightbox("/pictures/DSC00349.jpg", "Artwings Collection")}
         >
           <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (9).jpg"
-            alt="Artwings photo by Xowkyu"
+            src="/pictures/DSC00349.jpg"
+            alt="Artwings Collection"
             width={400}
             height={600}
             className={styles.galleryImage}
@@ -443,11 +443,11 @@ export default function Home() {
           }}
           onMouseDown={(e) => handleDragStart(e, 'image4')}
           onTouchStart={(e) => handleDragStart(e, 'image4')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (57)_1.jpg", "Artwings photo by Xowkyu")}
+          onClick={() => openLightbox("/pictures/DSC00351.jpg", "Artwings Collection")}
         >
           <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (57)_1.jpg"
-            alt="Artwings photo by Xowkyu"
+            src="/pictures/DSC00351.jpg"
+            alt="Artwings Collection"
             width={400}
             height={600}
             className={styles.galleryImage}
@@ -466,11 +466,80 @@ export default function Home() {
           }}
           onMouseDown={(e) => handleDragStart(e, 'image5')}
           onTouchStart={(e) => handleDragStart(e, 'image5')}
-          onClick={() => openLightbox("/pictures/@Artwings111 photo by @Rubi__Azul (13).jpg", "Artwings photo by Rubi Azul")}
+          onClick={() => openLightbox("/pictures/DSC00352.jpg", "Artwings Collection")}
         >
           <Image
-            src="/pictures/@Artwings111 photo by @Rubi__Azul (13).jpg"
-            alt="Artwings photo by Rubi Azul"
+            src="/pictures/DSC00352.jpg"
+            alt="Artwings Collection"
+            width={400}
+            height={600}
+            className={styles.galleryImage}
+            draggable={false}
+          />
+        </div>
+        
+        <div 
+          className={`${styles.parallaxImage} ${visibleImages.has('gallery6') ? styles.imageVisible : ''}`}
+          data-image-id="gallery6"
+          style={{
+            transform: imagePositions['image6'] 
+              ? `translate(${imagePositions['image6'].x}px, ${imagePositions['image6'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image6' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image6')}
+          onTouchStart={(e) => handleDragStart(e, 'image6')}
+          onClick={() => openLightbox("/pictures/DSC00355.jpg", "Artwings Collection")}
+        >
+          <Image
+            src="/pictures/DSC00355.jpg"
+            alt="Artwings Collection"
+            width={400}
+            height={600}
+            className={styles.galleryImage}
+            draggable={false}
+          />
+        </div>
+        
+        <div 
+          className={`${styles.parallaxImage} ${visibleImages.has('gallery7') ? styles.imageVisible : ''}`}
+          data-image-id="gallery7"
+          style={{
+            transform: imagePositions['image7'] 
+              ? `translate(${imagePositions['image7'].x}px, ${imagePositions['image7'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image7' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image7')}
+          onTouchStart={(e) => handleDragStart(e, 'image7')}
+          onClick={() => openLightbox("/pictures/DSC00360.jpg", "Artwings Collection")}
+        >
+          <Image
+            src="/pictures/DSC00360.jpg"
+            alt="Artwings Collection"
+            width={400}
+            height={600}
+            className={styles.galleryImage}
+            draggable={false}
+          />
+        </div>
+        
+        <div 
+          className={`${styles.parallaxImage} ${visibleImages.has('gallery8') ? styles.imageVisible : ''}`}
+          data-image-id="gallery8"
+          style={{
+            transform: imagePositions['image8'] 
+              ? `translate(${imagePositions['image8'].x}px, ${imagePositions['image8'].y}px)` 
+              : 'none',
+            cursor: draggedImage === 'image8' ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => handleDragStart(e, 'image8')}
+          onTouchStart={(e) => handleDragStart(e, 'image8')}
+          onClick={() => openLightbox("/pictures/DSC00362.jpg", "Artwings Collection")}
+        >
+          <Image
+            src="/pictures/DSC00362.jpg"
+            alt="Artwings Collection"
             width={400}
             height={600}
             className={styles.galleryImage}
