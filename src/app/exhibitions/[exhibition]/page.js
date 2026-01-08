@@ -4,11 +4,11 @@ import { firestore } from "../../firebase/firebaseConfig";
 import Link from "next/link";
 import Image from "next/image";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
 
 export default function Exhibition({ params }) {
-  const { exhibition: exhibitionSlug } = params; // Get slug from params
+  const { exhibition: exhibitionSlug } = use(params); // Get slug from params
   const [exhibition, setExhibition] = useState(null); // State to store the exhibition data
   const [artistsData, setArtistsData] = useState([]); // State to store the artist details
   const bannerRef = useRef(null);

@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore"; 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
 
@@ -21,7 +21,7 @@ export default function Artist({ params }) {
   const [artworks, setArtworks] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const artistId = params.artist;
+  const { artist: artistId } = use(params);
 
   useEffect(() => {
     // Scroll to top when component mountss

@@ -86,8 +86,8 @@ export default function About() {
                   className={`${styles.imageContainer} ${visibleImages.has('img1') ? styles.imageVisible : ''}`}
                 >
                   <Image
-                    src="/pictures/@Artwings111 photo by @Rubi__Azul (1)_1.jpg"
-                    alt="Artwings photo by Rubi Azul"
+                    src="/pictures/DSC00346.jpg"
+                    alt="Artwings Collection"
                     width={600}
                     height={400}
                     style={{maxWidth: '100%', height: 'auto'}}
@@ -121,8 +121,8 @@ export default function About() {
                   className={`${styles.imageContainer} ${visibleImages.has('img2') ? styles.imageVisible : ''}`}
                 >
                   <Image
-                    src="/pictures/@Artwings111 photo by @Rubi__Azul (44)_1.jpg"
-                    alt="Artwings photo by Rubi Azul"
+                    src="/pictures/DSC00348.jpg"
+                    alt="Artwings Collection"
                     width={600}
                     height={400}
                     style={{maxWidth: '100%', height: 'auto'}}
@@ -156,8 +156,8 @@ export default function About() {
                   className={`${styles.imageContainer} ${visibleImages.has('img3') ? styles.imageVisible : ''}`}
                 >
                   <Image
-                    src="/pictures/@Artwings111 photo by @Rubi__Azul (51)_1.jpg"
-                    alt="Artwings photo by Rubi Azul"
+                    src="/pictures/DSC00349.jpg"
+                    alt="Artwings Collection"
                     width={600}
                     height={400}
                     style={{maxWidth: '100%', height: 'auto'}}

@@ -4,7 +4,7 @@ import styles from "../../../styles/artwork.module.css";
 import "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig";
 import { query, collection, where, getDocs, doc, getDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Lightbox from "../../../components/Lightbox";
@@ -17,7 +17,7 @@ export default function Artwork({ params }) {
   const [lightboxImage, setLightboxImage] = useState({ src: '', alt: '' });
   const [isAcquireDialogOpen, setIsAcquireDialogOpen] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const artworkSlug = params.artwork; // Get slug from params
+  const { artwork: artworkSlug } = use(params); // Get slug from params
 
   const openLightbox = (imageSrc, imageAlt) => {
     setLightboxImage({ src: imageSrc, alt: imageAlt });
