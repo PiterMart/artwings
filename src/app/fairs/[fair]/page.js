@@ -2,11 +2,11 @@
 import styles from "../../../styles/page.module.css";
 import { firestore } from "../../firebase/firebaseConfig";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import EmblaCarousel from "../../carousel/EmblaCarousel";
 
 export default function Fair({ params }) {
-  const { fair: fairSlug } = params; // Get slug from params
+  const { fair: fairSlug } = use(params); // Get slug from params
   const [fair, setFair] = useState(null); // State to store the fair data
   const [artistsData, setArtistsData] = useState([]); // State to store the artist details
 
